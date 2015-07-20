@@ -38,7 +38,7 @@ class Createuser extends DefaultLayout {
 	val users: TableQuery[Users] = TableQuery[Users]
 	val db = forURL()
 	db withSession { implicit session =>
-			users += User(None,userid, pass, name, email, phone)
+			users += User(None,userid, pass, name, email, phone,"","","","","","")
 		}
 	respondJson("okay")
 	}

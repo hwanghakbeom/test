@@ -544,6 +544,7 @@
 			});
 			data.append("ips",param);
 			data.append("regdate",example("#datepicker" ).datepicker({}).val())
+			data.append("pcs",$('#pcs').val())
 		    $.ajax({
 		        data: data,
 		        type: "POST",
@@ -580,6 +581,7 @@
 
 
 		example( "#update-ip" ).button().on( "click", function() {
+			$('#pcs').val($('#table-code').text());
 			 //    var code = $('#table-code').text();
 				// $.ajax({
 				// 	url: 'getips/' + code,
@@ -629,20 +631,24 @@ $(document).ready(function()
 	});
 	$('#ipadd').click(function(){ 
 		if( $("#ipv42").val() != ""){
-			alert($("#ipv42").val() );
+			var arr = $("#ipv4").val().split(".");
+			var sratrindex = parseInt(arr[3]);
+			var endindex = parseInt($("#ipv42").val());
+			for (i = sratrindex; i < endindex; i++) {
+			 	var ip = arr[0] + "." + arr[1] + "." + arr[2] + "." + i.toString() ;
+			 $('#ipselect').append($('<option>', {
+	    		value: ip,
+	    		text: ip
+			}));
+			}
 		}
-		$.each(data, function (i, item) {
-				alert(item);
-				 $('#ipselect').append($('<option>', { 
-				 	value : item,
-				    text : item
-				}));
-			});
-
+		else {
 		 $('#ipselect').append($('<option>', {
     		value: $("#ipv4").val(),
     		text: $("#ipv4").val()
-		}));
+		}));			
+		}
+
 
 		 $("#ipv4").val("");
 		 $("#ipnumber").val($("#ipselect option").size());
@@ -658,7 +664,7 @@ $(document).ready(function()
 		{
 		    param = param + $(this).val() + ";"
 		});
-		alert(param);
+
 		data.append("ips",param);
 
 				$.ajax({
@@ -839,6 +845,7 @@ $(document).ready(function()
 <div id="dialog-ip" title="PC방 현황 - 상세보기 - IP주소 등록 /수정">
 <div class="row">
 <div class="col-md-8">
+ 	<input type="hidden" id="pcs" >
 <!-- 	<div class="row">
 			<div class="col-md-2"><label>설치게임</label></div>
 			<div class="col-md-10"></div>

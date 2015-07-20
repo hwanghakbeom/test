@@ -50,7 +50,20 @@
 			example( "#datepicker3" ).datepicker( example.datepicker.regional[ "ko" ] );
 		});
 	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker4" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
 
+			});
+			example( "#datepicker4" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
 
 
 <script>
@@ -124,10 +137,103 @@
 		});
 	});
 </script>
+
+
+<script>
+	//신규 유저등록
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		userid = example( "#userid" ),
+		username = example( "#username" ),
+		position = example( "#position" ),
+		usercompany = example( "#usercompany" ),
+		useremail = example( "#useremail"),
+		userphone = example( "#userphone"),
+		usermobile = example( "#usermobile"),
+		userwork = example( "#userwork"),
+		isfinished = example("#finished")[0].checked
+
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("userid", userid.val());
+		    data.append("username", username.val());
+		    data.append("usercompany", usercompany.val());
+		    data.append("useremail",useremail.val());
+		    data.append("userphone", userphone.val());
+		    data.append("usermobile",usermobile.val());
+		    data.append("userwork", userwork.val());
+		    data.append("finishdate", example("#datepicker4" ).datepicker({}).val());
+		    data.append("isfinished", isfinished);
+
+
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newuser",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+		};
+		dialog = example( "#user-form" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 750,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#reg_user" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
 <script>
 // 게임 테이블 데이터 로드
 $ = jQuery; 
 	$(document).ready(function() {
+
+			var oTable2 = $('#user_table').dataTable();
+			oTable2.fnDestroy();
+			$('#user_table').dataTable( {
+				"ajax": "getuserlist/",
+				"columns": [
+				{ "data": "rid" },
+				{ "data": "name" },
+				{ "data": "position" },
+				{ "data": "company" },
+				{ "data": "email" },
+				{ "data": "phone" },
+				{ "data": "mobile" },
+				{ "data": "work" },
+				{ "data": "role" },
+				{ "data": "last_connect" }
+				]
+			});
+
 			var oTable = $('#game_table').dataTable();
 			oTable.fnDestroy();
 			$('#game_table').dataTable( {
@@ -142,6 +248,7 @@ $ = jQuery;
 				{ "data": "install-status" }
 				]
 			});
+
 	});
 </script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
@@ -207,7 +314,7 @@ $ = jQuery;
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="games" >
-			<table id="game_table" class="display" style="font-size:	12px;">
+			<table id="game_table" class="display">
 				<thead>
 					<tr>
 						<th data-field="name" data-align="right"> 게임명</th>
@@ -225,7 +332,7 @@ $ = jQuery;
 			<input class="btn btn-success" value="신규" id="reg_game">
 		</div>
 		<div role="tabpanel" class="tab-pane" id="users">
-			<table id="user_table" class="display" style="font-size:	12px;">
+			<table id="user_table" class="display">
 				<thead>
 					<tr>
 						<th data-field="rid" data-align="right"> ID</th>
@@ -243,6 +350,7 @@ $ = jQuery;
 				<tbody>
 				</tbody>
 			</table>
+			<input class="btn btn-success" value="신규" id="reg_user">
 		</div>		
 	</div>
 </div>
@@ -358,6 +466,70 @@ $ = jQuery;
 			</div>
 			<div class="form-group col-md-4">
 				<input type="text" id="ratio-detail">
+			</div>
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</form>
+		</div>
+
+
+
+<div id="user-form" title="계정리스트 - 신규 등록 및 수정" >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="userid">ID</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="userid" id="userid"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">담당자명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="username" id="username"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">직급</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="position" id="position"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">회사명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="usercompany" id="usercompany"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">Email</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="useremail" id="useremail"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">전화번호</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="userphone" id="userphone"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">휴대전화</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="usermobile" id="usermobile"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">담당업무</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="userwork" id="userwork"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">접속중단일</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" id="datepicker4">
+				<input type="checkbox" id="finished" value="checked"> 관리 해지
 			</div>
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
 			</form>

@@ -37,18 +37,6 @@
 			example( "#datepicker2" ).datepicker( example.datepicker.regional[ "ko" ] );
 		});
 	</script>
-	<script>
-		var example=jQuery.noConflict();
-		example('#myTabs a').click(function (e) {
-			e.preventDefault()
-			example(this).tab('show')
-		})
-
-  example('#myTabs a[href="#profile"]').tab('show') // Select tab by name
-example('#myTabs a:first').tab('show') // Select first tab
-example('#myTabs a:last').tab('show') // Select last tab
-example('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
-</script>
 </head>
 
 
@@ -56,8 +44,7 @@ example('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 	<ul class="nav nav-tabs" role="tablist">
 		<li role="presentation" class="active"><a href="#games" aria-controls="games" role="tab" data-toggle="tab">게임별 설치현황</a></li>
 		<li role="presentation"><a href="#channels" aria-controls="channels" role="tab" data-toggle="tab">채널별 설치현황</a></li>
-		<li role="presentation"><a href="#status" aria-controls="status" role="tab" data-toggle="tab">PC방 현황</a></li>
-		<li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">관리</a></li>
+
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="games" >
@@ -65,8 +52,10 @@ example('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 				<div class="col-md-6">
 					<div class="well">
 						<form role="form" action="getgames" method="get">
+						<div class="row">
+						<div class="col-md-6">
 							게임선택
-							<select class="combobox">
+							<select class="form-control">
 								<option></option>
 								<option value="PA">게임A</option>
 								<option value="CT">게임B</option>
@@ -74,15 +63,31 @@ example('#myTabs li:eq(2) a').tab('show') // Select third tab (0-indexed)
 								<option value="MD">게임D</option>
 								<option value="VA">게임E</option>
 							</select>
+							</div>
+							<div class="col-md-6">
 							지역
-							<select class="combobox">
-								<option></option>
-								<option value="PA">전국</option>
-								<option value="CT">서울</option>
-								<option value="NY">경기</option>
-								<option value="MD">인천</option>
-								<option value="VA">강</option>
+							<select class="form-control" name="select-region" id="select-region">
+								<option>지역선택</option>
+								<option value="전국">전국</option>
+								<option value="서울">서울</option>
+								<option value="경기">경기</option>
+								<option value="인천">인천</option>
+								<option value="강원">강원</option>
+								<option value="충북">충북</option>
+								<option value="충남">충남</option>
+								<option value="대전">대전</option>
+								<option value="전북">전북</option>
+								<option value="광주">광주</option>
+								<option value="경북">경북</option>
+								<option value="경남">경남</option>
+								<option value="울산">울산</option>
+								<option value="대구">대구</option>
+								<option value="부산">부산</option>
+								<option value="제주">제주</option>
+								<option value="세종">세종</option>
 							</select>
+							</div>
+							</div>
 							<br>
 							<br>
 							설치일자 <input type="text" id="datepicker">

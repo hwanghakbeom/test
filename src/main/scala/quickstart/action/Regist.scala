@@ -97,21 +97,43 @@ class Ipcheck extends DefaultLayout {
  }
 
 
- @POST("newip")
+@POST("newip")
 class Newip extends DefaultLayout {	
   def execute() {
   	var ipsparam = param("ips")
+  	var regdate = param("regdate")
+  	var pcsid = param("pcs")
   	var arr = ipsparam.split(";")
   	val db = forURL()
   	val ips: TableQuery[Ips] = TableQuery[Ips]
   	var fruits = ArrayBuffer[String]()
   	db withSession { implicit session =>
   		for (t <- arr) {
-  			var q1 = ips.filter(_.ip === t).list
-  			if(q1.size > 0) { fruits += t }
+  			ips += Ip(None,pcsid, t, regdate)
   		}	
   	}	
   	  	respondJson("okay")
   }
 
   	}
+
+@POST("newuser")
+class Newuser extends DefaultLayout {	
+  def execute() {
+  	var userid = param("userid")
+  	var username = param("username")
+  	var usercompany = param("usercompany")
+  	var useremail = param("useremail")
+  	var userphone = param("userphone")
+  	var usermobile = param("usermobile")
+  	var userwork = param("userwork")
+  	var finishdate = param("finishdate")
+  	var isfinished = param("isfinished")
+  	val db = forURL()
+  	val user: TableQuery[Users] = TableQuery[Users]
+  	db withSession { implicit session =>
+  			user += User(None,userid , "" , username, "", usercompany, useremail, userphone, usermobile, userwork, userwork, finishdate)
+  	}	
+  	  	respondJson("okay")
+  }
+ }

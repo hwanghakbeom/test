@@ -210,6 +210,39 @@ class Getgamelist extends DefaultLayout {
     }
 }
 }
+
+@GET("getuserlist")
+class Getuserlist extends DefaultLayout {    
+  def execute() {
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>  
+        var queryString = "SELECT * FROM users WHERE 1 = ?"
+        var q1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String,String)](queryString)
+        val peroid = q1("1").list
+        if(peroid.size == 0 ){respondJson("okay")}
+        else{
+            for (t <- peroid) {
+                 sublist = Map("rid" -> t._1,
+                   "name" -> t._4,
+                   "position" -> t._5,
+                   "company" -> t._6,
+                   "email" -> t._7,
+                   "phone" -> t._8,
+                   "mobile" -> t._9,
+                   "work" -> t._10,
+                   "role" -> t._11,
+                   "last_connect" -> t._12
+                    )
+                returnList += sublist  
+            }
+            respondJson(Map("data" -> returnList))  
+        }
+    }
+}
+}
+
 // @GET("checkgame/:ip/:dir")
 // class Checkgame extends DefaultLayout {    
 //   def execute() {
