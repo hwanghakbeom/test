@@ -12,6 +12,7 @@ import scalaj.http.HttpOptions
 import org.jboss.netty.handler.codec.http.HttpHeaders
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.jsoup.Jsoup
+import scala.collection.mutable.ArrayBuffer
 import quickstart._
 
 
@@ -80,8 +81,8 @@ class Newgame extends DefaultLayout {
 @GET("ipcheck/:ips")
 class Ipcheck extends DefaultLayout {	
   def execute() {
-  	var ips = param("ips")
-  	var arr = ips.split(";")
+  	var ipsparam = param("ips")
+  	var arr = ipsparam.split(";")
   	val db = forURL()
   	val ips: TableQuery[Ips] = TableQuery[Ips]
   	var fruits = ArrayBuffer[String]()
@@ -99,8 +100,8 @@ class Ipcheck extends DefaultLayout {
  @POST("newip")
 class Newip extends DefaultLayout {	
   def execute() {
-  	var ips = param("ips")
-  	var arr = ips.split(";")
+  	var ipsparam = param("ips")
+  	var arr = ipsparam.split(";")
   	val db = forURL()
   	val ips: TableQuery[Ips] = TableQuery[Ips]
   	var fruits = ArrayBuffer[String]()
