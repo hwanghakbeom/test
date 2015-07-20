@@ -91,10 +91,10 @@ class Ipcheck extends DefaultLayout {
   			if(q1.size > 0) { fruits += t }
   		}	
   	}	
+  	  	respondJson("okay")
   }
-  	respondJson("okay")
-  	}
  }
+
 
  @POST("newip")
 class Newip extends DefaultLayout {	
@@ -110,7 +110,7 @@ class Newip extends DefaultLayout {
   			if(q1.size > 0) { fruits += t }
   		}	
   	}	
+  	  	respondJson("okay")
   }
-  	respondJson("okay")
+
   	}
- }

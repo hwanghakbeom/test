@@ -591,13 +591,13 @@
 				// 		withCredentials: true
 				// 	},
 				// 	success: function(data) {
-				// 		$.each(data, function (i, item) {
-				// 			alert(item);
-				// 			 $('#ipselect').append($('<option>', { 
-				// 			 	value : item,
-				// 			    text : item
-				// 			}));
-				// 		});
+						// $.each(data, function (i, item) {
+						// 	alert(item);
+						// 	 $('#ipselect').append($('<option>', { 
+						// 	 	value : item,
+						// 	    text : item
+						// 	}));
+						// });
 
 				// 		var dialog = example( "#dialog-ip" ).dialog({
 				// 			autoOpen: false,
@@ -628,10 +628,22 @@ $(document).ready(function()
 		$("#ipnumber").val($("#ipselect option").size());
 	});
 	$('#ipadd').click(function(){ 
+		if( $("#ipv42").val() != ""){
+			alert($("#ipv42").val() );
+		}
+		$.each(data, function (i, item) {
+				alert(item);
+				 $('#ipselect').append($('<option>', { 
+				 	value : item,
+				    text : item
+				}));
+			});
+
 		 $('#ipselect').append($('<option>', {
     		value: $("#ipv4").val(),
     		text: $("#ipv4").val()
 		}));
+
 		 $("#ipv4").val("");
 		 $("#ipnumber").val($("#ipselect option").size());
 	});
