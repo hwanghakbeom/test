@@ -137,3 +137,24 @@ class Newuser extends DefaultLayout {
   	  	respondJson("okay")
   }
  }
+
+@POST("reg_direcotry")
+class Regdirectory extends DefaultLayout { 
+  def execute() {
+    var userid = param("directory")
+    var arr = userid.split("$")
+    println(userid)
+    val db = forURL()
+    val mapping: TableQuery[Mappings] = TableQuery[Mappings]
+    db withSession { implicit session =>
+      for (t <- arr) {
+          var arr2 = t.split(";")
+          println(arr2)
+          mapping += Mapping(None,arr2(0),arr2(1),arr2(2),arr2(3),TransDate.getCurrentDate())
+    } 
+        respondJson("okay")
+  }
+ }
+}
+
+

@@ -13,6 +13,8 @@ import org.jboss.netty.handler.codec.http.HttpHeaders
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.jsoup.Jsoup
 import quickstart._
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
 
 @GET("pc")
 class Pcstatus extends DefaultLayout {	
@@ -20,20 +22,8 @@ class Pcstatus extends DefaultLayout {
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var channelList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
-     sublist = Map("code"->"12345",
-    	"name"->"짱PC방",
-    	"region"->"서울",
-    	"address"->"서울시 강남구 대치동",
-    	"phone"->"02-555-1234",
-    	"mobile"->"010-234-5690",
-    	"user"->"김대표",
-    	"ip"->"122",
-    	"status"->"정상",
-    	"channel"->"채널A",
-    	"regdate"->"2015-06-15",
-    	"games"->"게임A,게임B,게임C,게임D")
-    returnList += sublist
-    at("value") = returnList
+    var gamelist = Map[Any,Any]()
+
     var userid = session("userId") 
     val channel: TableQuery[Channels] = TableQuery[Channels]
     val db = forURL()
@@ -49,8 +39,23 @@ class Pcstatus extends DefaultLayout {
                   )
                   channelList += channelsublist
              }
+        var queryString = "SELECT * FROM game WHERE 1 = ?"
+        var query1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String)](queryString)
+        val peroid = query1("1").list
+        println(peroid.size)
+        if(peroid.size > 0 )
+        {
+            for (t <- peroid) {
+              println(t._2)
+              gamelist = Map("rid" -> t._1,
+                "name" -> t._2)
+              returnList += gamelist
+            }
+
         }
+        at("game") = returnList
         at("channel") = channelList
 	respondView(Map("type" ->"mustache"))
   }
+}
 }
