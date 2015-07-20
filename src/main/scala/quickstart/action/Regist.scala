@@ -28,10 +28,13 @@ class NewPC extends DefaultLayout {
 		var channel	 = param("channel")
 		var lastdate	 = param("lastdate")
 		var isfinished	 = param("isfinished")
+		var ischecked = "false"
+		if(isfinished == "checked") { ischecked = "true"}
+		var regdate = TransDate.getCurrentDate()
 		val pcs: TableQuery[Pcs] = TableQuery[Pcs]
 		val db = forURL()
 		  db withSession { implicit session =>
-		  	pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, isfinished)
+		  	pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
 		  }
 		respondJson("okay")  		
 	}

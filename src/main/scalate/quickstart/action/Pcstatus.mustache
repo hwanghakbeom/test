@@ -67,7 +67,8 @@
 						var code = data.detail.code;
 						var name = data.detail.name;
 						var region = data.detail.region;
-						var address = data.detail.address;
+						var add1 = data.detail.add1;
+						var add2 = data.detail.add2;
 						var phone = data.detail.phone;
 						var mobile = data.detail.mobile;
 						var user = data.detail.user;
@@ -75,9 +76,19 @@
 						var status = data.detail.status;
 						var channel = data.detail.channel;
 						var regdate = data.detail.regdate;
+						var post = data.detail.post;
 
 						$('#table-code').text(code);
 						$('#table-name').text(name);
+						// $('#table-owner').text(owner);
+						$('#table-ipnumber').text(ip);
+						$('#post').text(post);
+						$('#addr').text(add1);
+						$('#addr-detail').text(add2);
+						$('#table-phone').text(phone);
+						$('#table-mobile').text(mobile);
+						$('#table-channel').text(channel);
+						$('#table-regdate').text(regdate);
 						$('#iptable').html(data.iplistheader);
 						$('#iptable').append(data.iplistbody);
 						var dialog = example( "#dialog-detail" ).dialog({
@@ -218,7 +229,7 @@
 	</div>
 </div>
 
-<table id="example" class="display">
+<table id="example" class="display" style="font-size:	12px;">
 	<thead>
 		<tr>
 			<th data-field="code" data-align="right"> PC방코드</th>
@@ -568,7 +579,8 @@
 						var code = data.detail.code;
 						var name = data.detail.name;
 						var region = data.detail.region;
-						var address = data.detail.address;
+						var add1 = data.detail.add1;
+						var add2 = data.detail.add2;
 						var phone = data.detail.phone;
 						var mobile = data.detail.mobile;
 						var user = data.detail.user;
@@ -576,11 +588,18 @@
 						var status = data.detail.status;
 						var channel = data.detail.channel;
 						var regdate = data.detail.regdate;
+						var post = data.detail.post;
 
 						$('#table-code').text(code);
 						$('#table-name').text(name);
+						// $('#table-owner').text(owner);
+						$('#table-ipnumber').text(ip);
+						$('#post').text(post);
+						$('#addr').text(add1);
+						$('#addr-detail').text(add2);
 						$('#iptable').html(data.iplistheader);
 						$('#iptable').append(data.iplistbody);
+
 						var dialog = example( "#dialog-ip" ).dialog({
 							autoOpen: false,
 							height: 500,
@@ -722,17 +741,17 @@
 				<td id="post"></td>
 				<td>주소</td>
 				<td id="addr" colspan="3"></td>
-				<td id="addr-detail">dd</td>
+				<td id="addr-detail"></td>
 			</tr>
 			<tr>
 				<td>전화번호</td>
-				<td></td>
+				<td id="table-phone"></td>
 				<td>휴대전화</td>
-				<td></td>
+				<td id="table-mobile"></td>
 				<td>채널</td>
-				<td></td>
+				<td id="table-channel"></td>
 				<td>등록</td>
-				<td></td>
+				<td id="table-regdate"></td>
 			</tr>
 		</table>
 		<input id="update-user" value = "PC방 정보수정" class = "btn btn-success">
