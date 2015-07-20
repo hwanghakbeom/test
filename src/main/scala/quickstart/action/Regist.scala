@@ -53,3 +53,64 @@ class NewChannel extends DefaultLayout {
 		respondJson("okay")  		
 	}
 }
+
+@POST("newgame")
+class Newgame extends DefaultLayout {	
+  def execute() {
+		var name	 = param("name")
+		var add1 = param("add1") 
+		var add2	 = param("add2")
+		var owner = param("owner") 
+		var company	 = param("company")
+		var companynumber = param("companynumber").toString 
+		var startdate	 = param("startdate").toString
+		var enddate = param("enddate").toString
+		var ratio	 = param("ratio").toString
+		var ratiodetail = param("ratiodetail").toString 
+
+		val game: TableQuery[Games] = TableQuery[Games]
+		val db = forURL()
+		  db withSession { implicit session =>
+		  	game += Game(None,name,company,companynumber,owner,add1,startdate,enddate,ratio,ratiodetail,add2)
+		  }
+		respondJson("okay") 
+  }
+}
+
+@GET("ipcheck/:ips")
+class Ipcheck extends DefaultLayout {	
+  def execute() {
+  	var ips = param("ips")
+  	var arr = ips.split(";")
+  	val db = forURL()
+  	val ips: TableQuery[Ips] = TableQuery[Ips]
+  	var fruits = ArrayBuffer[String]()
+  	db withSession { implicit session =>
+  		for (t <- arr) {
+  			var q1 = ips.filter(_.ip === t).list
+  			if(q1.size > 0) { fruits += t }
+  		}	
+  	}	
+  }
+  	respondJson("okay")
+  	}
+ }
+
+ @POST("newip")
+class Newip extends DefaultLayout {	
+  def execute() {
+  	var ips = param("ips")
+  	var arr = ips.split(";")
+  	val db = forURL()
+  	val ips: TableQuery[Ips] = TableQuery[Ips]
+  	var fruits = ArrayBuffer[String]()
+  	db withSession { implicit session =>
+  		for (t <- arr) {
+  			var q1 = ips.filter(_.ip === t).list
+  			if(q1.size > 0) { fruits += t }
+  		}	
+  	}	
+  }
+  	respondJson("okay")
+  	}
+ }

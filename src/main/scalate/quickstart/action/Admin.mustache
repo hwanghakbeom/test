@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/datepicker-ko.js"></script>
+	<link rel="stylesheet" type="text/css" href="media//css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="media/js/jquery.dataTables.js"></script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker1" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker1" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker2" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker2" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker3" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker3" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
+
+
+
+<script>
+	//신규 게임등록
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#name" ),
+		add1 = example( "#sample4_roadAddress" ),
+		add2 = example( "#sample4-detail" ),
+		owner = example( "#owner" ),
+		company = example( "#company"),
+		companynumber = example( "#companynumber"),
+		startdate = example("#datepicker1" ).datepicker({}).val(),
+		enddate = example("#datepicker2" ).datepicker({}).val(),
+		ratio = example('#select-region').val(),
+		detail = example( "#ratio-detail");
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+		    data.append("add1", add1.val());
+		    data.append("add2", add2.val());
+		    data.append("owner",owner.val());
+		    data.append("company", company.val());
+		    data.append("companynumber",companynumber.val());
+		    data.append("startdate", example("#datepicker1" ).datepicker({}).val());
+		    data.append("enddate",example("#datepicker2" ).datepicker({}).val());
+		    data.append("ratio", ratio);
+		    data.append("ratiodetail",detail.val());
+
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newgame",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+		};
+		dialog = example( "#game-form" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 750,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#reg_game" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+<script>
+// 게임 테이블 데이터 로드
+$ = jQuery; 
+	$(document).ready(function() {
+			var oTable = $('#game_table').dataTable();
+			oTable.fnDestroy();
+			$('#game_table').dataTable( {
+				"ajax": "getgamelist/",
+				"columns": [
+				{ "data": "name" },
+				{ "data": "company" },
+				{ "data": "company_number" },
+				{ "data": "owner" },
+				{ "data": "address" },
+				{ "data": "install-date" },
+				{ "data": "install-status" }
+				]
+			});
+	});
+</script>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script>
+	function sample4_execDaumPostcode() {
+		new daum.Postcode({
+			oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 도로명 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+                var extraRoadAddr = ''; // 도로명 조합형 주소 변수
+
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                	extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                	extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 도로명, 지번 조합형 주소가 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraRoadAddr !== ''){
+                	extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+                // 도로명, 지번 주소의 유무에 따라 해당 조합형 주소를 추가한다.
+                if(fullRoadAddr !== ''){
+                	fullRoadAddr += extraRoadAddr;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("sample4_postcode").value = data.postcode; //6자리 우편번호 사용
+                //document.getElementById("sample4_postcode").value = data.zonecode; //5자리 기초구역번호 사용
+                document.getElementById("sample4_roadAddress").value = fullRoadAddr;
+                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+
+                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                if(data.autoRoadAddress) {
+                    //예상되는 도로명 주소에 조합형 주소를 추가한다.
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    document.getElementById("guide").innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+
+                } else if(data.autoJibunAddress) {
+                	var expJibunAddr = data.autoJibunAddress;
+                	document.getElementById("guide").innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+
+                } else {
+                	document.getElementById("guide").innerHTML = '';
+                }
+            }
+        }).open();
+}
+</script>
+</head>
+
+
+<div>
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#games" aria-controls="games" role="tab" data-toggle="tab">관리자 - 게임리스트</a></li>
+		<li role="presentation"><a href="#users" aria-controls="channels" role="tab" data-toggle="tab">관리자 - 계정리스트</a></li>
+	</ul>
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="games" >
+			<table id="game_table" class="display" style="font-size:	12px;">
+				<thead>
+					<tr>
+						<th data-field="name" data-align="right"> 게임명</th>
+						<th data-field="company" data-align="center" >회사명</th>
+						<th data-field="company_number" >사업자번호</th>
+						<th data-field="owner" >대표자명</th>
+						<th data-field="address" >주소</th>
+						<th data-field="install-date" >설치기간</th>
+						<th data-field="install-status" >설치기준</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<input class="btn btn-success" value="신규" id="reg_game">
+		</div>
+		<div role="tabpanel" class="tab-pane" id="users">
+			<table id="user_table" class="display" style="font-size:	12px;">
+				<thead>
+					<tr>
+						<th data-field="rid" data-align="right"> ID</th>
+						<th data-field="name" data-align="center" >담당자명</th>
+						<th data-field="position" >직급</th>
+						<th data-field="company" >회사명</th>
+						<th data-field="email" >이메일주소</th>
+						<th data-field="phone" >전화번호</th>
+						<th data-field="mobile" >휴대전화</th>
+						<th data-field="work" >담당업무</th>
+						<th data-field="role" >권한</th>
+						<th data-field="last_connect" >최종접속일</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>		
+	</div>
+</div>
+
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script>
+  var example=jQuery.noConflict();
+  example(function() {
+    var dialog, form,
+ 
+      name = example( "#name" ),
+      email = example( "#email" ),
+      password = example( "#password" ),
+      allFields = example( [] ).add( name ).add( email ).add( password ),
+      tips = example( ".validateTips" );
+ 
+    function addUser() {
+
+      alert("ajax 통신")
+    }
+ 
+    dialog = example( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 450,
+      modal: true,
+      buttons: {
+        "수정": addUser,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addUser();
+    });
+ 
+    example( "#create-user" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  });
+  </script>
+</head>
+<body>
+ 
+<div id="game-form" title="게임리스트 - 신규 등록 및 수정" >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="name">게임명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="name" id="name"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">주소</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+				<input type="text" id="sample4_roadAddress" placeholder="도로명주소">
+				<input type="text" id="sample4-detail" placeholder="상세주소">
+				<span id="guide" style="color:#999"></span>
+			</div>
+			<div class="col-md-3">
+				<label for="password">대표자명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="owner" id="owner"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">회사명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="company" id="company"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">사업자번호</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="companynumber" id="companynumber"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="password">설치기간</label>
+			</div>
+			<div class="col-md-9">
+			<div class="row">
+				<div class="form-group col-md-6">
+					<input type="text" id="datepicker1">
+				</div>
+				<div class="form-group col-md-6">
+					<input type="text" id="datepicker2">
+				</div>
+			</div>
+			</div>
+			<div class="col-md-3">
+				<label for="password">설치기준</label>
+			</div>
+			<div class="form-group col-md-4">
+				<select class="form-control" name="select-region" id="select-region">
+				<option value="설치율">설치율</option>
+				<option value="설치대수">설치대수</option>
+
+			</select>
+			</div>
+			<div class="form-group col-md-4">
+				<input type="text" id="ratio-detail">
+			</div>
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</form>
+		</div>
+

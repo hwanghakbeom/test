@@ -164,10 +164,52 @@ class Getdetails extends DefaultLayout {
 @GET("getips/:code")
 class Getips extends DefaultLayout {    
   def execute() {
+    var code = param("code")
 
+    val db = forURL()
+    db withSession { implicit session =>  
+        var queryString = "SELECT IP FROM ips WHERE RID = ?"
+        var q1 = Q.query[String, (String)](queryString)
+        val peroid = q1(code).list
+        if(peroid.size == 0 ){respondJson("okay")}
+        else{
+            respondJson(peroid)
+        }
     }
 }
+}
 
+@GET("getgamelist")
+class Getgamelist extends DefaultLayout {    
+  def execute() {
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>  
+        var queryString = "SELECT * FROM game WHERE 1 = ?"
+        var q1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String)](queryString)
+        val peroid = q1("1").list
+        if(peroid.size == 0 ){respondJson("okay")}
+        else{
+            for (t <- peroid) {
+                var addr = t._6 +" " + t._11
+                var idate = t._7 + "~" + t._8
+                var istatus = t._9 + " " + t._10
+                 sublist = Map("name" -> t._2,
+                   "company" -> t._3,
+                   "company_number" -> t._4,
+                   "owner" -> t._5,
+                   "address" -> addr,
+                   "install-date" -> idate,
+                   "install-status" -> istatus
+                    )
+                returnList += sublist  
+            }
+            respondJson(Map("data" -> returnList))
+        }
+    }
+}
+}
 // @GET("checkgame/:ip/:dir")
 // class Checkgame extends DefaultLayout {    
 //   def execute() {

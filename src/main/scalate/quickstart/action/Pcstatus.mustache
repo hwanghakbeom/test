@@ -10,6 +10,14 @@
 
 	<link rel="stylesheet" type="text/css" href="media//css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8" src="media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="js/jquery.input-ip-address-control.js"></script>
+	<script>
+		$(document).ready(function(){
+		  $('#ipv4').mask('099.099.099.099');
+		  $('#ipv42').mask('099');
+		});
+	</script>
+
 	<script>
 		var example=jQuery.noConflict();
 		example(function() {
@@ -46,6 +54,17 @@
 
 			});
 			example( "#datepicker3" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+		example(function() {
+			example( "#datepicker4" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker4" ).datepicker( example.datepicker.regional[ "ko" ] );
 		});
 	</script>
 	<script>
@@ -517,21 +536,18 @@
 		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel);
 
 		function addUser() {
-		    data = new FormData();
-		    data.append("name", name.val());
-		    data.append("add1", add1.val());
-		    data.append("add2",add2.val());
-		    data.append("add3", add3.val());
-		    data.append("owner",owner.val());
-		    data.append("phone", phone.val());
-		    data.append("mobile",mobile.val());
-		    data.append("channel", channel.val());
-		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
-		    data.append("isfinished", isfinished.val());
+			data = new FormData();
+			var param = "";
+			$("#ipselect option").each(function()
+			{
+			    param = param + $(this).val() + ";"
+			});
+			data.append("ips",param);
+			data.append("regdate",example("#datepicker" ).datepicker({}).val())
 		    $.ajax({
 		        data: data,
 		        type: "POST",
-		        url: "/newpc",
+		        url: "/newip",
 		        enctype: "multipart/form-data",
 		        cache: false,
 		        contentType: false,
@@ -545,7 +561,7 @@
 		dialog = example( "#dialog-ip" ).dialog({
 			autoOpen: false,
 			height: 500,
-			width: 550,
+			width: 450,
 			modal: true,
 			buttons: {
 				"수정": addUser,
@@ -554,7 +570,6 @@
 				}
 			},
 			close: function() {
-				form[ 0 ].reset();
 				allFields.removeClass( "ui-state-error" );
 			}
 		});
@@ -565,56 +580,91 @@
 
 
 		example( "#update-ip" ).button().on( "click", function() {
-			    var code = $('#table-code').text();
-				$.ajax({
-					url: 'getips/' + code,
-					type: "get",
-					data : {},
-					dataType: 'json',
-					async: false,
-					xhrFields: {
-						withCredentials: true
-					},
-					success: function(data) {
-						var code = data.detail.code;
-						var name = data.detail.name;
-						var region = data.detail.region;
-						var add1 = data.detail.add1;
-						var add2 = data.detail.add2;
-						var phone = data.detail.phone;
-						var mobile = data.detail.mobile;
-						var user = data.detail.user;
-						var ip = data.detail.ip;
-						var status = data.detail.status;
-						var channel = data.detail.channel;
-						var regdate = data.detail.regdate;
-						var post = data.detail.post;
+			 //    var code = $('#table-code').text();
+				// $.ajax({
+				// 	url: 'getips/' + code,
+				// 	type: "get",
+				// 	data : {},
+				// 	dataType: 'json',
+				// 	async: false,
+				// 	xhrFields: {
+				// 		withCredentials: true
+				// 	},
+				// 	success: function(data) {
+				// 		$.each(data, function (i, item) {
+				// 			alert(item);
+				// 			 $('#ipselect').append($('<option>', { 
+				// 			 	value : item,
+				// 			    text : item
+				// 			}));
+				// 		});
 
-						$('#table-code').text(code);
-						$('#table-name').text(name);
-						// $('#table-owner').text(owner);
-						$('#table-ipnumber').text(ip);
-						$('#post').text(post);
-						$('#addr').text(add1);
-						$('#addr-detail').text(add2);
-						$('#iptable').html(data.iplistheader);
-						$('#iptable').append(data.iplistbody);
+				// 		var dialog = example( "#dialog-ip" ).dialog({
+				// 			autoOpen: false,
+				// 			height: 500,
+				// 			width: 850,
+				// 			modal: true,
 
-						var dialog = example( "#dialog-ip" ).dialog({
-							autoOpen: false,
-							height: 500,
-							width: 850,
-							modal: true,
+				// 		});
+				// 		dialog.dialog("open");
+				// 		example( "#dialog-detail" ).dialog({}).close();
+				// 	}
+				// });
+			var dialog = example( "#dialog-ip" ).dialog({
+				autoOpen: false,
+				height: 500,
+				width: 850,
+				modal: true,
 
-						});
-						dialog.dialog("open");
-
-					}
-				});
+			});
+			dialog.dialog("open");
 		});
 	});
 </script>
+<script>
+$(document).ready(function()
+{
+	$('#ipselect').change(function(){
+		$("#ipnumber").val($("#ipselect option").size());
+	});
+	$('#ipadd').click(function(){ 
+		 $('#ipselect').append($('<option>', {
+    		value: $("#ipv4").val(),
+    		text: $("#ipv4").val()
+		}));
+		 $("#ipv4").val("");
+		 $("#ipnumber").val($("#ipselect option").size());
+	});
+	$('#ipdelete').click(function(){
+		$("#ipselect option:selected").remove();
+		$("#ipnumber").val($("#ipselect option").size());
+	});
+	$('#ipcheck').click(function(){
+		data = new FormData();
+		var param = "";
+		$("#ipselect option").each(function()
+		{
+		    param = param + $(this).val() + ";"
+		});
+		alert(param);
+		data.append("ips",param);
 
+				$.ajax({
+		        data: {},
+		        type: "GET",
+		        url: "/ipcheck/" + param,
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+	});
+});
+</script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script>
 	function sample4_execDaumPostcode() {
@@ -775,24 +825,51 @@
 </div>
 
 <div id="dialog-ip" title="PC방 현황 - 상세보기 - IP주소 등록 /수정">
+<div class="row">
+<div class="col-md-8">
+<!-- 	<div class="row">
+			<div class="col-md-2"><label>설치게임</label></div>
+			<div class="col-md-10"></div>
+		</div> -->
 	<div class="row">
-	<div class="col-md-3"><label>설치게임</label></div>
-	<div class="col-md-9"></div>
+		<div class="col-md-2"><label>IP주소입력</label></div>
+		<div class="col-md-10">
+			<div class="row">
+				<div class="col-xs-6">
+					<input type="text" class="form-control" id="ipv4">
+				</div>
+				<div class= "col-xs-2"> ~
+				</div>
+				<div class="col-xs-2">
+					<input type="text" class="form-control" id="ipv42">
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="row">
-	<div class="col-md-3"><label>IP주소입력</label></div>
-	<div class="col-md-9"></div>
+		<div class="col-md-2"><label>IP주소목록</label></div>
+		<div class="col-md-10">
+			<select size="5" style="width:100%;" id="ipselect">
+			</select>
+		</div>
 	</div>
 	<div class="row">
-	<div class="col-md-3"><label>IP주소목록</label></div>
-	<div class="col-md-9"></div>
+		<div class="col-md-3"><label>IP주소개수</label></div>
+		<div class="col-md-9">
+			<input type="text" class="form-control" id="ipnumber">
+		</div>
 	</div>
 	<div class="row">
-	<div class="col-md-3"><label>IP주소입력</label></div>
-	<div class="col-md-9"></div>
+		<div class="col-md-3"><label>설치일자</label></div>
+		<div class="col-md-9">
+			<input type="text" id="datepicker4">
+		</div>
 	</div>
-	<div class="row">
-	<div class="col-md-3"><label>설치일자</label></div>
-	<div class="col-md-9"></div>
 	</div>
+	<div class="col-md-4">
+	<input type="button" value = "추가" class="btn btn-info" id="ipadd"><br><br>
+	<input type="button" value = "삭제" class="btn btn-info" id="ipdelete"><br><br>
+	<input type="button" value = "중복검사" class="btn btn-info" id="ipcheck"><br>
+	</div>
+</div>
 </div>
