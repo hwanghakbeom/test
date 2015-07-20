@@ -111,7 +111,7 @@ class Getdetails extends DefaultLayout {
     var code = param("code")
     val db = forURL()
       db withSession { implicit session =>
-    var queryString = "SELECT * FROM PCS WHERE RID = ?"
+    var queryString = "SELECT * FROM pcs WHERE RID = ?"
     var q1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String,String)](queryString)
     val peroid = q1(code).list
     if(peroid.size == 0 ){respondJson("okay")}
