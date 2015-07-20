@@ -1,0 +1,33 @@
+- import quickstart.action._
+
+!!! 5
+html
+  head
+    != antiCsrfMeta
+    != xitrumCss
+
+    meta(content="text/html; charset=utf-8; http-equiv=content-type")
+    title 게임 검수 프로그램
+
+    link(rel="shortcut icon" href={publicUrl("favicon.ico")})
+
+    link(type="text/css" rel="stylesheet" media="all" href={webJarsUrl("bootstrap/3.3.4/css", "bootstrap.css", "bootstrap.min.css")})
+    link(type="text/css" rel="stylesheet" media="all" href={publicUrl("style.css")})
+    link(type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet")
+    script(type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js")
+    script(type="text/javascript" src="/js/holder.js")
+    script(type="text/javascript" src="/js/validator.min.js")
+    script(type="text/javascript" src="/js/Moment.js")
+    script(type="text/javascript" src="/js/bootstrap-combobox.js")
+    script(type="text/javascript" src="/js/bootstrap-datetimepicker.js")
+  body
+    .container
+
+      #flash
+        !~ jsRenderFlash()
+      != renderedView
+
+
+    script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js")
+
+    != jsForView

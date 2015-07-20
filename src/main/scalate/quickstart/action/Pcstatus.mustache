@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Datepicker - Default functionality</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/datepicker-ko.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="media//css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="media/js/jquery.dataTables.js"></script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
+			example( "#datepicker" ).datepicker( "setDate", new Date() );
+		});
+		example(function() {
+			example( "#datepicker2" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker2" ).datepicker( example.datepicker.regional[ "ko" ] );
+			example( "#datepicker2" ).datepicker( "setDate", new Date() );
+		});
+		example(function() {
+			example( "#datepicker3" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker3" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
+	<script>
+		$(function() {
+			var table = $('#example').DataTable();
+
+			$('#example tbody').on( 'click', 'tr', function () {
+				var pccode =  $('#example').DataTable().row(this).data()['code'];
+				$.ajax({
+					url: 'getdetails/' + pccode,
+					type: "get",
+					data : {},
+					dataType: 'json',
+					async: false,
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						var code = data.detail.code;
+						var name = data.detail.name;
+						var region = data.detail.region;
+						var address = data.detail.address;
+						var phone = data.detail.phone;
+						var mobile = data.detail.mobile;
+						var user = data.detail.user;
+						var ip = data.detail.ip;
+						var status = data.detail.status;
+						var channel = data.detail.channel;
+						var regdate = data.detail.regdate;
+
+						$('#table-code').text(code);
+						$('#table-name').text(name);
+						$('#iptable').html(data.iplistheader);
+						$('#iptable').append(data.iplistbody);
+						var dialog = example( "#dialog-detail" ).dialog({
+							autoOpen: false,
+							height: 400,
+							width: 750,
+							modal: true,
+						});
+						dialog.dialog("open");
+
+					}
+				});
+
+			} );
+});
+
+</script>
+<script>
+	$ = jQuery; 
+
+
+
+	$(function() {
+		$( "#load-data" ).button().on( "click", function() {
+			var oTable = $('#example').dataTable();
+			var channel = $('#select-channel').val();
+			var region = $('#select-region').val();
+			var check1 = $('#inlineCheckbox1')[0].checked;
+			var check2 = $('#inlineCheckbox2')[0].checked;
+			var check3 = $('#inlineCheckbox3')[0].checked;
+			var check4 = $('#inlineCheckbox4')[0].checked;
+			var check5 = $('#inlineCheckbox5')[0].checked;
+			var condition = $('#condition').val();
+			var detail = $('#detailinput').val();
+			if(detail === "") { detail = "null"}
+			oTable.fnDestroy();
+			$('#example').dataTable( {
+				"ajax": "getpcstatus2/" + channel + '/' + region + '/' + check1 + '/' + check2 + '/' + check3 + '/' + check4 + '/' + check5 + '/' + example("#datepicker" ).datepicker({}).val() + '/' + example("#datepicker2" ).datepicker({}).val() + '/' + condition + '/' + detail,
+				"columns": [
+				{ "data": "code" },
+				{ "data": "name" },
+				{ "data": "region" },
+				{ "data": "address" },
+				{ "data": "phone" },
+				{ "data": "mobile" },
+				{ "data": "user" },
+				{ "data": "ip" },
+				{ "data": "status" },
+				{ "data": "channel" },
+				{ "data": "regdate" },
+				{ "data": "games" }
+				]
+			} );
+		});
+	});
+</script>
+</head>
+<div class="row">
+	<div class="col-md-12">
+		<div class="well">
+			<div class="row">
+				<div class="col-md-4">
+					<select class="form-control" id="select-channel" name="select-channel">
+						<option>채널선택</option>
+						{{#channel}}
+						<option value="{{name}}">{{name}}</option>
+						{{/channel}}
+					</select>
+				</div>
+				<div class="col-md-4">
+
+					<select class="form-control" name="select-region" id="select-region">
+						<option>지역선택</option>
+						<option value="전국">전국</option>
+						<option value="서울">서울</option>
+						<option value="경기">경기</option>
+						<option value="인천">인천</option>
+						<option value="강원">강원</option>
+						<option value="충북">충북</option>
+						<option value="충남">충남</option>
+						<option value="대전">대전</option>
+						<option value="전북">전북</option>
+						<option value="광주">광주</option>
+						<option value="경북">경북</option>
+						<option value="경남">경남</option>
+						<option value="울산">울산</option>
+						<option value="대구">대구</option>
+						<option value="부산">부산</option>
+						<option value="제주">제주</option>
+						<option value="세종">세종</option>
+					</select>
+				</div>
+				<div class="col-md-4">
+					<input class="btn btn-success" id="load-data" value="조회" >
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="checkbox">
+						게임선택
+						<label class="checkbox-inline">
+							<input type="checkbox" id="inlineCheckbox1" value="checked"> 게임없음
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="inlineCheckbox2" value="checked"> 게임A
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="inlineCheckbox3" value="checked"> 게임B
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="inlineCheckbox4" value="checked"> 게임C
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="inlineCheckbox5" value="checked"> 게임D
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					등록일자 <input type="text" id="datepicker">
+					~ <input type="text" id="datepicker2">
+				</div>
+				<div class="col-md-2">
+					<select class="form-control" id="condition">
+						<option>검색조건</option>
+						<option value="PA">상호명</option>
+						<option value="CT">대표자명</option>
+						<option value="NY">IP주소</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<input type="text" id="detailinput">
+				</div>
+			</div>
+			<!-- 	</form> -->
+		</div>
+	</div>
+</div>
+
+<table id="example" class="display">
+	<thead>
+		<tr>
+			<th data-field="code" data-align="right"> PC방코드</th>
+			<th data-field="name" data-align="center" >상호명</th>
+			<th data-field="region" >지역</th>
+			<th data-field="address" >주소</th>
+			<th data-field="phone" >전화번호</th>
+			<th data-field="mobile" >휴대전화</th>
+			<th data-field="user" >대표자명</th>
+			<th data-field="ip" >IP수</th>
+			<th data-field="status" >상태</th>
+			<th data-field="channel" >관리채널</th>
+			<th data-field="regdate" >등록일</th>
+			<th data-field="games" >설치게임</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+
+<input id="create-user" value = "신규등록" class = "btn btn-success"> 
+<input id="create-channel" value = "채널등록" class = "btn btn-success">
+</div>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#name" ),
+		email = example( "#email" ),
+		password = example( "#password" ),
+		add1 = example( "#sample4_postcode"),
+		add2 = example( "#sample4_roadAddress"),
+		add3 = example( "#sample4-detail"),
+		owner = example( "#pcowner"),
+		phone = example( "#pcphone"),
+		mobile = example("#pcmobile"),
+		channel = example("#pcchannel"),
+		lastday = example("#datepicker3" ).datepicker({}).val(),
+		isfinished = example("#finished"),
+		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel);
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+		    data.append("add1", add1.val());
+		    data.append("add2",add2.val());
+		    data.append("add3", add3.val());
+		    data.append("owner",owner.val());
+		    data.append("phone", phone.val());
+		    data.append("mobile",mobile.val());
+		    data.append("channel", channel.val());
+		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
+		    data.append("isfinished", isfinished.val());
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newpc",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+		};
+		dialog = example( "#dialog-form" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 550,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#create-user" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
+<script>
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#channel-name" );
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newchannel",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+		};
+		dialog = example( "#dialog-channel" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 550,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#create-channel" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
+<script>
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#name" ),
+		email = example( "#email" ),
+		password = example( "#password" ),
+		add1 = example( "#sample4_postcode"),
+		add2 = example( "#sample4_roadAddress"),
+		add3 = example( "#sample4-detail"),
+		owner = example( "#pcowner"),
+		phone = example( "#pcphone"),
+		mobile = example("#pcmobile"),
+		channel = example("#pcchannel"),
+		lastday = example("#datepicker3" ).datepicker({}).val(),
+		isfinished = example("#finished"),
+		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel),
+		tips = example( ".validateTips" ),
+		map = { "name":name,
+				"email":email,
+				"password":password,"add1":add1,"add2":add2,"add3":add3,"owner":owner,"phone":phone,"mobile":mobile,"channel":channel,"lastday":lastday};
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+		    data.append("add1", add1.val());
+		    data.append("add2",add2.val());
+		    data.append("add3", add3.val());
+		    data.append("owner",owner.val());
+		    data.append("phone", phone.val());
+		    data.append("mobile",mobile.val());
+		    data.append("channel", channel.val());
+		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
+		    data.append("isfinished", isfinished.val());
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newpc",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });	
+		};
+		dialog = example( "#dialog-form" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 550,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+		example( "#update-user" ).button().on( "click", function() {
+
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
+<script>
+	var example=jQuery.noConflict();
+	example(function() {
+		var dialog, form,
+
+		name = example( "#name" ),
+		email = example( "#email" ),
+		password = example( "#password" )
+
+		function update() {
+
+			alert("ajax 통신")
+		}
+
+		dialog = example( "#dialog-detail" ).dialog({
+			autoOpen: false,
+			height: 700,
+			width: 450,
+			modal: true,
+			buttons: {
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			}
+		});
+
+
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+		example( "#dialog-detail" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
+<script>
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#name" ),
+		email = example( "#email" ),
+		password = example( "#password" ),
+		add1 = example( "#sample4_postcode"),
+		add2 = example( "#sample4_roadAddress"),
+		add3 = example( "#sample4-detail"),
+		owner = example( "#pcowner"),
+		phone = example( "#pcphone"),
+		mobile = example("#pcmobile"),
+		channel = example("#pcchannel"),
+		lastday = example("#datepicker3" ).datepicker({}).val(),
+		isfinished = example("#finished"),
+		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel);
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+		    data.append("add1", add1.val());
+		    data.append("add2",add2.val());
+		    data.append("add3", add3.val());
+		    data.append("owner",owner.val());
+		    data.append("phone", phone.val());
+		    data.append("mobile",mobile.val());
+		    data.append("channel", channel.val());
+		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
+		    data.append("isfinished", isfinished.val());
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newpc",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                dialog.dialog( "close" );
+		        }
+		    });
+		};
+		dialog = example( "#dialog-ip" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 550,
+			modal: true,
+			buttons: {
+				"수정": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+				allFields.removeClass( "ui-state-error" );
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#update-ip" ).button().on( "click", function() {
+			    var code = $('#table-code').text();
+				$.ajax({
+					url: 'getips/' + code,
+					type: "get",
+					data : {},
+					dataType: 'json',
+					async: false,
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						var code = data.detail.code;
+						var name = data.detail.name;
+						var region = data.detail.region;
+						var address = data.detail.address;
+						var phone = data.detail.phone;
+						var mobile = data.detail.mobile;
+						var user = data.detail.user;
+						var ip = data.detail.ip;
+						var status = data.detail.status;
+						var channel = data.detail.channel;
+						var regdate = data.detail.regdate;
+
+						$('#table-code').text(code);
+						$('#table-name').text(name);
+						$('#iptable').html(data.iplistheader);
+						$('#iptable').append(data.iplistbody);
+						var dialog = example( "#dialog-ip" ).dialog({
+							autoOpen: false,
+							height: 500,
+							width: 850,
+							modal: true,
+
+						});
+						dialog.dialog("open");
+
+					}
+				});
+		});
+	});
+</script>
+
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script>
+	function sample4_execDaumPostcode() {
+		new daum.Postcode({
+			oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 도로명 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+                var extraRoadAddr = ''; // 도로명 조합형 주소 변수
+
+                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                	extraRoadAddr += data.bname;
+                }
+                // 건물명이 있고, 공동주택일 경우 추가한다.
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                	extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 도로명, 지번 조합형 주소가 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                if(extraRoadAddr !== ''){
+                	extraRoadAddr = ' (' + extraRoadAddr + ')';
+                }
+                // 도로명, 지번 주소의 유무에 따라 해당 조합형 주소를 추가한다.
+                if(fullRoadAddr !== ''){
+                	fullRoadAddr += extraRoadAddr;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("sample4_postcode").value = data.postcode; //6자리 우편번호 사용
+                //document.getElementById("sample4_postcode").value = data.zonecode; //5자리 기초구역번호 사용
+                document.getElementById("sample4_roadAddress").value = fullRoadAddr;
+                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+
+                // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+                if(data.autoRoadAddress) {
+                    //예상되는 도로명 주소에 조합형 주소를 추가한다.
+                    var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+                    document.getElementById("guide").innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+
+                } else if(data.autoJibunAddress) {
+                	var expJibunAddr = data.autoJibunAddress;
+                	document.getElementById("guide").innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+
+                } else {
+                	document.getElementById("guide").innerHTML = '';
+                }
+            }
+        }).open();
+}
+</script>
+
+
+<div id="dialog-form" title="신규 등록 및 수정" >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="name">PC방 상호</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="name" id="name"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="pcaddress">주소</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" id="sample4_postcode" placeholder="우편번호">
+				<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
+				<input type="text" id="sample4_roadAddress" placeholder="도로명주소">
+				<input type="text" id="sample4-detail" placeholder="상세주소">
+				<span id="guide" style="color:#999"></span>
+			</div>
+			<div class="col-md-3">
+				<label for="password">대표자명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="pcowner" id="pcowner"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">전화번호</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="pcphone" id="pcphone"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="name">휴대전화</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="pcmobile" id="pcmobile"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="email">채널</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="pcchannel" id="pcchannel"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="password">관리종료일</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" id="datepicker3">
+				<input type="checkbox" id="finished" value="checked"> 관리종료
+				<!-- Allow form submission with keyboard without duplicating the dialog button -->
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</form>
+		</div>
+
+
+<div id="dialog-detail" title="PC방 현황 - 상세보기">
+	<table class="table">
+		<tr>
+			<td>PC방 코드</td>
+			<td id="table-code"></td>
+			<td>상호명</td>
+			<td id="table-name"></td>
+			<td>대표자명</td>
+			<td id="table-owner"></td>
+			<td>IP개수</td>
+			<td id="table-ipnumber"></td>
+			<tr>
+				<td>우편번호</td>
+				<td id="post"></td>
+				<td>주소</td>
+				<td id="addr" colspan="3"></td>
+				<td id="addr-detail">dd</td>
+			</tr>
+			<tr>
+				<td>전화번호</td>
+				<td></td>
+				<td>휴대전화</td>
+				<td></td>
+				<td>채널</td>
+				<td></td>
+				<td>등록</td>
+				<td></td>
+			</tr>
+		</table>
+		<input id="update-user" value = "PC방 정보수정" class = "btn btn-success">
+		<br><br>
+		<table class="table" id="iptable">
+		</table>
+		<input id="update-ip" value = "IP주소 등록 수정" class = "btn btn-success">
+</div>
+
+<div id="dialog-channel" title="채널 등록 " >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="name">채널명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channel-name" id="channel-name"  class="form-control input">
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</div>
+	</form>
+</div>
+
+<div id="dialog-ip" title="PC방 현황 - 상세보기 - IP주소 등록 /수정">
+	<div class="row">
+	<div class="col-md-3"><label>설치게임</label></div>
+	<div class="col-md-9"></div>
+	</div>
+	<div class="row">
+	<div class="col-md-3"><label>IP주소입력</label></div>
+	<div class="col-md-9"></div>
+	</div>
+	<div class="row">
+	<div class="col-md-3"><label>IP주소목록</label></div>
+	<div class="col-md-9"></div>
+	</div>
+	<div class="row">
+	<div class="col-md-3"><label>IP주소입력</label></div>
+	<div class="col-md-9"></div>
+	</div>
+	<div class="row">
+	<div class="col-md-3"><label>설치일자</label></div>
+	<div class="col-md-9"></div>
+	</div>
+</div>
