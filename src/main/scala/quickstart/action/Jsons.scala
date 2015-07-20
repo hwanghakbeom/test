@@ -57,7 +57,7 @@ class Getpcstatus2 extends DefaultLayout {
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
     var queryString = ""
-    queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM PCS WHERE 1 = ?"
+    queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
     queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
     if(channel != "채널선택"){ queryString += " AND CHANNEL = '" + channel +"'"}
     if(region != "지역선택") {queryString += " AND substring(ADD2,1,3) = '" + region +"'"}
