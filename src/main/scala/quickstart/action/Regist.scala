@@ -14,7 +14,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 import org.jsoup.Jsoup
 import scala.collection.mutable.ArrayBuffer
 import quickstart._
-
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
 
 @POST("newpc")
 class NewPC extends DefaultLayout {
@@ -37,8 +38,33 @@ class NewPC extends DefaultLayout {
 		  db withSession { implicit session =>
 		  	pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
 		  }
-		respondJson("okay")  		
+		jsRespond("alert(" + jsEscape("아이디가 중복됩니다.") + ")") 		
 	}
+}
+
+@POST("updatepc")
+class UpdatePC extends DefaultLayout {
+  def execute() {
+    var name   = param("name")
+    var add1   = param("add1")
+    var add2   = param("add2")
+    var add3   = param("add3")
+    var owner  = param("owner")
+    var phone  = param("phone")
+    var mobile   = param("mobile")
+    var channel  = param("channel")
+    var lastdate   = param("lastdate")
+    var isfinished   = param("isfinished")
+    var ischecked = "false"
+    if(isfinished == "checked") { ischecked = "true"}
+    var regdate = TransDate.getCurrentDate()
+    val pcs: TableQuery[Pcs] = TableQuery[Pcs]
+    val db = forURL()
+      db withSession { implicit session =>
+        pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
+      }
+    jsRespond("alert(" + jsEscape("아이디가 중복됩니다.") + ")")     
+  }
 }
 
 @POST("newchannel")
@@ -49,7 +75,9 @@ class NewChannel extends DefaultLayout {
 		val channel: TableQuery[Channels] = TableQuery[Channels]
 		val db = forURL()
 		  db withSession { implicit session =>
-		  	channel += Channel(None,name,userid.toString)
+      var q1 = channel.filter(_.name === name).list
+      if(q1.size > 0) { jsRespond("alert(" + jsEscape("Not Found") + ")") }
+      else{ channel += Channel(None,name,userid.toString) }  
 		  }
 		respondJson("okay")  		
 	}
@@ -72,9 +100,35 @@ class Newgame extends DefaultLayout {
 		val game: TableQuery[Games] = TableQuery[Games]
 		val db = forURL()
 		  db withSession { implicit session =>
+        def deletegame(name: String) = sqlu"delete from game where name = $name".first
+        val rows= deletegame(name)
 		  	game += Game(None,name,company,companynumber,owner,add1,startdate,enddate,ratio,ratiodetail,add2)
 		  }
 		respondJson("okay") 
+  }
+}
+
+@POST("newuser")
+class Newuser extends DefaultLayout { 
+  def execute() {
+    var userid   = param("userid")
+    var username = param("username") 
+    var usercompany   = param("usercompany")
+    var useremail = param("useremail") 
+    var userphone  = param("userphone")
+    var usermobile = param("usermobile").toString 
+    var userwork  = param("userwork").toString
+    var finishdate = param("finishdate").toString
+    var isfinished  = param("isfinished").toString
+
+    val user: TableQuery[Users] = TableQuery[Users]
+    val db = forURL()
+      db withSession { implicit session =>
+        def deleteuser(name: String) = sqlu"delete from users where userid = $userid".first
+        val rows= deleteuser(userid)
+        user += User(None,userid,"",username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+      }
+    respondJson("okay") 
   }
 }
 
@@ -117,26 +171,26 @@ class Newip extends DefaultLayout {
 
   	}
 
-@POST("newuser")
-class Newuser extends DefaultLayout {	
-  def execute() {
-  	var userid = param("userid")
-  	var username = param("username")
-  	var usercompany = param("usercompany")
-  	var useremail = param("useremail")
-  	var userphone = param("userphone")
-  	var usermobile = param("usermobile")
-  	var userwork = param("userwork")
-  	var finishdate = param("finishdate")
-  	var isfinished = param("isfinished")
-  	val db = forURL()
-  	val user: TableQuery[Users] = TableQuery[Users]
-  	db withSession { implicit session =>
-  			user += User(None,userid , "" , username, "", usercompany, useremail, userphone, usermobile, userwork, userwork, finishdate)
-  	}	
-  	  	respondJson("okay")
-  }
- }
+// @POST("newuser")
+// class Newuser extends DefaultLayout {	
+//   def execute() {
+//   	var userid = param("userid")
+//   	var username = param("username")
+//   	var usercompany = param("usercompany")
+//   	var useremail = param("useremail")
+//   	var userphone = param("userphone")
+//   	var usermobile = param("usermobile")
+//   	var userwork = param("userwork")
+//   	var finishdate = param("finishdate")
+//   	var isfinished = param("isfinished")
+//   	val db = forURL()
+//   	val user: TableQuery[Users] = TableQuery[Users]
+//   	db withSession { implicit session =>
+//   			user += User(None,userid , "" , username, "", usercompany, useremail, userphone, usermobile, userwork, userwork, finishdate)
+//   	}	
+//   	  	respondJson("okay")
+//   }
+//  }
 
 @POST("reg_direcotry")
 class Regdirectory extends DefaultLayout { 
@@ -156,5 +210,17 @@ class Regdirectory extends DefaultLayout {
   }
  }
 }
-
+@GET("/user/channelcheck")
+class ChannelCheck extends DefaultLayout { 
+  def execute() {
+    var param1 = param("channel-name")
+    val db = forURL()
+    db withSession { implicit session =>
+      val channel: TableQuery[Channels] = TableQuery[Channels]
+      var q1 = channel.filter(_.name === param1).list
+      if(q1.size > 0) { jsRespond("alert(" + jsEscape("Not Found") + ")") }
+      else {respondJson("okay")}
+    }
+    }
+  }
 

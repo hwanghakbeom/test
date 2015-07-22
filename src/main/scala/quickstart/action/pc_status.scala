@@ -42,20 +42,17 @@ class Pcstatus extends DefaultLayout {
         var queryString = "SELECT * FROM game WHERE 1 = ?"
         var query1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String)](queryString)
         val peroid = query1("1").list
-        println(peroid.size)
         if(peroid.size > 0 )
         {
             for (t <- peroid) {
-              println(t._2)
               gamelist = Map("rid" -> t._1,
                 "name" -> t._2)
               returnList += gamelist
             }
-
         }
         at("game") = returnList
         at("channel") = channelList
-	respondView(Map("type" ->"mustache"))
+	       respondView(Map("type" ->"mustache"))
   }
 }
 }

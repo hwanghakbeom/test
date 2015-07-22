@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Datepicker - Default functionality</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/datepicker-ko.js"></script>
+	<link rel="stylesheet" href="bootstrap-table.css">
+	<script src="bootstrap-table.js"></script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker" ).datepicker({
+				altField: "#date1",
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
+			example("#datepicker").datepicker("setDate", new Date());
+		});
+	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker2" ).datepicker({
+				altField: "#date2",
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker2" ).datepicker( example.datepicker.regional[ "ko" ] );
+			example("#datepicker2").datepicker("setDate", new Date());
+		});
+	</script>
+</head>
+<div class="row">
+	<div class="col-md-6">
+		<div class="well">
+			<form role="form" action="installbyg" method="get">
+				<div class="row">
+					<div class="col-md-6">
+						게임선택
+						<div class="form-group">
+							<select class="form-control" name="select-game" id="select-game">
+								<option>전체</option>
+								<option value="PA">게임A</option>
+								<option value="CT">게임B</option>
+								<option value="NY">게임C</option>
+								<option value="MD">게임D</option>
+								<option value="VA">게임E</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						지역
+						<div class="form-group">
+							<select class="form-control" name="select-region" id="select-region">
+								<option>전체</option>
+								<option value="서울">서울</option>
+								<option value="경기">경기</option>
+								<option value="인천">인천</option>
+								<option value="강원">강원</option>
+								<option value="충북">충북</option>
+								<option value="충남">충남</option>
+								<option value="대전">대전</option>
+								<option value="전북">전북</option>
+								<option value="광주">광주</option>
+								<option value="경북">경북</option>
+								<option value="경남">경남</option>
+								<option value="울산">울산</option>
+								<option value="대구">대구</option>
+								<option value="부산">부산</option>
+								<option value="제주">제주</option>
+								<option value="세종">세종</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+				<input type="hidden" id="date1" name="date1" class="form-control">
+				<input type="hidden" id="date2" name="date2" class="form-control">
+				</div>
+				설치일자 <input type="text" id="datepicker">
+
+				~ <input type="text" id="datepicker2">
+				<input type="submit" value = "조회" class = "btn btn-success">
+			</form>
+		</div>
+	</div>
+</div>
+<center>{{test}}</center>
+<br>
+<table class="table">
+<tr>
+	<td rowspan="3">일자</td>
+	<td colspan="2">서울</td>
+	<td colspan="2">경기</td>
+	<td colspan="2">합계</td>
+</tr>
+<tr>
+	<td>PC방수</td>
+	<td>IP수</td>
+	<td>PC방수</td>
+	<td>IP수</td>
+	<td>PC방수</td>
+	<td>IP수</td>
+</tr>
+<tr>
+	<td>2,300</td>
+	<td>165,600</td>
+	<td>2,700</td>
+	<td>194,400</td>
+	<td>9,800</td>
+	<td>705,400</td>
+</tr>
+<tr>
+	<td>2015-07-01</td>
+	<td>25</td>
+	<td>500</td>
+	<td>25</td>
+	<td>500</td>
+	<td>800</td>
+	<td>16,000</td>
+</tr>
+<tr>
+	<td>2015-07-01</td>
+	<td>25</td>
+	<td>500</td>
+	<td>25</td>
+	<td>500</td>
+	<td>800</td>
+	<td>16,000</td>
+</tr>
+</table>
+
+

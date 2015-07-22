@@ -179,6 +179,7 @@
 		        processData: false,
 		        success: function(url) {
 		                alert("등록되었습니다.");
+		                location.reload();
 		                dialog.dialog( "close" );
 		        }
 		    });
@@ -195,7 +196,6 @@
 				}
 			},
 			close: function() {
-				form[ 0 ].reset();
 				allFields.removeClass( "ui-state-error" );
 			}
 		});
@@ -243,7 +243,8 @@ $ = jQuery;
 				{ "data": "company" },
 				{ "data": "company_number" },
 				{ "data": "owner" },
-				{ "data": "address" },
+				{ "data": "address1" },
+				{ "data": "address2" },
 				{ "data": "install-date" },
 				{ "data": "install-status" }
 				]
@@ -251,6 +252,118 @@ $ = jQuery;
 
 	});
 </script>
+
+
+<script>
+//관리자 게임리스트 게임수정
+		$(function() {
+			var table = $('#game_table').DataTable();
+
+			$('#game_table tbody').on( 'click', 'tr', function () {
+				var pccode =  $('#game_table').DataTable().row(this).data()['name'];
+				$.ajax({
+					url: 'gamedetails/' + pccode,
+					type: "get",
+					data : {},
+					dataType: 'json',
+					async: false,
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						var code = data.rid;
+						var name = data.name;
+						var company = data.companyname;
+						var companynumber = data.companynumber;
+						var owner = data.owner;
+						var add1 = data.add1;
+						var add2 = data.add2;
+						var datepicker1 = data.startdate;
+						var datepicker2 = data.enddate;
+						var ratio = data.ratio;
+						var ratiodetail = data.ratiodetail;
+
+						$('#name').val(name);
+						$('#sample4_roadAddress').val(add1);
+						$('#sample4-detail').val(add2);
+						$('#owner').val(owner);
+						$('#company').val(company);
+						$('#companynumber').val(companynumber);
+						$('#addr-detail').val(add2);
+						$('#datepicker1').val(datepicker1);
+						$('#datepicker2').val(datepicker2);
+						$('#select-region').val(ratio).attr("selected","selected");
+						$('#ratio-detail').val(ratiodetail);
+						var dialog = example( "#game-form" ).dialog({
+							autoOpen: false,
+							height: 400,
+							width: 750,
+							modal: true,
+						});
+						dialog.dialog("open");
+
+					}
+				});
+
+			} );
+});
+
+</script>
+<script>
+//관리자 계정리스트 계정수정
+		$(function() {
+			var table = $('#user_table').DataTable();
+
+			$('#user_table tbody').on( 'click', 'tr', function () {
+				var pccode =  $('#user_table').DataTable().row(this).data()['rid'];
+				$.ajax({
+					url: 'userdetails/' + pccode,
+					type: "get",
+					data : {},
+					dataType: 'json',
+					async: false,
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function(data) {
+						var userid = data.userid;
+						var username = data.username;
+						var position = data.position;
+						var usercompany = data.usercompany;
+						var useremail = data.useremail;
+						var userphone = data.userphone;
+						var usermobile = data.usermobile;
+						var userwork = data.userwork;
+						var lastconnect = data.lastconnect;
+
+						//get ips
+
+						$('#userid').val(userid);
+						$('#userid').prop("readonly", true);
+						$('#username').val(username);
+						$('#position').val(position);
+						$('#usercompany').val(usercompany);
+						$('#useremail').val(useremail);
+						$('#userphone').val(userphone);
+						$('#usermobile').val(usermobile);
+						$('#userwork').val(userwork);
+						$('#lastconnect').val(lastconnect);
+						var dialog = example( "#user-form" ).dialog({
+							autoOpen: false,
+							height: 400,
+							width: 750,
+							modal: true,
+						});
+						dialog.dialog("open");
+
+					}
+				});
+
+			} );
+});
+
+</script>
+
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script>
 	function sample4_execDaumPostcode() {
@@ -321,7 +434,8 @@ $ = jQuery;
 						<th data-field="company" data-align="center" >회사명</th>
 						<th data-field="company_number" >사업자번호</th>
 						<th data-field="owner" >대표자명</th>
-						<th data-field="address" >주소</th>
+						<th data-field="address1" >주소</th>
+						<th data-field="address2" >상세주소</th>
 						<th data-field="install-date" >설치기간</th>
 						<th data-field="install-status" >설치기준</th>
 					</tr>

@@ -96,10 +96,13 @@
 						var channel = data.detail.channel;
 						var regdate = data.detail.regdate;
 						var post = data.detail.post;
+						var owner = data.detail.user;
+
+						//get ips
 
 						$('#table-code').text(code);
 						$('#table-name').text(name);
-						// $('#table-owner').text(owner);
+						$('#table-owner').text(owner);
 						$('#table-ipnumber').text(ip);
 						$('#post').text(post);
 						$('#addr').text(add1);
@@ -135,17 +138,26 @@
 			var oTable = $('#example').dataTable();
 			var channel = $('#select-channel').val();
 			var region = $('#select-region').val();
-			var check1 = $('#inlineCheckbox1')[0].checked;
-			var check2 = $('#inlineCheckbox2')[0].checked;
-			var check3 = $('#inlineCheckbox3')[0].checked;
-			var check4 = $('#inlineCheckbox4')[0].checked;
-			var check5 = $('#inlineCheckbox5')[0].checked;
+			{{#game}}
+			if($('#inlineCheckbox{{rid}}')[0].checked){
+				var check{{rid}} = 	$('#inlineCheckbox{{rid}}').attr('name')
+			}
+			{{/game}}
+			if($('#inlineCheckbox1')[0].checked){
+			{{#game}}
+				var check{{rid}} = "all"
+			{{/game}}	
+			}
 			var condition = $('#condition').val();
 			var detail = $('#detailinput').val();
 			if(detail === "") { detail = "null"}
 			oTable.fnDestroy();
 			$('#example').dataTable( {
-				"ajax": "getpcstatus2/" + channel + '/' + region + '/' + check1 + '/' + check2 + '/' + check3 + '/' + check4 + '/' + check5 + '/' + example("#datepicker" ).datepicker({}).val() + '/' + example("#datepicker2" ).datepicker({}).val() + '/' + condition + '/' + detail,
+				"ajax": "getpcstatus2/" + channel + '/' + region +	'/'
+				{{#game}}
+				   + check{{rid}} + ";"
+				{{/game}}
+				+ '/' + example("#datepicker" ).datepicker({}).val() + '/' + example("#datepicker2" ).datepicker({}).val() + '/' + condition + '/' + detail,
 				"columns": [
 				{ "data": "code" },
 				{ "data": "name" },
@@ -163,6 +175,24 @@
 			} );
 		});
 	});
+</script>
+<script>
+//게임없음 클릭시 이벤트
+//inlineCheckbox1
+$(function() {
+$('#inlineCheckbox1').click(function() {
+	if($('#inlineCheckbox1')[0].checked){
+		{{#game}}
+		$('#inlineCheckbox{{rid}}')[0].checked = false;
+		{{/game}}
+	}
+});
+{{#game}}
+$('#inlineCheckbox{{rid}}').click(function() {
+	$('#inlineCheckbox1')[0].checked = false;
+	});
+{{/game}}
+});
 </script>
 </head>
 <div class="row">
@@ -213,7 +243,7 @@
 						</label>
 						{{#game}}
 						<label class="checkbox-inline">
-							<input type="checkbox" id="inlineCheckbox{{rid}}" value="checked"> {{name}}
+							<input type="checkbox" id="inlineCheckbox{{rid}}" name="{{rid}}"value="checked"> {{name}}
 						</label>
 						{{/game}}
 					</div>
@@ -312,7 +342,10 @@
 		        success: function(url) {
 		                alert("등록되었습니다.");
 		                dialog.dialog( "close" );
-		        }
+		        },
+		        error: function(url) {
+		        	alert("오류가 발생하였습니다.");
+		        } 
 		    });
 		};
 		dialog = example( "#dialog-form" ).dialog({
@@ -321,7 +354,7 @@
 			width: 550,
 			modal: true,
 			buttons: {
-				"수정": addUser,
+				"적용": addUser,
 				Cancel: function() {
 					dialog.dialog( "close" );
 				}
@@ -364,7 +397,11 @@
 		        processData: false,
 		        success: function(url) {
 		                alert("등록되었습니다.");
+		                 location.reload();
 		                dialog.dialog( "close" );
+		        },
+		        error: function(url){
+		        	alert("오류가 발생하였습니다.")
 		        }
 		    });
 		};
@@ -374,7 +411,7 @@
 			width: 550,
 			modal: true,
 			buttons: {
-				"수정": addUser,
+				"적용": addUser,
 				Cancel: function() {
 					dialog.dialog( "close" );
 				}
@@ -401,7 +438,8 @@
 	example(function() {
 
 		var dialog, form,
-		name = example( "#name" ),
+		rid = example("#hiddenrid"),
+		name = example("#name"),
 		email = example( "#email" ),
 		password = example( "#password" ),
 		add1 = example( "#sample4_postcode"),
@@ -418,8 +456,10 @@
 		map = { "name":name,
 				"email":email,
 				"password":password,"add1":add1,"add2":add2,"add3":add3,"owner":owner,"phone":phone,"mobile":mobile,"channel":channel,"lastday":lastday};
+
 		function addUser() {
 		    data = new FormData();
+		    data.append("rid", rid.val());
 		    data.append("name", name.val());
 		    data.append("add1", add1.val());
 		    data.append("add2",add2.val());
@@ -433,7 +473,7 @@
 		    $.ajax({
 		        data: data,
 		        type: "POST",
-		        url: "/newpc",
+		        url: "/updatepc",
 		        enctype: "multipart/form-data",
 		        cache: false,
 		        contentType: false,
@@ -450,7 +490,7 @@
 			width: 550,
 			modal: true,
 			buttons: {
-				"수정": addUser,
+				"적용": addUser,
 				Cancel: function() {
 					dialog.dialog( "close" );
 				}
@@ -466,7 +506,15 @@
 		});
 
 		example( "#update-user" ).button().on( "click", function() {
-
+			example("#name").val(example( "#table-name" ).text());
+			example("#sample4_postcode").val(example( "#post" ).text());
+			example("#sample4_roadAddress").val(example( "#addr" ).text());
+			example("#sample4-detail").val(example( "#addr-detail" ).text());
+			example("#pcowner").val(example( "#table-owner" ).text());
+			example("#pcphone").val(example( "#table-phone" ).text());
+			example("#pcmobile").val(example( "#table-mobile" ).text());
+			example("#pcchannel").val(example( "#table-channel" ).text()).attr("selected","selected");
+			example("#hiddenrid").val(example( "#table-code").text());
 			dialog.dialog( "open" );
 		});
 	});
@@ -559,7 +607,7 @@
 			width: 450,
 			modal: true,
 			buttons: {
-				"수정": addUser,
+				"적용": addUser,
 				Cancel: function() {
 					dialog.dialog( "close" );
 				}
@@ -655,7 +703,7 @@
 			width: 450,
 			modal: true,
 			buttons: {
-				"수정": addUser,
+				"적용": addUser,
 				Cancel: function() {
 					dialog.dialog( "close" );
 				}
@@ -788,7 +836,7 @@ $(document).ready(function()
                 document.getElementById("sample4_postcode").value = data.postcode; //6자리 우편번호 사용
                 //document.getElementById("sample4_postcode").value = data.zonecode; //5자리 기초구역번호 사용
                 document.getElementById("sample4_roadAddress").value = fullRoadAddr;
-                document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+                // document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
 
                 // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
                 if(data.autoRoadAddress) {
@@ -803,8 +851,11 @@ $(document).ready(function()
                 } else {
                 	document.getElementById("guide").innerHTML = '';
                 }
+                window.close();
             }
-        }).open();
+        }).open({
+        	autoClose: true
+        });
 }
 </script>
 
@@ -863,6 +914,7 @@ $(document).ready(function()
 			<div class="form-group col-md-9">
 				<input type="text" id="datepicker3">
 				<input type="checkbox" id="finished" value="checked"> 관리종료
+				<input type="hidden" id="hiddenrid" name="hiddenrid">
 				<!-- Allow form submission with keyboard without duplicating the dialog button -->
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
 			</form>
@@ -912,7 +964,8 @@ $(document).ready(function()
 				<label for="name">채널명</label>
 			</div>
 			<div class="form-group col-md-9">
-				<input type="text" name="channel-name" id="channel-name"  class="form-control input">
+				<input type="text" name="channel-name" id="channel-name"  class="form-control input" required data-remote="/user/channelcheck" data-remote-error="채널명이 중복됩니다">
+				<div class="help-block with-errors"></div>
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
 			</div>
 	</form>

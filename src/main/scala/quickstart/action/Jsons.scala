@@ -39,22 +39,19 @@ class Getpcstatus extends DefaultLayout {
   }
 }
 
-@GET("getpcstatus2/:channel/:region/:check1/:check2/:check3/:check4/:check5/:startdate/:enddate/:condition/:detail/")
+@GET("getpcstatus2/:channel/:region/:check/:startdate/:enddate/:condition/:detail/")
 class Getpcstatus2 extends DefaultLayout {	
   def execute() {
     var channel = param("channel")
     var region = param("region")
-    var check1 = param("check1")
-    var check2 = param("check2")
-    var check3 = param("check3")
-    var check4 = param("check4")
-    var check5 = param("check5")
+    var check = param("check")
     var startdate = param("startdate")
     var enddate = param("enddate")
     var condition = param("condition")
     var detail = param("detail")
 
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var gamelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
     var queryString = ""
     queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
@@ -67,6 +64,22 @@ class Getpcstatus2 extends DefaultLayout {
     
     val db = forURL()
       db withSession { implicit session =>
+
+          //게임별 PC방 코드 구하기
+          var patternt = "\\d+".r
+          var regresult = patternt findAllIn check
+          var llist = regresult.toList
+
+          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.rid AND A.game = C.rid AND 1 = ?")
+          var gamepcperiod = gamepc("1").list
+          var gamesublist = Map[Any,Any]()
+          for (gt <- gamepcperiod) {
+            gamesublist = Map("pc" -> gt._1,
+              "gid" -> gt._2,
+              "name" -> gt._3)
+            gamelist += gamesublist
+          }              
+
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1("1").list
         for (t <- peroid) {
@@ -77,22 +90,80 @@ class Getpcstatus2 extends DefaultLayout {
             //IP수 구하기
             var q2 = Q.query[String,(String)]("SELECT count(*) FROM ips where pcsid = ? group by pcsid")
             var ipnumber = "0"
+            var games = ""
+            for(index <- 0 to  gamelist.size - 1) {
+              if(t._1 == gamelist(index)("pc")) { 
+                games += gamelist(index)("name") + ","
+            }
+          }
             val idcount = q2(t._1).list
             if( idcount.size != 0) { ipnumber = idcount(0)}
-             sublist = Map("code" -> t._1,
-               "name" -> t._2,
-               "region" -> t._4.substring(0,2),
-               "address" -> addr,
-               "phone" -> t._7,
-               "mobile" -> t._8,
-               "user" -> t._6,
-               "ip" -> ipnumber,
-               "status" -> status,
-               "channel" -> t._9,
-               "regdate" -> t._12,
-               "games" -> "games"
-                )
-             returnList += sublist
+              if(!check.startsWith("all") && llist.size == 0) {  //전체게임
+                sublist = Map("code" -> t._1,
+                   "name" -> t._2,
+                   "region" -> t._4.substring(0,2),
+                   "address" -> addr,
+                   "phone" -> t._7,
+                   "mobile" -> t._8,
+                   "user" -> t._6,
+                   "ip" -> ipnumber,
+                   "status" -> status,
+                   "channel" -> t._9,
+                   "regdate" -> t._12,
+                   "games" -> games
+                    )    
+                                   returnList += sublist             
+              }
+              else if(llist.size > 0){
+                println(llist.size)
+                var isexist = false
+                for(index <- 0 to llist.size -1){
+                  if(llist(index) == t._1){
+                    isexist = true
+                    println("true")
+                  }
+                }
+                if(isexist == true) {
+                  println("add")
+                     sublist = Map("code" -> t._1,
+                       "name" -> t._2,
+                       "region" -> t._4.substring(0,2),
+                       "address" -> addr,
+                       "phone" -> t._7,
+                       "mobile" -> t._8,
+                       "user" -> t._6,
+                       "ip" -> ipnumber,
+                       "status" -> status,
+                       "channel" -> t._9,
+                       "regdate" -> t._12,
+                       "games" -> games
+                        )  
+                                       returnList += sublist                    
+                }
+
+              }
+              else{
+                if(games == ""){
+                    sublist = Map("code" -> t._1,
+                       "name" -> t._2,
+                       "region" -> t._4.substring(0,2),
+                       "address" -> addr,
+                       "phone" -> t._7,
+                       "mobile" -> t._8,
+                       "user" -> t._6,
+                       "ip" -> ipnumber,
+                       "status" -> status,
+                       "channel" -> t._9,
+                       "regdate" -> t._12,
+                       "games" -> games
+                        )   
+                                       returnList += sublist     
+                        }               
+              }
+
+
+             
+
         }       
       }
 
@@ -108,6 +179,8 @@ class Getdetails extends DefaultLayout {
     var games = Map[Any,Any]()
     var ips = Map[Any,Any]()
     var pcs = Map[Any,Any]()
+    var iplist = ""
+    var iplistbody = "<tbody><tr>"
     var code = param("code")
     val db = forURL()
       db withSession { implicit session =>
@@ -138,25 +211,45 @@ class Getdetails extends DefaultLayout {
                "channel" -> t._9,
                "regdate" -> t._12,
                "games" -> "games",
-               "post" ->t._3
+               "post" ->t._3,
+               "owner" -> t._6
                 )
     }
+     iplist = "<tr><th>IP주소</th>"
+
+
+    //game list
+    var gameq = Q.query[String,(String,String)]("SELECT rid, name FROM game where 1 = ?")
+    var gamepq = gameq("1").list
+    for (t <- gamepq) {
+      iplist += "<th>"+ t._2 +"</th>"
     }
-     var iplist = "<tr><th>IP주소</th>"
-     iplist += "<th>게임A</th>"
-     iplist += "<th>게임B</th>"
-     iplist += "<th>게임C</th>"
-     iplist += "<th>게임D</th>"
-     iplist += "<th>게임E</th>"
+
+    //ip list
+    var finder = ""
+    var ipq = Q.query[String,(String,String)]("SELECT rid,ip FROM ips where pcsid = ?")
+    var ipq1 = ipq(code).list
+    for (t <- ipq1) {
+      iplistbody += "<tr>"
+      iplistbody += "<td>" + t._2 + "</td>"
+      // 게임등록일 채우기
+      var mapp = Q.query[String,(String,String)]("SELECT game,installdate FROM ipgame where ip = ?")  //t._2
+      var mappq = mapp(t._1).list
+      for (t1 <- gamepq) {  //게임 루프
+        finder = ""
+        for(t2 <- mappq) {  //매핑 루프
+             if(t1._1 == t2._1) { finder = t2._2 }                        
+        }
+                if(finder != "") { iplistbody += "<td>" + finder + "</td>" }
+                else { iplistbody += "<td></td>" }
+      }
+
+      iplistbody += "</tr>"
+    }
+
+    }
      iplist += "</tr>"
-     var iplistbody = "<tbody><tr>"
-      iplistbody += "<td>192.168.0.1</td>"
-     iplistbody += "<td>2015-06-27</td>"
-     iplistbody += "<td>2015-06-28</td>"
-     iplistbody += "<td>2015-06-29</td>"
-     iplistbody += "<td>2015-06-30</td>"
-     iplistbody += "<td>2015-06-31</td>"
-     iplistbody += "</tr></tbody>"
+     iplistbody += "</tbody>"
 	respondJson(Map("detail" -> pcs,"iplistheader" -> iplist,"iplistbody"->iplistbody))
   }
 }
@@ -192,14 +285,14 @@ class Getgamelist extends DefaultLayout {
         if(peroid.size == 0 ){respondJson("okay")}
         else{
             for (t <- peroid) {
-                var addr = t._6 +" " + t._11
                 var idate = t._7 + "~" + t._8
                 var istatus = t._9 + " " + t._10
                  sublist = Map("name" -> t._2,
                    "company" -> t._3,
                    "company_number" -> t._4,
                    "owner" -> t._5,
-                   "address" -> addr,
+                   "address1" -> t._6,
+                   "address2" -> t._11,
                    "install-date" -> idate,
                    "install-status" -> istatus
                     )
