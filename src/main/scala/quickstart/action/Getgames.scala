@@ -17,6 +17,8 @@ import quickstart._
 @GET("getgames")
 class Getgames extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     // After login success
 	redirectTo("pc#games")
   }
@@ -24,6 +26,8 @@ class Getgames extends DefaultLayout {
 @GET("getchannel")
 class Getchannel extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     // After login success
 	redirectTo("pc#channels")
   }
@@ -31,6 +35,8 @@ class Getchannel extends DefaultLayout {
 @GET("getstatus")
 class Getstatus extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
      sublist = Map("code"->"12345",

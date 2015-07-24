@@ -19,6 +19,8 @@ import Q.interpolation
 @GET("admin")
 class Admin extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     // After login success
 	respondView(Map("type" ->"mustache"))
   }
@@ -27,6 +29,8 @@ class Admin extends DefaultLayout {
 @GET("gamedetails/:code")
 class Gamedetails extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
   	var code = param("code")
     var sublist = Map[Any,Any]()
     val db = forURL()
@@ -55,6 +59,8 @@ class Gamedetails extends DefaultLayout {
 @GET("userdetails/:code")
 class Userdetails extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
   	var code = param("code")
     var sublist = Map[Any,Any]()
     val db = forURL()

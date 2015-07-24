@@ -17,7 +17,7 @@
       </appender>
 
       <!-- Set to TRACE to see network transmission -->
-      <root level="DEBUG">
+      <root level="INFO">
         <appender-ref ref="CONSOLE"/>
       </root>
     </then>

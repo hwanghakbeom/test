@@ -73,27 +73,6 @@ class Idcheck extends DefaultLayout {
   }
 }
 
-// @GET("user/mailcheck")
-// class Mailcheck extends DefaultLayout {
-//   def execute() {
-//     // After login success
-//     var param1 = param("email")
-// 		val users: TableQuery[Users] = TableQuery[Users]
-// 		val db = forURL()
-// 		  db withSession { implicit session =>
-// 		    // val filterQuery: Query[Users, ( String, String, String, String, String, String, String, String, Int), Seq] =
-// 		    //   users.filter(_.email === email)
-// 		 	val q1 = users.filter(_.email === param1).list
-// 		 	if(q1.size > 0) {
-// 		 		jsRespond("alert(" + jsEscape("Not Found") + ")")
-// 		 	}
-// 		 	else{
-// 		 		respondJson("okay")
-// 		 	}
-// 		 }
-//   }
-// }
-
 
 @POST("login")
 class checkLoginID extends DefaultLayout {
@@ -111,13 +90,20 @@ class checkLoginID extends DefaultLayout {
 		  		isokay = true
 		  		var test = q2(0).productIterator.toList.zip(List("rid", "userid" , "pass" , "name", "position", "company", "email", "phone", "mobile", "work", "role", "lastconnect" ))
 				  	role = test(10)._1.toString
+				  	userid = test(0)._1.toString
 				  	
 		  	}
 		  }
 		  if(isokay){
 		  	session("userId") = userid
 		  	session("role") = role
-		  	redirectTo("pc")
+		  	if(role == "adv") {
+		  		redirectTo("installbyg")
+		  	}
+		  	else
+		  	{
+				redirectTo("pc")
+		  	}
 		  	}
 		    else{
 		  	redirectTo("/login")

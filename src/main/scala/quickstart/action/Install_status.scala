@@ -41,16 +41,21 @@ class Installbyg extends DefaultLayout {
     var sumlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var gameselectsublist = Map[Any,Any]()
     var subsumlist = Map[Any,Any]()
-    if(session("userId") == "" || session("role") == "channel"){
+    if(session("userId") == "" || session("role") == "cha"){
       redirectTo("/installbyc")
     }
-    var userid = session("userId")
+    var userid = session("userId").toString
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn userid
+    var llist = regresult.toList
+    var rid = llist(0)
+
     if(session("role") == "adv"){
       //광고주일때
-
       val db = forURL()
       db withSession { implicit session =>
-        var q2 = games.filter(p => p.rid === userid.toString.toInt).list
+        var q2 = games.filter(p => p.rid === rid.toInt).list
         if(q2.size > 0) { 
           var test = q2(0).productIterator.toList.zip(List("rid", "name"))
           gameselectsublist = Map("name" -> test(1)._1.toString )
@@ -75,6 +80,17 @@ class Installbyg extends DefaultLayout {
     at("gamelist") = gameselectlist
 
     //조회값
+    println("========================================================")
+    println(gamename)
+    println(region)
+    println(date1)
+    println(date2)
+    println("========================================================")
+    if(gamename == ""  || region == "" || date1 == "" || date2 == ""){
+      println("login")
+    }
+    else
+    {
       val db = forURL()
       var regionstring = "("
       db withSession { implicit session =>
@@ -115,23 +131,19 @@ class Installbyg extends DefaultLayout {
       }   
       }
       at("sumlist") = sumlist
+    }
     respondView(Map("type" ->"mustache"))
   }
 }
 @GET("installbyc")
 class Installbyc extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     if(session("userId") == "" || session("role") == "adv"){
       redirectTo("/installbyg")
     }
     // After login success
     respondView(Map("type" ->"mustache"))
-  }
-}
-@GET("installbycparam")
-class Installbycparam extends DefaultLayout {	
-  def execute() {
-    // After login success
-    forwardTo[Installbyc]()
   }
 }

@@ -19,7 +19,8 @@ import Q.interpolation
 @GET("getpcstatus")
 class Getpcstatus extends DefaultLayout {	
   def execute() {
-
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
      sublist = Map("code"->"12345",
@@ -42,6 +43,8 @@ class Getpcstatus extends DefaultLayout {
 @GET("getpcstatus2/:channel/:region/:check/:startdate/:enddate/:condition/:detail/")
 class Getpcstatus2 extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var channel = param("channel")
     var region = param("region")
     var check = param("check")
@@ -177,6 +180,8 @@ class Getpcstatus2 extends DefaultLayout {
 @GET("getdetails/:code")
 class Getdetails extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
     var games = Map[Any,Any]()
@@ -262,6 +267,8 @@ class Getdetails extends DefaultLayout {
 @GET("getips/:code")
 class Getips extends DefaultLayout {    
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var code = param("code")
 
     val db = forURL()
@@ -280,6 +287,8 @@ class Getips extends DefaultLayout {
 @GET("getgamelist")
 class Getgamelist extends DefaultLayout {    
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
     val db = forURL()
@@ -312,6 +321,8 @@ class Getgamelist extends DefaultLayout {
 @GET("getuserlist")
 class Getuserlist extends DefaultLayout {    
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
     val db = forURL()

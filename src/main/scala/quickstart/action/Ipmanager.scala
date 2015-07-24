@@ -19,6 +19,8 @@ import Q.interpolation
 @GET("ipmanager/:code")
 class Ipmanager extends DefaultLayout {	
   def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     // After login success
     var code = param("code")
     val db = forURL()
@@ -154,7 +156,6 @@ class DeleteIpmanager extends DefaultLayout {
 	var patternt = "\\d+".r
 	var arr = startip.split(".".toArray)
 	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
-	println(iptext)
     var regresult = patternt findAllIn pcid
     var llist = regresult.toList
     println(llist.toString)
