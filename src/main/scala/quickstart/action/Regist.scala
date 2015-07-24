@@ -63,7 +63,7 @@ class UpdatePC extends DefaultLayout {
       db withSession { implicit session =>
         pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
       }
-    jsRespond("alert(" + jsEscape("아이디가 중복됩니다.") + ")")     
+    respondJson("okay")  
   }
 }
 
@@ -77,9 +77,11 @@ class NewChannel extends DefaultLayout {
 		  db withSession { implicit session =>
       var q1 = channel.filter(_.name === name).list
       if(q1.size > 0) { jsRespond("alert(" + jsEscape("Not Found") + ")") }
-      else{ channel += Channel(None,name,userid.toString) }  
+      else{ channel += Channel(None,name,userid.toString) 
+          respondJson("okay")       
+      }  
 		  }
-		respondJson("okay")  		
+
 	}
 }
 

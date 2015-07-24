@@ -29,8 +29,10 @@
 				dateFormat: "yy-mm-dd"
 
 			});
+			var d = new Date();
+			d.setMonth(d.getMonth() - 1);
 			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
-			example( "#datepicker" ).datepicker( "setDate", new Date() );
+			example( "#datepicker" ).datepicker( "setDate", d );
 		});
 		example(function() {
 			example( "#datepicker2" ).datepicker({
@@ -71,10 +73,14 @@
 		$(function() {
 			var table = $('#example').DataTable();
 
-			$('#example tbody').on( 'click', 'tr', function () {
-				var pccode =  $('#example').DataTable().row(this).data()['code'];
+			$('#example tbody').on( 'click', 'td', function () {
+				// alert('Data:'+$(this).html().trim());
+    //     alert('Row:'+$(this).parent().find('td').html().trim());
+         	if($('#example thead tr th').eq($(this).index()).html().trim() == "PC방코드"){
+         		var pccode =  $(this).parent().find('td').html()
+				
 				$.ajax({
-					url: 'getdetails/' + pccode,
+					url: 'getdetails/' + pccode.substring(0,pccode.length-4),
 					type: "get",
 					data : {},
 					dataType: 'json',
@@ -100,20 +106,22 @@
 
 						//get ips
 
-						$('#table-code').text(code);
-						$('#table-name').text(name);
-						$('#table-owner').text(owner);
-						$('#table-ipnumber').text(ip);
-						$('#post').text(post);
-						$('#addr').text(add1);
-						$('#addr-detail').text(add2);
-						$('#table-phone').text(phone);
-						$('#table-mobile').text(mobile);
-						$('#table-channel').text(channel);
-						$('#table-regdate').text(regdate);
-						$('#iptable').html(data.iplistheader);
-						$('#iptable').append(data.iplistbody);
-						var dialog = example( "#dialog-detail" ).dialog({
+						// $('#table-code').text(code);
+						$('#name').val(name);
+						alert(channel)
+						$('#pcowner').val(owner);
+						$('#table-ipnumber').val(ip);
+						$('#sample4_postcode').val(post);
+						$('#sample4_roadAddress').val(add1);
+						$('#sample4-detail').val(add2);
+						$('#pcphone').val(phone);
+						$('#pcmobile').val(mobile);
+
+						$('#pcchannel').val(channel).attr("selected","selected");
+						$('#table-regdate').val(regdate);
+						// $('#iptable').html(data.iplistheader);
+						// $('#iptable').append(data.iplistbody);
+						var dialog = example( "#dialog-form" ).dialog({
 							autoOpen: false,
 							height: 400,
 							width: 750,
@@ -123,6 +131,19 @@
 
 					}
 				});
+         	}
+         	else if($('#example thead tr th').eq($(this).index()).html().trim() == "IP수"){
+         		var pccode =  $(this).parent().find('td').html()
+         		pccode = pccode.substring(0,pccode.length-4)
+         		pccode = pccode.substring(3,pccode.length)
+         		//$('#example').DataTable().row(this).data()['code'];
+         		 window.open("/ipmanager/" + pccode);
+         	}
+         	else {
+         		return;
+         	}
+
+				
 
 			} );
 });
@@ -158,6 +179,15 @@
 				   + check{{rid}} + ";"
 				{{/game}}
 				+ '/' + example("#datepicker" ).datepicker({}).val() + '/' + example("#datepicker2" ).datepicker({}).val() + '/' + condition + '/' + detail,
+				"aoColumnDefs": [
+	            {
+	                "mRender": function (data, type, row) {
+	                    return '<a>' + data + "</a>"
+
+	                },
+	                "aTargets": [0,7]
+	            }
+	            ],
 				"columns": [
 				{ "data": "code" },
 				{ "data": "name" },
@@ -328,7 +358,8 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		    data.append("owner",owner.val());
 		    data.append("phone", phone.val());
 		    data.append("mobile",mobile.val());
-		    data.append("channel", channel.val());
+		    alert(example("#pcchannel option:selected"));
+		    data.append("channel", example("#pcchannel option:selected").val());
 		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
 		    data.append("isfinished", isfinished.val());
 		    $.ajax({
@@ -467,7 +498,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		    data.append("owner",owner.val());
 		    data.append("phone", phone.val());
 		    data.append("mobile",mobile.val());
-		    data.append("channel", channel.val());
+		    data.append("channel", example("#pcchannel option:selected").val());
 		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
 		    data.append("isfinished", isfinished.val());
 		    $.ajax({

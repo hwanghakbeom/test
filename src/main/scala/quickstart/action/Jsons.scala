@@ -78,8 +78,9 @@ class Getpcstatus2 extends DefaultLayout {
               "gid" -> gt._2,
               "name" -> gt._3)
             gamelist += gamesublist
-          }              
-
+          }      
+          println("TEST")        
+        println(gamelist)
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1("1").list
         for (t <- peroid) {
@@ -112,7 +113,7 @@ class Getpcstatus2 extends DefaultLayout {
                    "regdate" -> t._12,
                    "games" -> games
                     )    
-                                   returnList += sublist             
+                  returnList += sublist             
               }
               else if(llist.size > 0){
                 println(llist.size)
@@ -138,12 +139,14 @@ class Getpcstatus2 extends DefaultLayout {
                        "regdate" -> t._12,
                        "games" -> games
                         )  
-                                       returnList += sublist                    
+                    returnList += sublist                    
                 }
 
               }
               else{
                 if(games == ""){
+                            println("NOT GAME")        
+        println(gamelist)
                     sublist = Map("code" -> t._1,
                        "name" -> t._2,
                        "region" -> t._4.substring(0,2),
@@ -182,6 +185,8 @@ class Getdetails extends DefaultLayout {
     var iplist = ""
     var iplistbody = "<tbody><tr>"
     var code = param("code")
+    code = code.replace("<a>","")
+    code = code.replace("</a>","")
     val db = forURL()
       db withSession { implicit session =>
     var queryString = "SELECT * FROM pcs WHERE RID = ?"

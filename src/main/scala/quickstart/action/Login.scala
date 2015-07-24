@@ -100,21 +100,28 @@ class checkLoginID extends DefaultLayout {
 	def execute() {
 		var userid	 = param("userid")
 		var pass	 = param("password")
+		var role = ""
 		val users: TableQuery[Users] = TableQuery[Users]
 		session.clear()
 		var isokay = false;
 		val db = forURL()
 		  db withSession { implicit session =>
 		  	var q2 = users.filter(p => p.userid === userid && p.pass === pass).list
-		  	if(q2.size > 0) {	isokay = true		  	}
+		  	if(q2.size > 0) {	
+		  		isokay = true
+		  		var test = q2(0).productIterator.toList.zip(List("rid", "userid" , "pass" , "name", "position", "company", "email", "phone", "mobile", "work", "role", "lastconnect" ))
+				  	role = test(10)._1.toString
+				  	
+		  	}
 		  }
-		  if(isokay) {
+		  if(isokay){
 		  	session("userId") = userid
+		  	session("role") = role
 		  	redirectTo("pc")
-		  }
-		  else{
+		  	}
+		    else{
 		  	redirectTo("/login")
-		  }		  		
-	}
+		  }	
+		  }
 }
 

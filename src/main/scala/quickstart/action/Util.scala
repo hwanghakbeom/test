@@ -19,8 +19,13 @@ import scala.slick.driver.MySQLDriver.simple._
 object TransDate {
 		def getCurrentDate(): String = {
 		val ctime = new DateTime()
-		val returnString = ctime.getYear().toString +"-"+ ctime.getMonthOfYear().toString +"-"+ ctime.getDayOfMonth().toString
-		return  returnString
+		var time  = ctime.getYear().toString +"-"+ ctime.getMonthOfYear() +"-"+ ctime.getDayOfMonth().toString
+		var dtf:DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+		var jodatime:DateTime = dtf.parseDateTime(time);
+		var dtfOut:DateTimeFormatter  = DateTimeFormat.forPattern("yyyy-MM-dd");
+		var temp = dtfOut.print(jodatime)
+		return temp
+
 	}
 		def getCurrentTime(): String = {
 		val ctime = new DateTime()

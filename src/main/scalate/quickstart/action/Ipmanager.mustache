@@ -1,0 +1,149 @@
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="/js/jquery.input-ip-address-control.js"></script>
+<script type="text/javascript" src="/js/datepicker-ko.js"></script>
+
+	<script>
+		 var example=jQuery.noConflict();
+
+		example(function() {
+			example( "#datepicker" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			var d = new Date();
+			d.setMonth(d.getMonth() - 1);
+			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
+			example( "#datepicker" ).datepicker( "setDate", d );
+
+					  example('#ipv4').mask('099.099.099.099');
+		  example('#ipv42').mask('099');
+		});
+	
+	</script>
+<script>
+$ = jQuery; 
+$(document).ready(function()
+{
+	// $('#ipselect').change(function(){
+	// 	$("#ipnumber").val($("#ipselect option").size());
+	// });
+	$('#ipadd').click(function(){ 
+		    data = new FormData();
+		    data.append("pcs",location.pathname);
+		    data.append("startip", $('#ipv4').val());
+		    data.append("endip", $('#ipv42').val());
+		    data.append("date",$("#datepicker").datepicker({}).val());
+		    data.append("work", $("#mapping-game option:selected").val());
+
+	    $.ajax({
+        data: data,
+        type: "POST",
+        url: "/ipmanager",
+        enctype: "multipart/form-data",
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(url) {
+                alert("등록되었습니다.");
+                location.reload();
+        }
+    });	
+	});
+	$('#ipdelete').click(function(){ 
+		    data = new FormData();
+		    data.append("pcs",location.pathname);
+		    data.append("startip", $('#ipv4').val());
+		    data.append("endip", $('#ipv42').val());
+		    data.append("date",$("#datepicker").datepicker({}).val());
+		    data.append("work", $("#mapping-game option:selected").val());
+
+	    $.ajax({
+        data: data,
+        type: "POST",
+        url: "/ipmanagerdelete",
+        enctype: "multipart/form-data",
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(url) {
+                alert("삭제되었습니다.");
+                location.reload();
+        }
+    });	
+	});
+});
+</script>
+<label>※ 게임설치일을등록하기위해서는IP주소가존재해야합니다. </label>
+<label>※ IP주소를삭제할경우, 해당IP주소예설치된게임내역도삭제되니주의바랍니다.</label>
+<label>※ IP주소가변경된경우, 삭제후다시추가해주십시오.</label>
+<div class="row">
+	<div class="col-xs-5">
+		<div class="col-xs-8">
+			<div class="col-xs-5">
+				<label for="ipv4" for="ipv4">IP주소입력</label>
+			</div>
+			<div class="col-xs-7">
+				<input type="text" class="form-control" id="ipv4">
+			</div>
+		</div>
+		<div class= "col-xs-1"> ~
+		</div>
+		<div class="col-xs-3">
+			<input type="text" class="form-control" id="ipv42">
+		</div>
+	</div>
+	<div class="col-xs-3">
+		<div class="col-xs-4">
+		작업선택
+		</div>
+		<div class="col-xs-8">
+			<select class="form-control" id="mapping-game" name="mapping-game">
+				<option>IP작업</option>
+				{{#games}}
+				<option value="{{name}}">{{name}}</option>
+				{{/games}}
+			</select>
+		</div>		
+	</div>
+	<div class="col-xs-4">
+		<div class="col-xs-4">
+		게임설치일자
+		</div>
+		<div class="col-xs-8">
+		<input type="text" id="datepicker">
+		</div>
+	</div>
+</div>
+	
+		<center>
+		<input type="button" value = "추가" class="btn btn-info" id="ipadd">
+		<input type="button" value = "삭제" class="btn btn-info" id="ipdelete"></center>
+		<table class="table">
+			<th>IP주소</th>
+			{{#games}}
+			<th>{{name}}</th>
+			{{/games}}
+			<tbody>
+			{{#value}}
+			<tr>
+				<td>{{ip}}</td>
+				{{#games}}
+				<td>{{game}}}</td>
+				{{/games}}
+			</tr>
+			{{/value}}
+			<tr>
+			<td>설치IP수</td>
+			{{#installed}}
+			<td>
+			</td>
+			{{/installed}}
+			</tr>
+			</tbody>
+		</table>
