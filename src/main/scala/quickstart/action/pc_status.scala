@@ -26,12 +26,18 @@ class Pcstatus extends DefaultLayout {
     var sublist = Map[Any,Any]()
     var gamelist = Map[Any,Any]()
 
-    var userid = session("userId") 
+    var userid = session("userId").toString 
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn userid
+    var llist = regresult.toList
+    var rid = llist(0)
+
     val channel: TableQuery[Channels] = TableQuery[Channels]
     val db = forURL()
     if(session("role") == "cha"){
       db withSession { implicit session =>
-        var q1 = channel.filter(_.user === userid.toString).list
+        var q1 = channel.filter(_.user === rid).list
         val querysize = q1.size - 1
         for(   index <-0 to querysize ){
           var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
