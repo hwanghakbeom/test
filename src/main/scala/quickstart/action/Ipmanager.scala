@@ -42,21 +42,22 @@ class Ipmanager extends DefaultLayout {
      var returnlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
 
       var iplist = Map[Any,Any]()
-
+      var gamesublist = Map[Any,Any]()
+      
       for (gt <- peroid) {
-        iplist = Map(
-          "ip" -> gt._3
-          )
+        var gamelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
         for (t <- peroid2) {
           var gameq = Q.query[String,(String)]("SELECT installdate FROM  ipgame where ip = ? and game = '" + t._2 + "'")
           val peroid3 = gameq(gt._3).list
           var inputvalue = ""
           if(peroid3.size > 0) { inputvalue = peroid3(0)}
-
-          iplist += ("game" -> inputvalue)
+          gamesublist = Map("count" -> inputvalue)
+          gamelist += gamesublist
         }
-
-
+          iplist = Map(
+          "ip" -> gt._3,
+          "game" -> gamelist
+          )
         returnlist += iplist
       }
 
