@@ -59,12 +59,8 @@ class Ipmanager extends DefaultLayout {
           "game" -> gamelist
           )
         returnlist += iplist
+        println(returnlist)
       }
-
-
-
-    //installation date
-
 
             at("value") = returnlist 
             at("games") = returngamelist  	
@@ -110,7 +106,7 @@ class PostIpmanager extends DefaultLayout {
             }
             for(index <- arr(3).toInt to endip.toInt){
               var ip = iptext + "." + index.toString
-              ips += Ip(None,llist(0), startip , date)
+              ips += Ip(None,llist(0), ip , date)
             }           
           }
         else
