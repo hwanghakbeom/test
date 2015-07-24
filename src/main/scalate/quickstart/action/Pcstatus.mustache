@@ -108,7 +108,6 @@
 
 						// $('#table-code').text(code);
 						$('#name').val(name);
-						alert(channel)
 						$('#pcowner').val(owner);
 						$('#table-ipnumber').val(ip);
 						$('#sample4_postcode').val(post);
@@ -116,7 +115,7 @@
 						$('#sample4-detail').val(add2);
 						$('#pcphone').val(phone);
 						$('#pcmobile').val(mobile);
-
+						$('#hiddenrid').val(code);	
 						$('#pcchannel').val(channel).attr("selected","selected");
 						$('#table-regdate').val(regdate);
 						// $('#iptable').html(data.iplistheader);
@@ -239,7 +238,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 				<div class="col-md-4">
 
 					<select class="form-control" name="select-region" id="select-region">
-						<option>지역선택</option>
+						<option>전체지역</option>
 						<option value="서울">서울</option>
 						<option value="경기">경기</option>
 						<option value="인천">인천</option>
@@ -345,7 +344,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		mobile = example("#pcmobile"),
 		channel = example("#pcchannel option:selected"),
 		lastday = example("#datepicker3" ).datepicker({}).val(),
-		isfinished = example("#finished"),
+		isfinished = example('#finished')[0].checked
 		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel);
 
 		function addUser() {
@@ -357,10 +356,9 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		    data.append("owner",owner.val());
 		    data.append("phone", phone.val());
 		    data.append("mobile",mobile.val());
-		    alert(example("#pcchannel option:selected"));
 		    data.append("channel", example("#pcchannel option:selected").val());
 		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
-		    data.append("isfinished", isfinished.val());
+		    data.append("isfinished", example('#finished')[0].checked);
 		    $.ajax({
 		        data: data,
 		        type: "POST",
@@ -480,7 +478,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		mobile = example("#pcmobile"),
 		channel = example("#pcchannel option:selected"),
 		lastday = example("#datepicker3" ).datepicker({}).val(),
-		isfinished = example("#finished"),
+		isfinished = example('#finished')[0].checked,
 		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel),
 		tips = example( ".validateTips" ),
 		map = { "name":name,
@@ -489,7 +487,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 
 		function addUser() {
 		    data = new FormData();
-		    data.append("rid", rid.val());
+		    data.append("rid", example("#hiddenrid").val());
 		    data.append("name", name.val());
 		    data.append("add1", add1.val());
 		    data.append("add2",add2.val());
@@ -499,7 +497,20 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		    data.append("mobile",mobile.val());
 		    data.append("channel", example("#pcchannel option:selected").val());
 		    data.append("lastdate",example("#datepicker3" ).datepicker({}).val());
-		    data.append("isfinished", isfinished.val());
+		    data.append("isfinished", example('#finished')[0].checked);
+
+		    if(name.val() == ""){
+		    	alert("이름은 필수항목입니다.");
+		    	return
+		    }
+		    if(add1.val() == ""){
+		    	alert("주소는 필수항목입니다.");
+		    	return
+		    }
+		    if(add2.val() == ""){
+		    	alert("주소는 필수항목입니다.");
+		    	return
+		    }
 		    $.ajax({
 		        data: data,
 		        type: "POST",
@@ -604,7 +615,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 		mobile = example("#pcmobile"),
 		channel = example("#pcchannel option:selected"),
 		lastday = example("#datepicker3" ).datepicker({}).val(),
-		isfinished = example("#finished"),
+		isfinished = example("input:checkbox[id='finished']").is(":checked"),
 		allFields = example( [] ).add( name ).add( email ).add( password ).add( add1 ).add( add2 ).add( add3 ).add( owner ).add(phone).add(mobile).add(channel);
 
 		function addUser() {
@@ -894,7 +905,7 @@ $(document).ready(function()
 	<form data-toggle="validator" role="form">
 		<div class="row">
 			<div class="col-md-3">
-				<label for="name">PC방 상호</label>
+				<label for="name" required>PC방 상호</label>
 			</div>
 			<div class="form-group col-md-9">
 				<input type="text" name="name" id="name"  class="form-control input">
@@ -905,7 +916,7 @@ $(document).ready(function()
 			<div class="form-group col-md-9">
 				<input type="text" id="sample4_postcode" placeholder="우편번호">
 				<input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
-				<input type="text" id="sample4_roadAddress" placeholder="도로명주소">
+				<input type="text" id="sample4_roadAddress" placeholder="도로명주소" required>
 				<input type="text" id="sample4-detail" placeholder="상세주소">
 				<span id="guide" style="color:#999"></span>
 			</div>
@@ -950,7 +961,7 @@ $(document).ready(function()
 			</form>
 		</div>
 
-
+<!-- 
 <div id="dialog-detail" title="PC방 현황 - 상세보기">
 	<table class="table">
 		<tr>
@@ -985,7 +996,7 @@ $(document).ready(function()
 		<table class="table" id="iptable">
 		</table>
 		<input id="update-ip" value = "IP주소 등록 수정" class = "btn btn-success">
-</div>
+</div> -->
 
 <div id="dialog-channel" title="채널 등록 " >
 	<form data-toggle="validator" role="form">

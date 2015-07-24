@@ -61,7 +61,6 @@ class Ipmanager extends DefaultLayout {
           "game" -> gamelist
           )
         returnlist += iplist
-        println(returnlist)
       }
 
             at("value") = returnlist 
@@ -125,17 +124,38 @@ class PostIpmanager extends DefaultLayout {
   		}
     }
     else
-    {
+    {  //게임작업
       val db = forURL()
       val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
       db withSession { implicit session =>
+
         if(endip != ""){
+            //ipcheck
+            var ipcheckstring = ""
+            for(index <- arr(3).toInt to endip.toInt){
+              var ip = iptext + "." + index.toString
+              var queryString = "SELECT ip FROM ips WHERE ip = ?"
+              var q1 = Q.query[String, (String)](queryString)
+              val peroid = q1(ip).list
+              if(peroid.size == 0 )
+              {
+                jsRespond("alert(" + jsEscape("아이디가 없음니다."  ) + ")") 
+              }
+            }
+
           for(index <- arr(3).toInt to endip.toInt){
           var ip = iptext + "." + index.toString
           ipgame += Ipgame(None,llist(0), ip , work,date)
           }
         }
         else{
+              var queryString = "SELECT ip FROM ips WHERE ip = ?"
+              var q1 = Q.query[String, (String)](queryString)
+              val peroid = q1(startip).list
+              if(peroid.size == 0 )
+              {
+                jsRespond("alert(" + jsEscape("아이디가 없음니다."  ) + ")")     
+              }
           ipgame += Ipgame(None,llist(0), startip , work,date)
         }
 
@@ -162,17 +182,22 @@ class DeleteIpmanager extends DefaultLayout {
     if(work =="IP작업"){
     	val db = forURL()
   		val ips: TableQuery[Ips] = TableQuery[Ips]
+      val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
   		db withSession { implicit session =>
         if(endip != ""){
           for(index <- arr(3).toInt to endip.toInt){
             var ip = iptext + "." + index.toString
-            def deletegame(ip: String) = sqlu"delete from ips where ip = $ip".first
-              val rows= deletegame(ip)
+            def deleteip(ip: String) = sqlu"delete from ips where ip = $ip".first
+              val rows= deleteip(ip)
+            def deletegame(ip: String) = sqlu"delete from ipgame where ip = $ip".first
+            val rows2= deletegame(ip)
           }          
         }
         else{
-          def deletegame(ip: String) = sqlu"delete from ips where ip = $ip".first
-          val rows= deletegame(startip)
+          def deleteip(ip: String) = sqlu"delete from ips where ip = $ip".first
+          val rows= deleteip(startip)
+          def deletegame(ip: String) = sqlu"delete from ipgame where ip = $ip".first
+          val rows2= deletegame(startip)
         }
 
   		}

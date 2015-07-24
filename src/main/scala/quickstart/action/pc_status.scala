@@ -55,12 +55,12 @@ class Pcstatus extends DefaultLayout {
       db withSession { implicit session =>
         var q1 = channel.filter(_.rid > 0).list
         val querysize = q1.size - 1
-        channelList += Map("rid"->"0", "name"->"채널선택")
+        channelList += Map("rid"->"0", "name"->"채널전체")
         for(   index <-0 to querysize ){
           var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
           var channelsublist = Map[Any,Any]()
           channelsublist = Map(
-            test(0)._2 -> test(0)._1,
+            test(0)._2 -> test(0)._1, 
             test(1)._2 -> test(1)._1
             )
           channelList += channelsublist

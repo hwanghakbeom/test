@@ -21,7 +21,7 @@
 			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
 			example( "#datepicker" ).datepicker( "setDate", d );
 
-					  example('#ipv4').mask('099.099.099.099');
+		  example('#ipv4').mask('099.099.099.099');
 		  example('#ipv42').mask('099');
 		});
 	
@@ -41,6 +41,18 @@ $(document).ready(function()
 		    data.append("date",$("#datepicker").datepicker({}).val());
 		    data.append("work", $("#mapping-game option:selected").val());
 
+		    var splitter = $('#ipv4').val().split(".");
+		    if(splitter[0] < '256' && splitter[1] < '256' && splitter[2] < '256' && splitter[3] < '256'){
+		    	console.log("okay");
+		    }
+		    else{
+		    	alert("IP주소는 255를 넘을수 없습니다.");
+		    	return;
+		    }
+		    if($('#ipv42').val() > 255){
+		    	alert("IP주소는 255를 넘을수 없습니다.");
+		    	return;		    	
+		    }
 	    $.ajax({
         data: data,
         type: "POST",
@@ -54,7 +66,7 @@ $(document).ready(function()
                 location.reload();
         },
         error: function(url) {
-        	alert("IP가 중복됩니다." );
+        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
         }
     });	
 	});
@@ -77,14 +89,17 @@ $(document).ready(function()
         success: function(url) {
                 alert("삭제되었습니다.");
                 location.reload();
+        },
+        error: function(url) {
+        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
         }
     });	
 	});
 });
 </script>
-<label>※ 게임설치일을등록하기위해서는IP주소가존재해야합니다. </label>
-<label>※ IP주소를삭제할경우, 해당IP주소예설치된게임내역도삭제되니주의바랍니다.</label>
-<label>※ IP주소가변경된경우, 삭제후다시추가해주십시오.</label>
+<label>※ 게임설치일을등록하기위해서는IP주소가존재해야합니다. </label><br>
+<label>※ IP주소를삭제할경우, 해당IP주소예설치된게임내역도삭제되니주의바랍니다.</label><br>
+<label>※ IP주소가변경된경우, 삭제후다시추가해주십시오.</label><br>
 <div class="row">
 	<div class="col-xs-5">
 		<div class="col-xs-8">

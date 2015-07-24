@@ -59,8 +59,8 @@ class Getpcstatus2 extends DefaultLayout {
     var queryString = ""
     queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
     queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
-    if(channel != "채널선택"){ queryString += " AND CHANNEL = '" + channel +"'"}
-    if(region != "지역선택") {queryString += " AND substring(ADD2,1,3) = '" + region +"'"}
+    if(channel != "채널전체"){ queryString += " AND CHANNEL = '" + channel +"'"}
+    if(region != "전체지역") {queryString += " AND substring(ADD2,1,3) = '" + region +"'"}
     if(condition == "PA" && detail != "") { queryString += " AND NAME = '" + detail +"'" }
     if(condition == "CT" && detail != "") { queryString += " AND OWNER = '" + detail +"'" }
     if(condition == "NY" && detail != "") { queryString += " AND RID = ( SELECT PCSID FROM ips WHERE IP =     '" + detail + "')" }
@@ -73,7 +73,7 @@ class Getpcstatus2 extends DefaultLayout {
           var regresult = patternt findAllIn check
           var llist = regresult.toList
 
-          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.rid AND A.game = C.rid AND 1 = ?")
+          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.ip AND A.game = C.name AND 1 = ?")
           var gamepcperiod = gamepc("1").list
           var gamesublist = Map[Any,Any]()
           for (gt <- gamepcperiod) {
@@ -82,8 +82,7 @@ class Getpcstatus2 extends DefaultLayout {
               "name" -> gt._3)
             gamelist += gamesublist
           }      
-          println("TEST")        
-        println(gamelist)
+          println(queryString)
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1("1").list
         for (t <- peroid) {
@@ -97,15 +96,22 @@ class Getpcstatus2 extends DefaultLayout {
             var games = ""
             for(index <- 0 to  gamelist.size - 1) {
               if(t._1 == gamelist(index)("pc")) { 
-                games += gamelist(index)("name") + ","
+                if( gamelist(index)("name").toString.r.findAllIn(games).length == 0 )
+                  games += gamelist(index)("name") + ","
+                
             }
           }
             val idcount = q2(t._1).list
             if( idcount.size != 0) { ipnumber = idcount(0)}
               if(!check.startsWith("all") && llist.size == 0) {  //전체게임
+                var r = "" 
+                if(t._4.length > 4)
+                {
+                   r = t._4.substring(0,2)
+                }
                 sublist = Map("code" -> t._1,
                    "name" -> t._2,
-                   "region" -> t._4.substring(0,2),
+                   "region" -> r,
                    "address" -> addr,
                    "phone" -> t._7,
                    "mobile" -> t._8,
@@ -119,16 +125,19 @@ class Getpcstatus2 extends DefaultLayout {
                   returnList += sublist             
               }
               else if(llist.size > 0){
-                println(llist.size)
                 var isexist = false
-                for(index <- 0 to llist.size -1){
-                  if(llist(index) == t._1){
-                    isexist = true
-                    println("true")
+                for(index <- 0 to  gamelist.size - 1) {
+                  if(gamelist(index)("pc")== t._1){
+                    for(index2 <- 0 to  llist.size - 1) {
+                      if(llist(index2) == gamelist(index)("gid")){
+                        isexist = true
+                        println(gamelist(index)("pc") + " : " + t._1)                            
+                      }
+                
+                    }
                   }
                 }
                 if(isexist == true) {
-                  println("add")
                      sublist = Map("code" -> t._1,
                        "name" -> t._2,
                        "region" -> t._4.substring(0,2),
@@ -148,8 +157,6 @@ class Getpcstatus2 extends DefaultLayout {
               }
               else{
                 if(games == ""){
-                            println("NOT GAME")        
-        println(gamelist)
                     sublist = Map("code" -> t._1,
                        "name" -> t._2,
                        "region" -> t._4.substring(0,2),
@@ -163,7 +170,7 @@ class Getpcstatus2 extends DefaultLayout {
                        "regdate" -> t._12,
                        "games" -> games
                         )   
-                                       returnList += sublist     
+                        returnList += sublist     
                         }               
               }
 

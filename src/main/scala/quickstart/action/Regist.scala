@@ -54,18 +54,30 @@ class UpdatePC extends DefaultLayout {
     var mobile   = param("mobile")
     var channel  = param("channel")
     var lastdate   = param("lastdate")
-    var isfinished   = param("isfinished")
-    var ischecked = "false"
-    if(isfinished == "checked") { ischecked = "true"}
+    var ischecked   = param("isfinished")
+    var rid = paramo("rid")  match{
+            case Some(x:String) => x 
+            case _ => ""
+          }
+
     var regdate = TransDate.getCurrentDate()
     val pcs: TableQuery[Pcs] = TableQuery[Pcs]
     val db = forURL()
       db withSession { implicit session =>
-        pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
+        if(rid == ""){
+          pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
+        }
+        else {
+          pcs.filter(_.rid === rid.toInt)
+       .map(p => (p.name,p.add1,p.add2,p.add3,p.owner,p.phone,p.mobile,p.channel,p.lastdate,p.isfinished))
+       .update((name,add1,add2,add3,owner,phone,mobile,channel,lastdate,ischecked))
+        }
       }
     respondJson("okay")  
   }
 }
+
+
 
 @POST("newchannel")
 class NewChannel extends DefaultLayout {
