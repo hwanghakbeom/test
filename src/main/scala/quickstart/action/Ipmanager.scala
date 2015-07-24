@@ -94,14 +94,34 @@ class PostIpmanager extends DefaultLayout {
   		val ips: TableQuery[Ips] = TableQuery[Ips]
   		db withSession { implicit session =>
 
+        //ipcheck
         if(endip != ""){
-          for(index <- arr(3).toInt to endip.toInt){
-            var ip = iptext + "." + index.toString
-            ips += Ip(None,llist(0), ip , date)
-          }          
-        }
-        else{
-           ips += Ip(None,llist(0), startip , date)
+            var ipcheckstring = ""
+            for(index <- arr(3).toInt to endip.toInt){
+              var ip = iptext + "." + index.toString
+              var queryString = "SELECT ip FROM ips WHERE ip = ?"
+              var q1 = Q.query[String, (String)](queryString)
+              val peroid = q1(ip).list
+              if(peroid.size > 0 )
+              {
+                jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
+              }
+            }
+            for(index <- arr(3).toInt to endip.toInt){
+              var ip = iptext + "." + index.toString
+              ips += Ip(None,llist(0), startip , date)
+            }           
+          }
+        else
+        {
+              var queryString = "SELECT ip FROM ips WHERE ip = ?"
+              var q1 = Q.query[String, (String)](queryString)
+              val peroid = q1(startip).list
+              if(peroid.size > 0 )
+              {
+                jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")")     
+              }
+              ips += Ip(None,llist(0), startip , date)
         }
   		}
     }
@@ -111,10 +131,10 @@ class PostIpmanager extends DefaultLayout {
       val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
       db withSession { implicit session =>
         if(endip != ""){
-                  for(index <- arr(3).toInt to endip.toInt){
+          for(index <- arr(3).toInt to endip.toInt){
           var ip = iptext + "." + index.toString
           ipgame += Ipgame(None,llist(0), ip , work,date)
-        }
+          }
         }
         else{
           ipgame += Ipgame(None,llist(0), startip , work,date)

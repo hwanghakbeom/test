@@ -52,6 +52,9 @@ $(document).ready(function()
         success: function(url) {
                 alert("등록되었습니다.");
                 location.reload();
+        },
+        error: function(url) {
+        	alert("IP가 중복됩니다." );
         }
     });	
 	});
@@ -134,7 +137,7 @@ $(document).ready(function()
 			<tr>
 				<td>{{ip}}</td>
 				{{#games}}
-				<td>{{game}}}</td>
+				<td>{{game}}</td>
 				{{/games}}
 			</tr>
 			{{/value}}
