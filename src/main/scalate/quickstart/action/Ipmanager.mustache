@@ -42,7 +42,7 @@ $(document).ready(function()
 		    data.append("work", $("#mapping-game option:selected").val());
 
 		    var splitter = $('#ipv4').val().split(".");
-		    if(splitter[0] < '256' && splitter[1] < '256' && splitter[2] < '256' && splitter[3] < '256'){
+		    if(splitter[0] < 256 && splitter[1] < 256 && splitter[2] < 256 && splitter[3] < 256){
 		    	console.log("okay");
 		    }
 		    else{
@@ -50,6 +50,7 @@ $(document).ready(function()
 		    	return;
 		    }
 		    if($('#ipv42').val() > 255){
+		    	alert($('#ipv42').val());
 		    	alert("IP주소는 255를 넘을수 없습니다.");
 		    	return;		    	
 		    }
