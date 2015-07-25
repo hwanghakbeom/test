@@ -362,8 +362,11 @@ class Getuserlist extends DefaultLayout {
 @GET("checkgame/")
 class Checkgame extends DefaultLayout {    
   def execute() {
-    val host = request.headers.get(HttpHeaders.Names.HOST)
-    println(host)
+   // val host = request.HttpHeaders.Values 
+    val ipAddress = request.headers.get("X-Forwarded-For")
+    println(ipAddress)
+    val ipAddress2 = request.headers.get("Proxy-Client-IP")
+    println(ipAddress2)
     var ip = ""
     val db = forURL()
     db withSession { implicit session =>
