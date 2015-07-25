@@ -359,11 +359,32 @@ class Getuserlist extends DefaultLayout {
 }
 }
 
-// @GET("checkgame/:ip/:dir")
+@GET("checkgame/")
+class Checkgame extends DefaultLayout {    
+  def execute() {
+    val host = request.headers.get(HttpHeaders.Names.HOST)
+    println(host)
+    var ip = ""
+    val db = forURL()
+    db withSession { implicit session =>
+      var ipcount = scala.collection.mutable.MutableList[String]()
+      var q3 = Q.query[String,(String)]("select game from ipgame where ip = ?")
+      val per3 = q3(ip).list
+      if(per3.size > 0 )
+      {
+        for (t <- per3) {
+          ipcount += t
+        }
+
+      }
+      respondJson(ipcount)
+    }
+  }
+}
+
+// @GET("checkgame/:games")
 // class Checkgame extends DefaultLayout {    
 //   def execute() {
-//     val t1 = param("ip")
-//     val t2 = param("dir")
 //         val pcs: TableQuery[Pcs] = TableQuery[Pcs]
 //         val games: TableQuery[Games] = TableQuery[Games]
 //     val db = forURL()
