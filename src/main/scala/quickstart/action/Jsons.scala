@@ -13,8 +13,10 @@ import org.jboss.netty.handler.codec.http.HttpHeaders
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.jsoup.Jsoup
 import quickstart._
+import io.netty.channel
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
+import xitrum.action.Net
 
 @GET("getpcstatus")
 class Getpcstatus extends DefaultLayout {	
@@ -362,11 +364,9 @@ class Getuserlist extends DefaultLayout {
 @GET("checkgame/")
 class Checkgame extends DefaultLayout {    
   def execute() {
-   // val host = request.HttpHeaders.Values 
-    val ipAddress = request.headers.get("X-Forwarded-For")
-    println(ipAddress)
-    val ipAddress2 = request.headers.get("Proxy-Client-IP")
-    println(ipAddress2)
+   // val host = Net.clientIp(remoteAddress)
+   val host = channel.remoteAddress
+    println(host)
     var ip = ""
     val db = forURL()
     db withSession { implicit session =>
