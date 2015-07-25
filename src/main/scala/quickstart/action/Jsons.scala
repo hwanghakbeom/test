@@ -364,10 +364,14 @@ class Getuserlist extends DefaultLayout {
 @GET("checkgame/")
 class Checkgame extends DefaultLayout {    
   def execute() {
-   // val host = Net.clientIp(remoteAddress)
+
    val host = channel.remoteAddress
-    println(host)
-    var ip = ""
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn host.toString
+    var llist = regresult.toList
+    var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
+        println(ip)
     val db = forURL()
     db withSession { implicit session =>
       var ipcount = scala.collection.mutable.MutableList[String]()
@@ -385,15 +389,36 @@ class Checkgame extends DefaultLayout {
   }
 }
 
-// @GET("checkgame/:games")
-// class Checkgame extends DefaultLayout {    
-//   def execute() {
-//         val pcs: TableQuery[Pcs] = TableQuery[Pcs]
-//         val games: TableQuery[Games] = TableQuery[Games]
-//     val db = forURL()
-//           db withSession { implicit session =>
-//             var q2 = users.filter(p => p.ip === ip && p.dir === dir).list
-//             if(q2.size > 0) {   isokay = true           }
-//           }
-//     }
-//     }
+@GET("checkgame/:games")
+class Checkgamewithname extends DefaultLayout {    
+  def execute() {
+   // /118.37.214.252:53023
+   var gamename = param("games")
+   val host = channel.remoteAddress
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn host.toString
+    var llist = regresult.toList
+    var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
+        println(ip)
+        //test
+    val db = forURL()
+    db withSession { implicit session =>
+      var queryString = "select directory,type from mapping where channel = (SELECT name FROM channel where name = (select CHANNEL from pcs where rid = (select PCSID from ips where ip = ? ))) and game = '" + gamename + "'"
+      var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
+      var sublist = Map[Any,Any]()
+      var q3 = Q.query[String,(String,String)](queryString)
+      val per3 = q3(ip).list
+      if(per3.size > 0 )
+      {
+        for (t <- per3) {
+          sublist =Map("type" -> t._2,
+            "directory" -> t._1)
+         ipcount += sublist
+        }
+
+      }
+      respondJson(ipcount)
+    }
+  }
+}
