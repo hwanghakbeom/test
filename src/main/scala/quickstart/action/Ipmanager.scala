@@ -116,11 +116,16 @@ class PostIpmanager extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
               }
+              else
+              {
+                for(index <- arr(3).toInt to endip.toInt){
+                  var ip = iptext + "." + index.toString
+                  ips += Ip(None,llist(0), ip , date)
+                    respondJson("okay")
+                }  
+              }
             }
-            for(index <- arr(3).toInt to endip.toInt){
-              var ip = iptext + "." + index.toString
-              ips += Ip(None,llist(0), ip , date)
-            }           
+         
           }
         else
         {
@@ -131,7 +136,12 @@ class PostIpmanager extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")")     
               }
-              ips += Ip(None,llist(0), startip , date)
+              else
+              {
+                ips += Ip(None,llist(0), startip , date)
+                  respondJson("okay")               
+              }
+
         }
   		}
     }
@@ -153,11 +163,16 @@ class PostIpmanager extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 없음니다."  ) + ")") 
               }
+              else
+              {
+                for(index <- arr(3).toInt to endip.toInt){
+                var ip = iptext + "." + index.toString
+                ipgame += Ipgame(None,llist(0), ip , work,date,"false")
+                  respondJson("okay")                
+              }
             }
 
-          for(index <- arr(3).toInt to endip.toInt){
-          var ip = iptext + "." + index.toString
-          ipgame += Ipgame(None,llist(0), ip , work,date,"false")
+
           }
         }
         else{
@@ -168,12 +183,15 @@ class PostIpmanager extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 없음니다."  ) + ")")     
               }
-          ipgame += Ipgame(None,llist(0), startip , work,date,"false")
-        }
+              else
+              {
+                ipgame += Ipgame(None,llist(0), startip , work,date,"false")
+                  respondJson("okay")                
+              }
 
+        }
       }
     }
-	respondJson("okay")
   }
 }
 

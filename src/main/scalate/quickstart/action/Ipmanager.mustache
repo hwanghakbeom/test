@@ -54,10 +54,13 @@ $(document).ready(function()
 		    	alert("IP주소는 255를 넘을수 없습니다.");
 		    	return;		    	
 		    }
-		    if(splitter[3] > $('#ipv42').val()){
-		    	alert("아이피 대역은 작은것에서 큰것으로 입력해 주시기 바랍니다.");
-		    	return;
+		    if($('#ipv42').val() != ""){
+			    if(splitter[3] > $('#ipv42').val()){
+			    	alert("아이피 대역은 작은것에서 큰것으로 입력해 주시기 바랍니다.");
+			    	return;
+			    }		    	
 		    }
+
 	    $.ajax({
         data: data,
         type: "POST",
