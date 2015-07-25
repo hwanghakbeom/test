@@ -422,3 +422,27 @@ class Checkgamewithname extends DefaultLayout {
     }
   }
 }
+
+@GET("installgame/:games")
+class Installwithname extends DefaultLayout {    
+  def execute() {
+   // /118.37.214.252:53023
+   var gamename = param("games")
+   val host = channel.remoteAddress
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn host.toString
+    var llist = regresult.toList
+    var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
+        println(ip)
+        //test
+    val db = forURL()
+    val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
+    db withSession { implicit session =>
+          ipgame.filter(p => p.ip === ip && p.game === gamename)
+       .map(p => (p.confirmed))
+       .update(("true"))
+    }
+    respondJson("okay")
+  }
+}

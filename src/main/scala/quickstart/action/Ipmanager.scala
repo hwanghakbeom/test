@@ -157,7 +157,7 @@ class PostIpmanager extends DefaultLayout {
 
           for(index <- arr(3).toInt to endip.toInt){
           var ip = iptext + "." + index.toString
-          ipgame += Ipgame(None,llist(0), ip , work,date)
+          ipgame += Ipgame(None,llist(0), ip , work,date,"false")
           }
         }
         else{
@@ -168,7 +168,7 @@ class PostIpmanager extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 없음니다."  ) + ")")     
               }
-          ipgame += Ipgame(None,llist(0), startip , work,date)
+          ipgame += Ipgame(None,llist(0), startip , work,date,"false")
         }
 
       }
