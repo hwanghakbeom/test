@@ -62,9 +62,21 @@ class Ipmanager extends DefaultLayout {
           )
         returnlist += iplist
       }
-
+      
+      var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
+      var q3 = Q.query[String,(String)]("select count(*) as count from ipgame where pcid = ? group by pcid, game")
+      val per3 = q3(code).list
+       if(per3.size > 0 )
+      {
+        for (t <- per3) {
+          var ipsubcount = Map[Any,Any]()
+          gamelist = Map("count" -> t)
+          ipcount += gamelist
+        }
+      }
             at("value") = returnlist 
             at("games") = returngamelist  	
+            at("ipcount") = ipcount
 
     }
 
