@@ -55,7 +55,7 @@ $(document).ready(function()
 		    	return;		    	
 		    }
 		    if($('#ipv42').val() != ""){
-			    if(splitter[3] > $('#ipv42').val()){
+			    if(parseInt(splitter[3]) > parseInt($('#ipv42').val())){
 			    	alert("아이피 대역은 작은것에서 큰것으로 입력해 주시기 바랍니다.");
 			    	return;
 			    }		    	

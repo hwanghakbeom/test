@@ -121,11 +121,11 @@ class PostIpmanager extends DefaultLayout {
                 for(index <- arr(3).toInt to endip.toInt){
                   var ip = iptext + "." + index.toString
                   ips += Ip(None,llist(0), ip , date)
-                    respondJson("okay")
-                }  
+
+                }
+                                    respondJson("okay")  
               }
             }
-         
           }
         else
         {
