@@ -53,7 +53,6 @@
 						게임선택
 						<div class="form-group">
 							<select class="form-control" name="select-game" id="select-game">
-								<option>전체</option>
 								{{#gamelist}}
 								<option>{{name}}</option>
 								{{/gamelist}}
@@ -64,7 +63,6 @@
 						지역
 						<div class="form-group">
 							<select class="form-control" name="select-region" id="select-region">
-								<option>전체</option>
 								<option value="서울">서울</option>
 								<option value="경기">경기</option>
 								<option value="인천">인천</option>
@@ -73,6 +71,7 @@
 								<option value="충남">충남</option>
 								<option value="대전">대전</option>
 								<option value="전북">전북</option>
+								<option value="전남">전남</option>
 								<option value="광주">광주</option>
 								<option value="경북">경북</option>
 								<option value="경남">경남</option>
@@ -97,45 +96,32 @@
 		</div>
 	</div>
 </div>
-<center>{{test}}</center>
+<center>[{{query}}]</center>
 <br>
 <table class="table">
-<tr>
-	<td rowspan="3">일자</td>
-	<td colspan="2">서울</td>
-	<td colspan="2">경기</td>
-	<td colspan="2">합계</td>	
+<tr bgcolor="lightgray">
+	<td rowspan="3"><center>일자</center></td>
+	<td colspan="2"><center>{{region}}</center></td>
 </tr>
-<tr>
-	<td>PC방수</td>
-	<td>IP수</td>
-	<td>PC방수</td>
-	<td>IP수</td>
+<tr bgcolor="lightgray">
 	<td>PC방수</td>
 	<td>IP수</td>
 </tr>
-<tr>
-	<td>2,300</td>
-	<td>165,600</td>
-	<td>2,700</td>
-	<td>194,400</td>
-	<td>9,800</td>
-	<td>705,400</td>
+<tr bgcolor="lightgray">
+	<td>{{pclocalcount}}</td>
+	<td>{{iplocalcount}}</td>
 </tr>
 {{#sumlist}}
 <tr>
-	<td>{{date}}</td>
+	<td><center>{{date}}</center></td>
+	<td>{{count}}</td>
+	<td>{{sum}}</td>
 </tr>
 {{/sumlist}}
-<tr>
-	<td>2015-07-01</td>
-	<td>25</td>
-	<td>500</td>
-	<td>25</td>
-	<td>500</td>
-	<td>800</td>
-	<td>16,000</td>
-</tr>
+<tr bgcolor="lightgray">
+<td><center>합계</center></td>
+<td>{{counttotal}}</td>
+<td>{{iptotal}}</td>
 </table>
 
 

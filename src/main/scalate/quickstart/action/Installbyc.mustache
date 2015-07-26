@@ -21,8 +21,10 @@
 				dateFormat: "yy-mm-dd"
 
 			});
+			var d = new Date();
+			d.setMonth(d.getMonth() - 1);
 			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
-			example("#datepicker").datepicker("setDate", new Date());
+			example("#datepicker").datepicker("setDate", d);
 		});
 	</script>
 	<script>
@@ -51,12 +53,9 @@
 						채널선택
 						<div class="form-group">
 							<select class="form-control" name="select-game" id="select-game">
-								<option>전체</option>
-								<option value="PA">게임A</option>
-								<option value="CT">게임B</option>
-								<option value="NY">게임C</option>
-								<option value="MD">게임D</option>
-								<option value="VA">게임E</option>
+								{{#channellist}}
+								<option value={{list}}>{{list}}</option>
+								{{/channellist}}
 							</select>
 						</div>
 					</div>
@@ -73,16 +72,16 @@
 		</div>
 	</div>
 </div>
-<center>{{test}}</center>
+<center>[{{query}}]</center>
 <br>
 <table class="table">
-<tr>
+<tr bgcolor="lightgray">
 	<td rowspan="2">일자</td>
 	<td colspan="2">게임A</td>
 	<td colspan="2">게임B</td>
 	<td colspan="2">게임C</td>
 </tr>
-<tr>
+<tr bgcolor="lightgray">
 	<td>PC방수</td>
 	<td>IP수</td>
 	<td>PC방수</td>

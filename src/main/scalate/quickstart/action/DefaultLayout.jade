@@ -22,11 +22,17 @@ html
     script(type="text/javascript" src="/js/bootstrap-datetimepicker.js")
   body
     .container
-
-      #flash
-        !~ jsRenderFlash()
-      != renderedView
-
+    |<div class="col-md-11">
+    |<a href="/installbyg" class="btn btn-default" role="button">게임별 설치현황</a>
+    |<a href="/installbyc" class="btn btn-default" role="button">채널별 설치현황</a>
+    |<a href="/pc" class="btn btn-default" role="button">PC방 현황</a>
+    |<a href="/admin" class="btn btn-default" role="button">Admin</a>
+    |<br>
+    |<br>
+    #flash
+    !~ jsRenderFlash()
+    != renderedView
+    |</div>
 
     script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js")
 

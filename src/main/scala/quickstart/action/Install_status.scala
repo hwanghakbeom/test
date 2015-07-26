@@ -32,7 +32,7 @@ class Installbyg extends DefaultLayout {
             case Some(x:String) => x 
             case _ => ""
           }
-    var date2 = paramo("date1")  match{
+    var date2 = paramo("date2")  match{
             case Some(x:String) => x 
             case _ => ""
           }
@@ -92,48 +92,77 @@ class Installbyg extends DefaultLayout {
     else
     {
       val db = forURL()
-      var regionstring = "("
       db withSession { implicit session =>
-        //PC방 지역별
-        if(region != "" || region != "전국"){
-          
-          println(region)
-          var regionquery = Q.query[String,(String)]("select rid as sub from pcs where left(add2,2) = ?")
-          val rperiod = regionquery(region).list
-          for (t <- rperiod) {
-              println(t)
-              regionstring += t
-              regionstring += " , "
+        var queryString = "select count(*) as c, sum(ipcount) as ip, installdate from install where game = ? and address = ? group by installdate,address"
+        var result = Q.query[(String,String),(String,String,String)](queryString)
+        val period = result(gamename,region).list
+        var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
+        var sublist = Map[Any,Any]()
+        var counttotal = 0
+        var iptotal = 0
+        if(period.size > 0 )
+        {
+          for (t <- period) {
+            sublist =Map("date" -> t._3,
+              "count" -> t._1,
+              "sum" -> t._2)
+            counttotal = counttotal + t._1.toInt
+            iptotal = iptotal + t._2.toInt
+           ipcount += sublist
           }
-           regionstring += ")"
-        println(regionstring)
         }
+        at("query") = gamename + ", " + region + " , " + date1 + " ~ " + date2
+        at("region") = region
+        at("sumlist") = ipcount
+
+        //로컬 PC방 카운트
+        var pclocalcountquery = "select rid from pcs  where left(add2,2) = ?"
+        var pclocalcountresult = Q.query[String,(String)](pclocalcountquery)
+        var pclocalcount = pclocalcountresult(region).list
+
+        at("pclocalcount") = pclocalcount.size
+
+        //로컬 IP 카운트
+        var iplocalcountquery = "select A.rid from ips A, pcs B where A.pcsid = B.rid and left(add2,2) = ?"
+        var iplocalcountresult = Q.query[String,(String)](iplocalcountquery)
+        var iplocalcount = iplocalcountresult(region).list
+
+        at("iplocalcount") = iplocalcount.size
+
+        //PC방 카운트
+        var pctotalcountquery = "select rid from pcs where 1 = ?"
+        var pctotalcountresult = Q.query[String,(String)](pctotalcountquery)
+        var pctotalcount = pctotalcountresult("1").list
+
+        at("pctotalcount") = pctotalcount.size
+
+        //IP 카운트
+        var iptotalcountquery = "select rid from ips where 1 = ?"
+        var iptotalcountresult = Q.query[String,(String)](iptotalcountquery)
+        var iptotalcount = iptotalcountresult("1").list
+
+        at("iptotalcount") = iptotalcount.size
+
+        if(region == "전국"){
+           var infosub = Map("pclocalcount" -> pclocalcount.size,
+            "iplocalcount" -> iplocalcount.size,
+            "pctotalcount" -> pctotalcount.size,
+            "iptotalcount" -> iptotalcount.size)   
+        }
+        else {
+           var infosub = Map("pclocalcount" -> pclocalcount.size,
+            "iplocalcount" -> iplocalcount.size)          
+        }
+        at("counttotal") = counttotal
+        at("iptotal") = iptotal
 
 
-      var querystring = "select pcid, count(*),installdate from ipgame where game = ? and installdate between '" + date1 + "' and '" + date2 + "'"
-      if(region != "" || region != "전국"){
-          regionstring = regionstring.substring(0,regionstring.length - 4)
-          regionstring += ")"
-          querystring += " and pcid in " + regionstring + ""
-      }
-      querystring += ""
-      querystring += " group by pcid, installdate  order by installdate, pcid"
 
 
-
-      var sumquery = Q.query[String,(String,String,String)](querystring )
-      val peroid = sumquery(gamename.toString).list
-      for (t <- peroid) {
-        subsumlist = Map("date" -> t._3,
-          "pcid" -> t._1,
-          "count" ->t._2)
-        sumlist += subsumlist
-      }   
-      }
-      at("sumlist") = sumlist
     }
-    respondView(Map("type" ->"mustache"))
   }
+    respondView(Map("type" ->"mustache"))
+}
 }
 @GET("installbyc")
 class Installbyc extends DefaultLayout {	
@@ -144,6 +173,43 @@ class Installbyc extends DefaultLayout {
       redirectTo("/installbyg")
     }
     // After login success
+      val db = forURL()
+      db withSession { implicit session =>
+        var queryString = "select name from channel where 1= ?"
+        var result = Q.query[String,(String)](queryString)
+        val period = result("1").list
+        var channellist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+        if(period.size > 0 )
+        {
+          for (t <- period) {
+            channellist += Map("list" -> t)
+          }
+        }
+        at("channellist") = channellist
+    var gamename = paramo("select-game")  match{
+            case Some(x:String) => x 
+            case _ => ""
+          }
+    var date1 = paramo("date1")  match{
+            case Some(x:String) => x 
+            case _ => ""
+          }
+    var date2 = paramo("date2")  match{
+            case Some(x:String) => x 
+            case _ => ""
+          }
+    if(gamename == ""  || date1 == "" || date2 == ""){
+      println("login")
+    }
+    else{
+      val db = forURL()
+      db withSession { implicit session =>
+           var queryString2 = "select installdate, sum(ipcount) as sum, count(*) as c, game from install where channel = ? group by game order by installdate"
+      }
+    }
+        //조회
+       
     respondView(Map("type" ->"mustache"))
   }
+}
 }
