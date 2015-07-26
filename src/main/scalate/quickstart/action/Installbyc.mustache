@@ -77,36 +77,25 @@
 <table class="table">
 <tr bgcolor="lightgray">
 	<td rowspan="2">일자</td>
-	<td colspan="2">게임A</td>
-	<td colspan="2">게임B</td>
-	<td colspan="2">게임C</td>
+	{{#games}}
+	<td colspan="2">{{list}}</td>
+	{{/games}}
 </tr>
 <tr bgcolor="lightgray">
+{{#games}}
 	<td>PC방수</td>
 	<td>IP수</td>
-	<td>PC방수</td>
-	<td>IP수</td>
-	<td>PC방수</td>
-	<td>IP수</td>
+	{{/games}}
 </tr>
+{{#row}}
 <tr>
-	<td>2015-07-01</td>
-	<td>25</td>
-	<td>500</td>
-	<td>25</td>
-	<td>500</td>
-	<td>800</td>
-	<td>16,000</td>
+	<td>{{date}}</td>
+	{{#value}}
+	<td>{{pc}}</td>
+	<td>{{ip}}</td>
+	{{/value}}
 </tr>
-<tr>
-	<td>2015-07-01</td>
-	<td>25</td>
-	<td>500</td>
-	<td>25</td>
-	<td>500</td>
-	<td>800</td>
-	<td>16,000</td>
-</tr>
+{{/row}}
 </table>
 
 
