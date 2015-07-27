@@ -186,7 +186,7 @@ class Installbyc extends DefaultLayout {
           }
         }
         at("channellist") = channellist
-    var gamename = paramo("select-game")  match{
+    var channelname = paramo("select-game")  match{
             case Some(x:String) => x 
             case _ => ""
           }
@@ -198,59 +198,103 @@ class Installbyc extends DefaultLayout {
             case Some(x:String) => x 
             case _ => ""
           }
-    if(gamename == ""  || date1 == "" || date2 == ""){
+    if(channelname == ""  || date1 == "" || date2 == ""){
       println("login")
     }
     else{
-      at("query") = gamename +  " , " + date1 + " ~ " + date2
+      at("query") = channelname +  " , " + date1 + " ~ " + date2
       val db = forURL()
       db withSession { implicit session =>
 
           //gamelist
           var valuelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+          var returnlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
            var gamequerystring = "select game from install where channel = ? group by game order by game"
            var gamequeryresut = Q.query[String,(String)](gamequerystring)
-           val gameperiod = gamequeryresut(gamename).list
+           val gameperiod = gamequeryresut(channelname).list
            var gamelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
             if(gameperiod.size > 0 )
             {
               for (t <- gameperiod) {
                 gamelist += Map("list" -> t)
                 valuelist += Map("pc" -> "0")
-                valuelist += Map("ip" -> "0")
+                valuelist += Map("pc" -> "0")
             }
             at("games") = gamelist
           }  
-
-           var queryString2 = "select installdate, sum(ipcount) as sum, count(*) as c, game from install where channel = ? group by game, installdate order by game,installdate"
+           var queryString2 = "select installdate, sum(ipcount) as sum, count(*) as c, game from install where channel = ? group by installdate,game order by installdate,game"
            var result2 = Q.query[String,(String,String,String,String)](queryString2)
-           val period2 = result2(gamename).list
-           var querysublist = Map[Any,Any]()
-           var querylist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+           val period2 = result2(channelname).list
+           var querysublist = Map[String,String]()
+           var querylist = scala.collection.mutable.MutableList[Map[String,String]]()
 
-          //   if(period.size > 0 )
-          //   {
-          //     installdate = ""
-          //     for (t <- period) {
-          //       if(installdate == t._1) {
-          //         //같은 날짜 다른 게임
-          //       }
-          //       else{
-          //         //다른 날짜
-          //         if(installdate != "") { querylist += querysublist}
-          //         querysublist += Map("installdate" -> t._1)
-          //         //game 위치 파악
-          //         var index = 0
-          //         for (t <- gameperiod) {
-          //           if(t == t._4){
-
-          //           }
-          //         }
-          //       }
-
-          //   }
-          //   at("value") = valuelist
-          // }
+            if(period2.size > 0 )
+            {
+              var installdate = ""
+              for (t <- period2) {
+                if(installdate == t._1) {
+                  //같은 날짜 다른 게임
+                  //update array
+                  var index = 0
+                  var findindex = 0
+                  for (t1 <- gameperiod) {
+                    println("T1 " + t1 + "  t._4: " + t._4)
+                    if(t1 == t._4){
+                      findindex = index
+                    }
+                    index = index + 1
+                  }
+                  println("INDEX = " + findindex.toString)
+                  var firstindex = findindex * 2
+                  var secondindex = firstindex + 1
+                  valuelist(firstindex) = Map("pc" -> t._3)
+                  valuelist(secondindex) = Map("pc" -> t._2)
+                  println(valuelist(firstindex))
+                  println(valuelist(secondindex))
+                }
+                else{
+                  //다른 날짜
+                  if(installdate != "") { 
+                    //처음 array가 아님
+                    //querysublist += Map("value" -> gamesublist)
+                    querylist += querysublist
+                    println("   INSERTED")
+                    println("BACKUP")
+                    returnlist += Map("value" -> valuelist,"date" -> installdate)
+                    //initial
+                      valuelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+                      for (t <- gameperiod) {
+                          valuelist += Map("pc" -> "0")
+                          valuelist += Map("pc" -> "0")
+                      }
+                  }
+                  installdate = t._1
+                  querysublist += ("installdate" -> t._1)
+                  //game 위치 파악
+                  var index = 0
+                  var findindex = 0
+                  for (t1 <- gameperiod) {
+                    println("T1 " + t1 + "  t._4: " + t._4)
+                    if(t1 == t._4){
+                      findindex = index
+                    }
+                    index = index + 1
+                  }
+                  println("INDEX = " + findindex.toString)
+                  //update array
+                  var firstindex = findindex * 2
+                  var secondindex = firstindex + 1
+                  valuelist(firstindex) = Map("pc" -> t._3)
+                  valuelist(secondindex) = Map("pc" -> t._2)
+                  println(valuelist(firstindex))
+                  println(valuelist(secondindex))
+                }
+            
+            }
+            returnlist += Map("value" -> valuelist,"date" -> installdate)
+            println(returnlist)
+            at("sumlist") = returnlist
+          }
        
              
       }
