@@ -342,7 +342,7 @@ class Getuserlist extends DefaultLayout {
         if(peroid.size == 0 ){respondJson("okay")}
         else{
             for (t <- peroid) {
-                 sublist = Map("rid" -> t._1,
+                 sublist = Map("rid" -> t._2,
                    "name" -> t._4,
                    "position" -> t._5,
                    "company" -> t._6,
