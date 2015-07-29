@@ -25,7 +25,9 @@ class Ipmanager extends DefaultLayout {
     var code = param("code")
     val db = forURL()
     var gamelist = Map[Any,Any]()
+     var returnlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
      var returngamelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+     var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
     db withSession { implicit session =>
     var queryString = "SELECT * FROM game WHERE 1 = ?"
     var query1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String)](queryString)
@@ -41,7 +43,7 @@ class Ipmanager extends DefaultLayout {
 
      var q2 = Q.query[String,(String,String,String,String)]("SELECT * FROM ips where pcsid = ?")
      val peroid = q2(code).list
-     var returnlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    
 
       var iplist = Map[Any,Any]()
       var gamesublist = Map[Any,Any]()
@@ -63,7 +65,7 @@ class Ipmanager extends DefaultLayout {
         returnlist += iplist
       }
       
-      var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
+      
       var q3 = Q.query[String,(String)]("select count(*) as count from ipgame where pcid = ? group by pcid, game")
       val per3 = q3(code).list
        if(per3.size > 0 )
@@ -74,12 +76,12 @@ class Ipmanager extends DefaultLayout {
           ipcount += gamelist
         }
       }
-            at("value") = returnlist 
-            at("games") = returngamelist  	
-            at("ipcount") = ipcount
+
 
     }
-
+            at("value") = returnlist 
+            if(session("role") != "cha") { at("games") = returngamelist   }
+            at("ipcount") = ipcount
 
 	respondView(Map("type" ->"mustache"))
   }
