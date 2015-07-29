@@ -426,7 +426,7 @@ class Checkgamewithname extends DefaultLayout {
 @GET("installgame/:games")
 class Installwithname extends DefaultLayout {    
   def execute() {
-   // /118.37.214.252:53023
+   // 118.37.214.252:53023
    var gamename = param("games")
    val host = channel.remoteAddress
 
@@ -438,10 +438,17 @@ class Installwithname extends DefaultLayout {
         //test
     val db = forURL()
     val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
+    val ips: TableQuery[Ips] = TableQuery[Ips]
     db withSession { implicit session =>
-          ipgame.filter(p => p.ip === ip && p.game === gamename)
-       .map(p => (p.confirmed))
-       .update(("true"))
+          var q1 = ipgame.filter(p => p.ip === ip && p.game === gamename).list
+          if(q1.size == 0) { 
+            var q2 = ips.filter{q => q.ip === ip}.list
+            if(q2.size > 0) { 
+              var test = q2(0).productIterator.toList.zip(List("rid", "pcid"))
+              ipgame += Ipgame(None,test(1)._1.toString,ip,gamename,TransDate.getCurrentDate(),"false")
+            }
+          }
+
     }
     respondJson("okay")
   }
