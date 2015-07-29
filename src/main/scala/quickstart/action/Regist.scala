@@ -138,9 +138,20 @@ class Newuser extends DefaultLayout {
     val user: TableQuery[Users] = TableQuery[Users]
     val db = forURL()
       db withSession { implicit session =>
-        def deleteuser(name: String) = sqlu"delete from users where userid = $userid".first
-        val rows= deleteuser(userid)
-        user += User(None,userid,"",username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+        //userid 가 있으면 업데이트
+        var q1 = user.filter(q => q.userid === userid).list
+        if(q1.size > 0)
+        {
+          //업데이트
+            user.filter(p => p.userid === userid)
+         .map(p => (p.name,p.company,p.email,p.phone,p.mobile,p.work))
+         .update((username,usercompany,useremail,userphone,usermobile,userwork))
+        }
+        else
+        {
+          //없으면 insert
+          user += User(None,userid,"",username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+        }        
       }
     respondJson("okay") 
   }
