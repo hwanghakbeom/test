@@ -172,12 +172,16 @@ class Installbyc extends DefaultLayout {
     if(session("userId") == "" || session("role") == "adv"){
       redirectTo("/installbyg")
     }
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn userid.toString
+    var llist = regresult.toList
+    var rid = llist(0)
     // After login success
       val db = forURL()
       db withSession { implicit session =>
-        var queryString = "select name from channel where 1= ?"
+        var queryString = "select name from channel where user= ?"
         var result = Q.query[String,(String)](queryString)
-        val period = result("1").list
+        val period = result(rid).list
         var channellist = scala.collection.mutable.MutableList[Map[Any,Any]]()
         if(period.size > 0 )
         {
