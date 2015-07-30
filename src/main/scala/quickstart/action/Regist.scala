@@ -228,8 +228,9 @@ class Regdirectory extends DefaultLayout {
     db withSession { implicit session =>
       for (t <- arr) {
           var arr2 = t.split(";")
+          var removedollar = arr2(3).replace("$","")
           println(arr2)
-          mapping += Mapping(None,arr2(0),arr2(1),arr2(2),arr2(3),TransDate.getCurrentDate())
+          mapping += Mapping(None,arr2(0),arr2(1),arr2(2),removedollar,TransDate.getCurrentDate())
     } 
         respondJson("okay")
   }
