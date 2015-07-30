@@ -19,7 +19,8 @@ import Q.interpolation
 @GET("gamemanager")
 class Gamemanager extends DefaultLayout {	
   def execute() {
-
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") == "adv") { redirectTo("/installbyg")}
     var userid = session.getOrElse("userId", "")
 	val db = forURL()
     var patternt = "\\d+".r
@@ -70,6 +71,61 @@ class Gamemanager extends DefaultLayout {
 		println(returnList)
 		println("user")
 	}
+	}
+
+
+    var gamereturnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var channelList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    sublist = Map[Any,Any]()
+    var gamelist = Map[Any,Any]()
+
+    val channel: TableQuery[Channels] = TableQuery[Channels]
+    if(session("role") == "cha"){
+      db withSession { implicit session =>
+        var q1 = channel.filter(_.user === rid).list
+        val querysize = q1.size - 1
+        for(   index <-0 to querysize ){
+          var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
+          var channelsublist = Map[Any,Any]()
+          channelsublist = Map(
+            test(0)._2 -> test(0)._1,
+            test(1)._2 -> test(1)._1
+            )
+          channelList += channelsublist
+        }    
+      }
+    }
+    else
+    {
+      db withSession { implicit session =>
+        var q1 = channel.filter(_.rid > 0).list
+        val querysize = q1.size - 1
+        channelList += Map("rid"->"0", "name"->"채널전체")
+        for(   index <-0 to querysize ){
+          var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
+          var channelsublist = Map[Any,Any]()
+          channelsublist = Map(
+            test(0)._2 -> test(0)._1, 
+            test(1)._2 -> test(1)._1
+            )
+          channelList += channelsublist
+        }        
+      }
+    }
+    db withSession { implicit session =>
+    var queryString = "SELECT * FROM game WHERE 1 = ?"
+    var query1 = Q.query[String, (String,String,String,String,String,String,String,String,String,String,String)](queryString)
+    val peroid = query1("1").list
+    if(peroid.size > 0 )
+    {
+      for (t <- peroid) {
+        gamelist = Map("rid" -> t._1,
+          "name" -> t._2)
+        gamereturnList += gamelist
+      }
+    }
+    at("game") = gamereturnList
+    at("channel") = channelList
 	}
   	respondView(Map("type" ->"mustache"))
   }
