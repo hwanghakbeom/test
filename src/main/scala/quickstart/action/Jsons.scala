@@ -375,7 +375,7 @@ class Checkgame extends DefaultLayout {
     val db = forURL()
     db withSession { implicit session =>
       var ipcount = scala.collection.mutable.MutableList[String]()
-      var q3 = Q.query[String,(String)]("select game from ipgame where ip = ?")
+      var q3 = Q.query[String,(String)]("select game from mapping where channel = ( select channel from pcs where rid = ( select  pcsid from ips where ip = ? ) )")
       val per3 = q3(ip).list
       if(per3.size > 0 )
       {
@@ -384,6 +384,7 @@ class Checkgame extends DefaultLayout {
         }
 
       }
+      println(ipcount)
       respondJson(ipcount)
     }
   }
