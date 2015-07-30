@@ -322,7 +322,6 @@ $('#inlineCheckbox{{rid}}').click(function() {
 
 <!-- <input id="create-channel" value = "채널등록" class = "btn btn-success"> -->
 <input id="create-user" value = "신규등록" class = "btn btn-success"> 
-<input id="game-mapping" value = "게임관리" class = "btn btn-success">
 </div>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -707,71 +706,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 	});
 </script>
 
-<script>
-//게임매핑
 
-	var example=jQuery.noConflict();
-	example(function() {
-
-		var dialog, form;
-
-		function addUser() {
-			data = new FormData();
-			var param = "";
-			$("#mappingselect option").each(function()
-			{
-			    param = param + $(this).val() + "$"
-			});
-			data.append("directory",param);
-
-		    $.ajax({
-		        data: data,
-		        type: "POST",
-		        url: "/reg_direcotry",
-		        enctype: "multipart/form-data",
-		        cache: false,
-		        contentType: false,
-		        processData: false,
-		        success: function(url) {
-		                alert("등록되었습니다.");
-		                dialog.dialog( "close" );
-		        }
-		    });
-		};
-		dialog = example( "#dialog-gamemapping" ).dialog({
-			autoOpen: false,
-			height: 500,
-			width: 450,
-			modal: true,
-			buttons: {
-				"적용": addUser,
-				Cancel: function() {
-					dialog.dialog( "close" );
-				}
-			},
-			close: function() {
-				allFields.removeClass( "ui-state-error" );
-			}
-		});
-		form = dialog.find( "form" ).on( "submit", function( event ) {
-			event.preventDefault();
-			addUser();
-		});
-
-
-		example( "#game-mapping" ).button().on( "click", function() {
-		
-			var dialog = example( "#dialog-gamemapping" ).dialog({
-				autoOpen: false,
-				height: 500,
-				width: 850,
-				modal: true,
-
-			});
-			dialog.dialog("open");
-		});
-	});
-</script>
 
 <script>
 $(document).ready(function()
@@ -830,16 +765,6 @@ $(document).ready(function()
 		                dialog.dialog( "close" );
 		        }
 		    });
-	});
-	$('#update-mapping').click(function(){
-		var total = $("#mapping-channel option:selected").val() + ";" + $("#mapping-game option:selected").val() + ";" + $("#filetype option:selected").val() + ";" + $('#directory').val();
-		$('#mappingselect').append($('<option>', {
-    		value: total,
-    		text: total
-		}));	
-	});
-	$('#delete-mapping').click(function(){
-		$("#mappingselect option:selected").remove();
 	});
 });
 </script>
@@ -1063,46 +988,6 @@ $(document).ready(function()
 </div>
 </div>
 
-<div id="dialog-gamemapping" title="게임매핑">
-	<div class="row">
-		<div class="col-md-2"><label>채널선택</label></div>
-		<div class="col-md-10">
-			<select class="form-control" id="mapping-channel" name="mapping-channel">
-				<option>채널선택</option>
-				{{#channel}}
-				<option value="{{name}}">{{name}}</option>
-				{{/channel}}
-			</select>
-		</div>
-		<div class="col-md-2"><label>게임선택</label></div>
-		<div class="col-md-10">
-			<select class="form-control" id="mapping-game" name="mapping-game">
-				<option>게임선택</option>
-				{{#game}}
-				<option value="{{name}}">{{name}}</option>
-				{{/game}}
-			</select>
-		</div>
-			<div class="col-md-2"><label>파일타입</label></div>
-			<div class="col-md-10">
-				<select class="form-control" id="filetype" name="filetype">
-				<option value="file">파일</option>
-				<option value="reg">레지스트리</option>
-			</div>
-			<div class="col-md-2"><label>경로</label></div>
-			<div class="col-md-10">
-				<input type="text" class="form-control" id="directory">
-			</div>
-	<div class="col-md-2"><label>경로목록</label></div>
-	<div class="col-md-10">
-		<select size="5" style="width:100%;" id="mappingselect">
-		</select>
-	</div>
-	<div class="col-md-2"><label></label></div>
-	<div class="col-md-10">
-	<input id="update-mapping" value = "추가" class = "btn btn-success">
-	<input id="delete-mapping" value = "삭제" class = "btn btn-success">
-	</div>
-</div>
+
 
 </div>
