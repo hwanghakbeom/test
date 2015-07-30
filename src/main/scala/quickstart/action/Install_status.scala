@@ -172,6 +172,7 @@ class Installbyc extends DefaultLayout {
     if(session("userId") == "" || session("role") == "adv"){
       redirectTo("/installbyg")
     }
+    var userid = session("userId")
     var patternt = "\\d+".r
     var regresult = patternt findAllIn userid.toString
     var llist = regresult.toList
