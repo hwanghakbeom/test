@@ -127,6 +127,7 @@ class Newuser extends DefaultLayout {
   def execute() {
     var userid   = param("userid")
     var username = param("username") 
+    var userpass = param("userpass")
     var usercompany   = param("usercompany")
     var useremail = param("useremail") 
     var userphone  = param("userphone")
@@ -150,7 +151,7 @@ class Newuser extends DefaultLayout {
         else
         {
           //없으면 insert
-          user += User(None,userid,"",username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+          user += User(None,userid,userpass,username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
         }        
       }
     respondJson("okay") 

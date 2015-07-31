@@ -61,22 +61,43 @@ $(document).ready(function()
 			    }		    	
 		    }
 
-	    $.ajax({
-        data: data,
-        type: "POST",
-        url: "/ipmanager",
-        enctype: "multipart/form-data",
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(url) {
-                alert("등록되었습니다.");
-                location.reload();
-        },
-        error: function(url) {
-        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
-        }
-    });	
+		    if($("#mapping-game option:selected").val() != "IP작업"){
+			    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/ipcheck",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+				    $.ajax({
+			        data: data,
+			        type: "POST",
+			        url: "/ipmanager",
+			        enctype: "multipart/form-data",
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        success: function(url) {
+			                alert("등록되었습니다.");
+			                location.reload();
+			        },
+			        error: function(url) {
+			        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
+			        }
+			    });	
+		        },
+		        error: function(url) {
+		        	alert("등록이 불가능한 IP가 포함되어 있습니다." );
+		        	return;
+		        }
+		        });
+		        }		    	
+		    
+
+
+
 	});
 	$('#ipdelete').click(function(){ 
 		    data = new FormData();
@@ -86,22 +107,37 @@ $(document).ready(function()
 		    data.append("date",$("#datepicker").datepicker({}).val());
 		    data.append("work", $("#mapping-game option:selected").val());
 
-	    $.ajax({
-        data: data,
-        type: "POST",
-        url: "/ipmanagerdelete",
-        enctype: "multipart/form-data",
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(url) {
-                alert("삭제되었습니다.");
-                location.reload();
-        },
-        error: function(url) {
-        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
-        }
-    });	
+			    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/ipcheck",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+				    $.ajax({
+			        data: data,
+			        type: "POST",
+			        url: "/ipmanagerdelete",
+			        enctype: "multipart/form-data",
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        success: function(url) {
+			                alert("삭제되었습니다.");
+			                location.reload();
+			        },
+			        error: function(url) {
+			        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
+			        }
+			    });	
+		        },
+		        error: function(url) {
+		        	alert("등록이 불가능한 IP가 포함되어 있습니다." );
+		        	return;
+		        }
+		        });
 	});
 });
 </script>

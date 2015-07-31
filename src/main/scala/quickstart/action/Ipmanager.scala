@@ -86,6 +86,48 @@ class Ipmanager extends DefaultLayout {
 	respondView(Map("type" ->"mustache"))
   }
 }
+@POST("ipcheck/")
+class PostIpcheck extends DefaultLayout { 
+  def execute() {
+    var pcid = param("pcs")
+    var startip = param("startip")
+    var endip = param("endip")
+    var work = param("work")
+    var date = param("date")
+    var userid = session("userId")
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn userid.toString
+    var llist = regresult.toList
+    var rid = llist(0)  
+    var arr = startip.split(".".toArray)
+    var iptext = arr(0) + "." + arr(1) + "." + arr(2)
+    val db = forURL()
+    db withSession { implicit session =>
+      if(endip != ""){
+        for(index <- arr(3).toInt to endip.toInt){
+          var ip = iptext + "." + index.toString
+          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + ip +"'"
+          var q1 = Q.query[String, (String)](queryString)
+              val peroid = q1(ip).list
+              if(peroid.size == 0 )
+              {
+                jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
+              }
+        }
+      }
+      else{
+          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + ip +"'"
+          var q1 = Q.query[String, (String)](queryString)
+          val peroid = q1(startip).list
+          if(peroid.size == 0 )
+          {
+            jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
+          }
+      }
+    }
+    respondJson("okay")
+  }
+}
 @POST("ipmanager/")
 class PostIpmanager extends DefaultLayout {	
   def execute() {
@@ -94,7 +136,7 @@ class PostIpmanager extends DefaultLayout {
   	var endip = param("endip")
   	var work = param("work")
   	var date = param("date")
-	var patternt = "\\d+".r
+  var patternt = "\\d+".r
 	var arr = startip.split(".".toArray)
 	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
 	println(iptext)
@@ -105,7 +147,6 @@ class PostIpmanager extends DefaultLayout {
     	val db = forURL()
   		val ips: TableQuery[Ips] = TableQuery[Ips]
   		db withSession { implicit session =>
-
         //ipcheck
         if(endip != ""){
             var ipcheckstring = ""
