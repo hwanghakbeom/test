@@ -69,6 +69,31 @@
 			});
 			dialog.dialog("open");
 		});
+
+		example( "#game-delete" ).button().on( "click", function() {
+		
+			$('input[name="btSelectItem"]:checked').each(function () {
+				var deletedindex =  $(this).data('index');
+			    $.ajax({
+		        type: "POST",
+		        url: "/gamedelete/" + deletedindex,
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		        		console.log("삭제됨");
+			    },
+			    error: function(url) {
+			        	alert("알수 없는 오류가 발생했습니다." );
+			        }
+			    });	
+
+		        });
+			location.reload();
+			});
+
+
 	});
 </script>
 
@@ -88,9 +113,10 @@ $(document).ready(function()
 });
 </script>
 
-<table class="table" style="font-size:	12px;">
+<table class="table" style="font-size:	12px;" data-click-to-select="true">
 	<thead>
 		<tr>
+			<th data-field="state" data-checkbox="true"></th>
 			<th data-field="code" data-align="right"> 채널명</th>
 			<th data-field="name" data-align="center" >설치게임</th>
 			<th data-field="region" >설치타입</th>
@@ -101,6 +127,9 @@ $(document).ready(function()
 	<tbody>
 	{{#value}}
 	<tr>
+	<td class="bs-checkbox">
+	<input data-index={{rid}} name="btSelectItem" type="checkbox">
+	</td>
 	<td>{{channel}}</td>
 	<td>{{game}}</td>
 	<td>{{type}}</td>
@@ -112,7 +141,7 @@ $(document).ready(function()
 </table>
 
 <input id="game-mapping" value = "게임등록" class = "btn btn-success">
-
+<input id="game-delete" value = "게임삭제" class = "btn btn-success">
 <div id="dialog-gamemapping" title="게임매핑">
 	<div class="row">
 		<div class="col-md-2"><label>채널선택</label></div>

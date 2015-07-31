@@ -58,7 +58,8 @@ class Gamemanager extends DefaultLayout {
 		val peroid = q1(rid).list
 		if(peroid.size > 0) {
 			for (t <- peroid) {
-				sublist =Map("rid" -> t._1,
+				sublist =Map("state" -> "false",
+          "rid" -> t._1,
 		            "channel" -> t._2,
 		            "game" ->t._3,
 		            "type" ->t._4,
@@ -128,5 +129,19 @@ class Gamemanager extends DefaultLayout {
     at("channel") = channelList
 	}
   	respondView(Map("type" ->"mustache"))
+  }
+}
+
+@POST("gamedelete/:rid")
+class Gamedelete extends DefaultLayout { 
+  def execute() {
+    val rid = param("rid")
+    val db = forURL()
+    db withSession { implicit session =>
+            def deleteip(ip: String) = sqlu"delete from mapping where rid = $rid".first
+              val rows= deleteip(rid)     
+    }
+    respondJson("okay")
+
   }
 }
