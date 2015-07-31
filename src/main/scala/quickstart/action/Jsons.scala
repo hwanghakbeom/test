@@ -310,7 +310,8 @@ class Getgamelist extends DefaultLayout {
             for (t <- peroid) {
                 var idate = t._7 + "~" + t._8
                 var istatus = t._9 + " " + t._10
-                 sublist = Map("name" -> t._2,
+                 sublist = Map("rid" -> t._1,
+                  "name" -> t._2,
                    "company" -> t._3,
                    "company_number" -> t._4,
                    "owner" -> t._5,

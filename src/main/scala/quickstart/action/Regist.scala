@@ -100,6 +100,7 @@ class NewChannel extends DefaultLayout {
 @POST("newgame")
 class Newgame extends DefaultLayout {	
   def execute() {
+    var gameid   = param("rid")
 		var name	 = param("name")
 		var add1 = param("add1") 
 		var add2	 = param("add2")
@@ -114,9 +115,15 @@ class Newgame extends DefaultLayout {
 		val game: TableQuery[Games] = TableQuery[Games]
 		val db = forURL()
 		  db withSession { implicit session =>
-        def deletegame(name: String) = sqlu"delete from game where name = $name".first
-        val rows= deletegame(name)
-		  	game += Game(None,name,company,companynumber,owner,add1,startdate,enddate,ratio,ratiodetail,add2)
+        if(gameid == ""){
+          game += Game(None,name,company,companynumber,owner,add1,startdate,enddate,ratio,ratiodetail,add2)
+        }
+        else{
+            game.filter(p => p.rid === gameid.toInt)
+         .map(p => (p.name,p.companyname,p.companynumber,p.owner,p.add1,p.startdate,p.enddate,p.ratio,p.ratiodetail,p.add2))
+         .update((name,company,companynumber,owner,add1,startdate,enddate,ratio, ratiodetail,add2))
+        }
+		  	
 		  }
 		respondJson("okay") 
   }
@@ -128,6 +135,7 @@ class Newuser extends DefaultLayout {
     var userid   = param("userid")
     var username = param("username") 
     var userpass = param("userpass")
+    var position = param("position")
     var usercompany   = param("usercompany")
     var useremail = param("useremail") 
     var userphone  = param("userphone")
@@ -144,14 +152,21 @@ class Newuser extends DefaultLayout {
         if(q1.size > 0)
         {
           //업데이트
-            user.filter(p => p.userid === userid)
-         .map(p => (p.name,p.company,p.email,p.phone,p.mobile,p.work))
-         .update((username,usercompany,useremail,userphone,usermobile,userwork))
+          if(userpass == "[object HTMLInputElement]"){
+              user.filter(p => p.userid === userid)
+           .map(p => (p.name,p.position,p.company,p.email,p.phone,p.mobile,p.work))
+           .update((username,position,usercompany,useremail,userphone,usermobile,userwork))           
+          }
+          else{
+              user.filter(p => p.userid === userid)
+           .map(p => (p.name,p.position,p.pass,p.company,p.email,p.phone,p.mobile,p.work))
+           .update((username,position,userpass,usercompany,useremail,userphone,usermobile,userwork))           
+          } 
         }
         else
         {
           //없으면 insert
-          user += User(None,userid,userpass,username,"",usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+          user += User(None,userid,userpass,username,position,usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
         }        
       }
     respondJson("okay") 

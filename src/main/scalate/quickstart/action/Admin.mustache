@@ -72,6 +72,7 @@
 	example(function() {
 
 		var dialog, form,
+		gameid = example( "#newgameid" ),
 		name = example( "#name" ),
 		add1 = example( "#sample4_roadAddress" ),
 		add2 = example( "#sample4-detail" ),
@@ -80,11 +81,12 @@
 		companynumber = example( "#companynumber"),
 		startdate = example("#datepicker1" ).datepicker({}).val(),
 		enddate = example("#datepicker2" ).datepicker({}).val(),
-		ratio = example('#select-region').val(),
+		ratio = example('#select-region option:selected').val(),
 		detail = example( "#ratio-detail");
-
+		
 		function addUser() {
 		    data = new FormData();
+		    data.append("rid", gameid.val());
 		    data.append("name", name.val());
 		    data.append("add1", add1.val());
 		    data.append("add2", add2.val());
@@ -93,7 +95,7 @@
 		    data.append("companynumber",companynumber.val());
 		    data.append("startdate", example("#datepicker1" ).datepicker({}).val());
 		    data.append("enddate",example("#datepicker2" ).datepicker({}).val());
-		    data.append("ratio", ratio);
+		    data.append("ratio", example('#select-region option:selected').val());
 		    data.append("ratiodetail",detail.val());
 
 		    $.ajax({
@@ -163,6 +165,7 @@
 		    data.append("userid", userid.val());
 		    data.append("username", username.val());
 		    data.append("userpass", userpass.val());
+		    data.append("position",position.val());
 		    data.append("usercompany", usercompany.val());
 		    data.append("useremail",useremail.val());
 		    data.append("userphone", userphone.val());
@@ -242,6 +245,7 @@ $ = jQuery;
 			$('#game_table').dataTable( {
 				"ajax": "getgamelist/",
 				"columns": [
+				{ "data": "rid" },
 				{ "data": "name" },
 				{ "data": "company" },
 				{ "data": "company_number" },
@@ -263,7 +267,7 @@ $ = jQuery;
 			var table = $('#game_table').DataTable();
 
 			$('#game_table tbody').on( 'click', 'tr', function () {
-				var pccode =  $('#game_table').DataTable().row(this).data()['name'];
+				var pccode =  $('#game_table').DataTable().row(this).data()['rid'];
 				$.ajax({
 					url: 'gamedetails/' + pccode,
 					type: "get",
@@ -286,6 +290,7 @@ $ = jQuery;
 						var ratio = data.ratio;
 						var ratiodetail = data.ratiodetail;
 
+						$('#newgameid').val(code);
 						$('#name').val(name);
 						$('#sample4_roadAddress').val(add1);
 						$('#sample4-detail').val(add2);
@@ -331,6 +336,7 @@ $ = jQuery;
 					success: function(data) {
 						var userid = data.userid;
 						var username = data.username;
+						var usepass = data.userpass;
 						var position = data.position;
 						var usercompany = data.usercompany;
 						var useremail = data.useremail;
@@ -343,6 +349,7 @@ $ = jQuery;
 
 						$('#userid').val(userid);
 						$('#userid').prop("readonly", true);
+						$('#userpass').val(userpass);
 						$('#username').val(username);
 						$('#position').val(position);
 						$('#usercompany').val(usercompany);
@@ -433,6 +440,7 @@ $ = jQuery;
 			<table id="game_table" class="display">
 				<thead>
 					<tr>
+					    <th data-field="gameid" data-align="right"> ID</th>
 						<th data-field="name" data-align="right"> 게임명</th>
 						<th data-field="company" data-align="center" >회사명</th>
 						<th data-field="company_number" >사업자번호</th>
@@ -526,6 +534,12 @@ $ = jQuery;
 <div id="game-form" title="게임리스트 - 신규 등록 및 수정" >
 	<form data-toggle="validator" role="form">
 		<div class="row">
+			<div class="col-md-3">
+				<label for="name">ID</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="newgameid" id="newgameid"  class="form-control input" disabled>
+			</div>
 			<div class="col-md-3">
 				<label for="name">게임명</label>
 			</div>
