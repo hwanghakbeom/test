@@ -108,7 +108,7 @@ class PostIpcheck extends DefaultLayout {
           var ip = iptext + "." + index.toString
           var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + ip +"'"
           var q1 = Q.query[String, (String)](queryString)
-              val peroid = q1(ip).list
+              val peroid = q1(rid).list
               if(peroid.size == 0 )
               {
                 jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
@@ -116,9 +116,9 @@ class PostIpcheck extends DefaultLayout {
         }
       }
       else{
-          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + ip +"'"
+          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + startip +"'"
           var q1 = Q.query[String, (String)](queryString)
-          val peroid = q1(startip).list
+          val peroid = q1(rid).list
           if(peroid.size == 0 )
           {
             jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
