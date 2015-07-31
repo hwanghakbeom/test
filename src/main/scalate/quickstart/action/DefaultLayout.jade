@@ -26,12 +26,14 @@ html
     - var user = session.getOrElse("role", null)
     - if (user == "adv")
     |<a href="/installbyg" class="btn btn-default" role="button">게임별 설치현황</a>
+    |<a href="/logout" class="btn btn-success" role="button">로그아웃</a>
     |<br>
     |<br>
     - else if (user == "cha")
     |<a href="/installbyc" class="btn btn-default" role="button">채널별 설치현황</a>
     |<a href="/pc" class="btn btn-default" role="button">PC방 현황</a>
     |<a href="/gamemanager" class="btn btn-default" role="button">게임관리</a>
+    |<a href="/logout" class="btn btn-success" role="button">로그아웃</a>
     |<br>
     |<br>
     - else if (user == "admin")
@@ -40,6 +42,7 @@ html
     |<a href="/pc" class="btn btn-default" role="button">PC방 현황</a>
     |<a href="/gamemanager" class="btn btn-default" role="button">게임관리</a>
     |<a href="/admin" class="btn btn-default" role="button">Admin</a>
+    |<a href="/logout" class="btn btn-success" role="button">로그아웃</a>
     |<br>
     |<br>
     #flash

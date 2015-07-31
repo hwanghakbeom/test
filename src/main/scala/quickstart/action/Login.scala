@@ -23,9 +23,23 @@ object SVar {
 class Login extends DefaultLayout {	
   def execute() {
     // After login success
+    var user = session.getOrElse("role", null)
+    if(user != null){
+	    if(session("role") == "cha"){
+	    	redirectTo("/installbyc")
+	    }
+	    else if(session("role") == "adv"){
+	    	redirectTo("/installbyg")
+	    }
+	    else if(session("role") == "admin"){
+	    	redirectTo("/installbyg")
+	    }
+
+    }
 	respondView(Map("type" ->"mustache"))
   }
 }
+
 
 @POST("createuser")
 class Createuser extends DefaultLayout {
