@@ -16,10 +16,8 @@
 				dateFormat: "yy-mm-dd"
 
 			});
-			var d = new Date();
-			d.setMonth(d.getMonth() - 1);
 			example( "#datepicker" ).datepicker( example.datepicker.regional[ "ko" ] );
-			example( "#datepicker" ).datepicker( "setDate", d );
+			example( "#datepicker" ).datepicker( "setDate", new Date() );
 
 		  example('#ipv4').mask('099.099.099.099');
 		  example('#ipv42').mask('099');
