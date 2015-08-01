@@ -120,7 +120,7 @@ class PostIpcheck extends DefaultLayout {
         }
       }
       else{
-          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + startip +"'"
+          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where user = ?)) and ip = '" + startip +"'"
           var q1 = Q.query[String, (String)](queryString)
           val peroid = q1(rid).list
           if(peroid.size == 0 )
