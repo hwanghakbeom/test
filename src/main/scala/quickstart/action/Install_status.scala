@@ -194,6 +194,7 @@ class Installbyc extends DefaultLayout {
             }
           }
           at("channellist") = channellist
+          println(channellist)
         }
         else
         {
