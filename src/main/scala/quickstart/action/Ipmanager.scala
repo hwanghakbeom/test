@@ -80,7 +80,8 @@ class Ipmanager extends DefaultLayout {
 
     }
             at("value") = returnlist 
-            if(session("role") != "cha") { at("games") = returngamelist   }
+            if(session("role") != "cha") { at("ipgames") = returngamelist   }
+            at("games") = returngamelist
             at("ipcount") = ipcount
 
 	respondView(Map("type" ->"mustache"))
