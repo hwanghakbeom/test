@@ -93,6 +93,24 @@ $(document).ready(function()
 		        	return;
 		        }
 		        });
+		        }
+		        else{
+				    $.ajax({
+			        data: data,
+			        type: "POST",
+			        url: "/ipmanager",
+			        enctype: "multipart/form-data",
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        success: function(url) {
+			                alert("등록되었습니다.");
+			                location.reload();
+			        },
+			        error: function(url) {
+			        	alert("IP가 중복되거나 게임을 등록하기에 없는 IP입니다.." );
+			        }
+			    });			        	
 		        }		    	
 		    
 
