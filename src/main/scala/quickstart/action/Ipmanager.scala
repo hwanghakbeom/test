@@ -106,7 +106,7 @@ class PostIpcheck extends DefaultLayout {
       if(endip != ""){
         for(index <- arr(3).toInt to endip.toInt){
           var ip = iptext + "." + index.toString
-          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where rid = ?)) and ip = '" + ip +"'"
+          var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where user = ?)) and ip = '" + ip +"'"
           var q1 = Q.query[String, (String)](queryString)
               val peroid = q1(rid).list
               if(peroid.size == 0 )
