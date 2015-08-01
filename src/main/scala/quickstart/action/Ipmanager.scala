@@ -123,6 +123,9 @@ class PostIpcheck extends DefaultLayout {
           var queryString = "select ip from ips where pcsid in ( select rid from pcs where channel in ( select name from channel where user = ?)) and ip = '" + startip +"'"
           var q1 = Q.query[String, (String)](queryString)
           val peroid = q1(rid).list
+          println(queryString)
+          println(rid)
+          println(startip)
           if(peroid.size == 0 )
           {
             jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
