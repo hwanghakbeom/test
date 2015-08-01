@@ -113,6 +113,10 @@ class PostIpcheck extends DefaultLayout {
               {
                 jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
               }
+              else
+              {
+                respondJson("okay")
+              }
         }
       }
       else{
@@ -123,9 +127,13 @@ class PostIpcheck extends DefaultLayout {
           {
             jsRespond("alert(" + jsEscape("아이디가 중복됩니다."  ) + ")") 
           }
+          else
+          {
+            respondJson("okay")
+          }
       }
     }
-    respondJson("okay")
+    
   }
 }
 @POST("ipmanager/")
