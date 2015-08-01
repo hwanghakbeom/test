@@ -182,7 +182,7 @@ class Installbyc extends DefaultLayout {
       db withSession { implicit session =>
         println("channel rid")
         println(rid)
-        if(rid == 311){
+        if(rid == "311"){
           var queryString = "select name from channel where 1= ?"
           var result = Q.query[String,(String)](queryString)
           val period = result("1").list
