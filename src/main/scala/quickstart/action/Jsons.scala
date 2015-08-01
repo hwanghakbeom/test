@@ -328,6 +328,39 @@ class Getgamelist extends DefaultLayout {
 }
 }
 
+@GET("getchannellist")
+class Getchannellist extends DefaultLayout {    
+  def execute() {
+    if(session("userId") == "") { redirectTo("/login")}
+    if(session("role") != "admin") { redirectTo("/installbyg")}
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>  
+        var queryString = "SELECT * FROM channel where 1 = ?"
+        var q1 = Q.query[String, (String,String,String,String,String,String,String,String,String)](queryString)
+        val peroid = q1("1").list
+        if(peroid.size == 0 ){respondJson("okay")}
+        else{
+            for (t <- peroid) {
+                 sublist = Map("rid" -> t._1,
+                  "name" -> t._2,
+                   "company" -> t._3,
+                   "regnumber" -> t._4,
+                   "owner" -> t._5,
+                   "address" -> t._6,
+                   "regdate" -> t._7,
+                   "enddate" -> t._8,
+                   "userid" ->t._9
+                    )
+                returnList += sublist  
+            }
+            respondJson(Map("data" -> returnList))
+        }
+    }
+}
+}
+
 @GET("getuserlist")
 class Getuserlist extends DefaultLayout {    
   def execute() {

@@ -83,13 +83,23 @@ class UpdatePC extends DefaultLayout {
 class NewChannel extends DefaultLayout {
 	def execute() {
 		var name	 = param("name")
-		 var userid = session("userId") 
+		var company = param("company")
+    var regnumber   = param("regnumber")
+    var owner = param("owner")
+    var address   = param("address")
+    var regdate = param("regdate")
+    var enddate   = param("enddate")
+    var userid = session("userId")
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn userid.toString
+    var llist = regresult.toList
+    var rid = llist(0)
 		val channel: TableQuery[Channels] = TableQuery[Channels]
 		val db = forURL()
 		  db withSession { implicit session =>
       var q1 = channel.filter(_.name === name).list
       if(q1.size > 0) { jsRespond("alert(" + jsEscape("Not Found") + ")") }
-      else{ channel += Channel(None,name,userid.toString) 
+      else{ channel += Channel(None,name,company,regnumber,owner,address,regdate,enddate,rid) 
           respondJson("okay")       
       }  
 		  }

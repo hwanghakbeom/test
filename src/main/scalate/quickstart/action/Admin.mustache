@@ -64,7 +64,34 @@
 			example( "#datepicker4" ).datepicker( example.datepicker.regional[ "ko" ] );
 		});
 	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker5" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
 
+			});
+			example( "#datepicker5" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
+	<script>
+		var example=jQuery.noConflict();
+		example(function() {
+			example( "#datepicker6" ).datepicker({
+				showOn: "both",
+				showButtonPanel: true, 
+				currentText: '오늘 날짜', 
+				closeText: '닫기', 
+				dateFormat: "yy-mm-dd"
+
+			});
+			example( "#datepicker6" ).datepicker( example.datepicker.regional[ "ko" ] );
+		});
+	</script>
 
 <script>
 	//신규 게임등록
@@ -218,6 +245,75 @@
 </script>
 
 <script>
+	//신규 채널 등록
+	var example=jQuery.noConflict();
+	example(function() {
+
+		var dialog, form,
+		name = example( "#channel-name" );
+		channelcompany = example( "#channelcompany" );
+		channelregnumber = example( "#channelregnumber" );
+		channelowner = example( "#channelowner" );
+		channeladdress = example( "#channeladdress" );
+		channelregdate = example( "#channelregdate" );
+		channelenddate = example( "#channelenddate" );
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("name", name.val());
+		    data.append("company", channelcompany.val());
+		    data.append("regnumber", channelregnumber.val());
+		    data.append("owner", channelowner.val());
+		    data.append("address", channeladdress.val());
+		    data.append("regdate", example("#datepicker5" ).datepicker({}).val());
+		    data.append("enddate", example("#datepicker6" ).datepicker({}).val());
+
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/newchannel",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		                alert("등록되었습니다.");
+		                 location.reload();
+		                dialog.dialog( "close" );
+		        },
+		        error: function(url){
+		        	alert("오류가 발생하였습니다.")
+		        }
+		    });
+		};
+		dialog = example( "#dialog-channel" ).dialog({
+			autoOpen: false,
+			height: 500,
+			width: 550,
+			modal: true,
+			buttons: {
+				"적용": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#reg_channel" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
+
+<script>
 // 게임 테이블 데이터 로드
 $ = jQuery; 
 	$(document).ready(function() {
@@ -257,6 +353,21 @@ $ = jQuery;
 				]
 			});
 
+			var oTable3 = $('#channel_table').dataTable();
+			oTable3.fnDestroy();
+			$('#channel_table').dataTable( {
+				"ajax": "getchannellist/",
+				"columns": [
+				{ "data": "rid" },
+				{ "data": "name" },
+				{ "data": "company" },
+				{ "data": "regnumber" },
+				{ "data": "owner" },
+				{ "data": "address" },
+				{ "data": "regdate" },
+				{ "data": "enddate" }
+				]
+			});
 	});
 </script>
 
@@ -433,7 +544,8 @@ $ = jQuery;
 <div>
 	<ul class="nav nav-tabs" role="tablist">
 		<li role="presentation" class="active"><a href="#games" aria-controls="games" role="tab" data-toggle="tab">관리자 - 게임리스트</a></li>
-		<li role="presentation"><a href="#users" aria-controls="channels" role="tab" data-toggle="tab">관리자 - 계정리스트</a></li>
+		<li role="presentation"><a href="#users" aria-controls="accounts" role="tab" data-toggle="tab">관리자 - 계정리스트</a></li>
+		<li role="presentation"><a href="#channels" aria-controls="channels" role="tab" data-toggle="tab">관리자 - 채널리스트</a></li>
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="games" >
@@ -476,6 +588,25 @@ $ = jQuery;
 				</tbody>
 			</table>
 			<input class="btn btn-success" value="신규" id="reg_user">
+		</div>		
+		<div role="tabpanel" class="tab-pane" id="channels">
+			<table id="channel_table" class="display">
+				<thead>
+					<tr>
+						<th data-field="rid" data-align="right"> ID</th>
+						<th data-field="name" data-align="center" >채널명</th>
+						<th data-field="company" >회사명</th>
+						<th data-field="regnumber" >사업자번호</th>
+						<th data-field="owner" >대표자명</th>
+						<th data-field="address" >주소</th>
+						<th data-field="regdate" >등록일</th>
+						<th data-field="enddate" >종료일</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<input class="btn btn-success" value="신규" id="reg_channel">
 		</div>		
 	</div>
 </div>
@@ -676,3 +807,61 @@ $ = jQuery;
 			</form>
 		</div>
 
+<div id="dialog-channel" title="채널 등록 " >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="gameaddress">채널아이디</label>
+			</div>
+			<div class="form-group col-md-9">
+				<select class="form-control" name="select-region" id="select-region">
+				<option value="채널1">채널1</option>
+				<option value="채널2">채널2</option>
+				</select>
+			</div>
+			<div class="col-md-3">
+				<label for="name">채널명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channel-name" id="channel-name"  class="form-control input" required data-remote="/user/channelcheck" data-remote-error="채널명이 중복됩니다">
+				<div class="help-block with-errors"></div>
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">회사명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channelcompany" id="channelcompany"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">사업자번호</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channelregnumber" id="channelregnumber"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">대표자명</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channelowner" id="channelowner"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">주소</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" name="channeladdress" id="channeladdress"  class="form-control input">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">등록일</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" id="datepicker5">
+			</div>
+			<div class="col-md-3">
+				<label for="gameaddress">종료일</label>
+			</div>
+			<div class="form-group col-md-9">
+				<input type="text" id="datepicker6">
+			</div>
+	</form>
+</div>

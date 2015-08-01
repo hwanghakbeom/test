@@ -403,62 +403,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 	});
 </script>
 
-<script>
-	var example=jQuery.noConflict();
-	example(function() {
 
-		var dialog, form,
-		name = example( "#channel-name" );
-
-		function addUser() {
-		    data = new FormData();
-		    data.append("name", name.val());
-
-		    $.ajax({
-		        data: data,
-		        type: "POST",
-		        url: "/newchannel",
-		        enctype: "multipart/form-data",
-		        cache: false,
-		        contentType: false,
-		        processData: false,
-		        success: function(url) {
-		                alert("등록되었습니다.");
-		                 location.reload();
-		                dialog.dialog( "close" );
-		        },
-		        error: function(url){
-		        	alert("오류가 발생하였습니다.")
-		        }
-		    });
-		};
-		dialog = example( "#dialog-channel" ).dialog({
-			autoOpen: false,
-			height: 300,
-			width: 550,
-			modal: true,
-			buttons: {
-				"적용": addUser,
-				Cancel: function() {
-					dialog.dialog( "close" );
-				}
-			},
-			close: function() {
-				form[ 0 ].reset();
-				allFields.removeClass( "ui-state-error" );
-			}
-		});
-		form = dialog.find( "form" ).on( "submit", function( event ) {
-			event.preventDefault();
-			addUser();
-		});
-
-
-		example( "#create-channel" ).button().on( "click", function() {
-			dialog.dialog( "open" );
-		});
-	});
-</script>
 
 <script>
 	var example=jQuery.noConflict();
@@ -923,19 +868,7 @@ $(document).ready(function()
 		<input id="update-ip" value = "IP주소 등록 수정" class = "btn btn-success">
 </div> -->
 
-<div id="dialog-channel" title="채널 등록 " >
-	<form data-toggle="validator" role="form">
-		<div class="row">
-			<div class="col-md-3">
-				<label for="name">채널명</label>
-			</div>
-			<div class="form-group col-md-9">
-				<input type="text" name="channel-name" id="channel-name"  class="form-control input" required data-remote="/user/channelcheck" data-remote-error="채널명이 중복됩니다">
-				<div class="help-block with-errors"></div>
-				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-			</div>
-	</form>
-</div>
+
 
 <div id="dialog-ip" title="PC방 현황 - 상세보기 - IP주소 등록 /수정">
 <div class="row">
