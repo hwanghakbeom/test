@@ -42,7 +42,7 @@ class Getpcstatus extends DefaultLayout {
   }
 }
 
-@GET("getpcstatus2/:channel/:region/:check/:startdate/:enddate/:condition/:detail/")
+@GET("getpcstatus2/:channel/:region/:check/:startdate/:enddate/:condition/:detail")
 class Getpcstatus2 extends DefaultLayout {	
   def execute() {
     if(session("userId") == "") { redirectTo("/login")}

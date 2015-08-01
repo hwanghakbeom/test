@@ -57,7 +57,7 @@ class Pcstatus extends DefaultLayout {
         val querysize = q1.size - 1
         channelList += Map("rid"->"0", "name"->"채널전체")
         for(   index <-0 to querysize ){
-          var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
+          var test = q1(index).productIterator.toList.zip(List("rid", "name", "company","regnumber","owner","address","regdate","enddate","user"))
           var channelsublist = Map[Any,Any]()
           channelsublist = Map(
             test(0)._2 -> test(0)._1, 
