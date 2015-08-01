@@ -180,7 +180,7 @@ class Installbyc extends DefaultLayout {
     // After login success
       val db = forURL()
       db withSession { implicit session =>
-        if(userid == 311){
+        if(rid == 311){
           var queryString = "select name from channel where 1= ?"
           var result = Q.query[String,(String)](queryString)
           val period = result("1").list
