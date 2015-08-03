@@ -183,9 +183,8 @@
 		useremail = example( "#useremail"),
 		userphone = example( "#userphone"),
 		usermobile = example( "#usermobile"),
-		userwork = example( "#userwork"),
+		userwork = example('#userwork option:selected').val(),
 		isfinished = example("#finished")[0].checked
-
 
 		function addUser() {
 		    data = new FormData();
@@ -197,7 +196,8 @@
 		    data.append("useremail",useremail.val());
 		    data.append("userphone", userphone.val());
 		    data.append("usermobile",usermobile.val());
-		    data.append("userwork", userwork.val());
+		    data.append("userwork", example('#userwork option:selected').val());
+		    alert(example('#userwork option:selected').val());
 		    data.append("finishdate", example("#datepicker4" ).datepicker({}).val());
 		    data.append("isfinished", isfinished);
 
@@ -467,7 +467,7 @@ $ = jQuery;
 						$('#useremail').val(useremail);
 						$('#userphone').val(userphone);
 						$('#usermobile').val(usermobile);
-						$('#userwork').val(userwork);
+						$('#userwork option:selected').val(userwork).attr("selected","selected");
 						$('#lastconnect').val(lastconnect);
 						var dialog = example( "#user-form" ).dialog({
 							autoOpen: false,
@@ -794,7 +794,10 @@ $ = jQuery;
 				<label for="name">담당업무</label>
 			</div>
 			<div class="form-group col-md-9">
-				<input type="text" name="userwork" id="userwork"  class="form-control input">
+				<select class="form-control" name="userwork" id="userwork">
+				<option value="cha">채널</option>
+				<option value="adv">광고주</option>
+				</select>
 			</div>
 			<div class="col-md-3">
 				<label for="name">접속중단일</label>
