@@ -501,7 +501,15 @@ $ = jQuery;
 						$('#channelselect').val(userwork);
 						$('#gameselect').val(userwork);
 						
-						
+					    if(userrole == "adv"){
+					    	$('#gamenames').show();
+					    	$('#channelnames').hide();
+					    }
+					    if(userrole == "cha"){
+					    	$('#channelnames').show();
+					    	$('#gamenames').hide();
+					    }
+    
 						$('#lastconnect').val(lastconnect);
 						var dialog = example( "#user-form" ).dialog({
 							autoOpen: false,
