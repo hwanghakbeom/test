@@ -22,6 +22,32 @@ class Admin extends DefaultLayout {
     if(session("userId") == "") { redirectTo("/login")}
     if(session("role") == "adv") { redirectTo("/installbyg")}
     // After login success
+    var sublist1 = Map[Any,Any]()
+    var sublist2 = Map[Any,Any]()
+    var returnlist1 = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var returnlist2 = scala.collection.mutable.MutableList[Map[Any,Any]]()
+
+    val db = forURL()
+      db withSession { implicit session =>
+
+        var queryString = "SELECT rid,name FROM channel where 1 = ?"
+        var q1 = Q.query[String, (String, String)](queryString)
+        val peroid = q1("1").list
+        for (t <- peroid) {
+          sublist2 = Map("id" -> t._1,"channel" -> t._2)
+          returnlist2 += sublist2
+        }
+
+         queryString = "SELECT rid,name FROM game where 1 = ?"
+         var q2 = Q.query[String, (String, String)](queryString)
+         var peroid2 = q2("1").list
+        for (t <- peroid2) {
+          sublist1 = Map("id" -> t._1,"game" -> t._2)
+          returnlist1 += sublist1
+        }
+      }
+    at("gamelist") = returnlist1
+    at("channellist") = returnlist2
 	respondView(Map("type" ->"mustache"))
   }
 }
@@ -69,6 +95,8 @@ class Userdetails extends DefaultLayout {
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1(code).list
         for (t <- peroid) {
+            //find userwork
+            var qs = "SELECT * FROM users where userid = ?"
              sublist = Map("userid" -> t._2,
                "username" -> t._4,
                "position" -> t._5,

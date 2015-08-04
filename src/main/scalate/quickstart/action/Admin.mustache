@@ -92,7 +92,23 @@
 			example( "#datepicker6" ).datepicker( example.datepicker.regional[ "ko" ] );
 		});
 	</script>
-
+<script>
+$(function() {
+  $('#gamenames').hide();
+  $('#userwork').on('change', function(){
+    var selected = $(this).find("option:selected").val();
+    if(selected == "adv"){
+    	$('#gamenames').show();
+    	$('#channelnames').hide();
+    }
+    if(selected == "cha"){
+    	$('#channelnames').show();
+    	$('#gamenames').hide();
+    }
+  });
+  
+});
+</script>
 <script>
 	//신규 게임등록
 	var example=jQuery.noConflict();
@@ -175,7 +191,7 @@
 	example(function() {
 
 		var dialog, form,
-		userid = example( "#userid" ),
+		userid = example( "#userid" ).val(""),
 		username = example( "#username" ),
 		userpass = example( "#userpass" ),
 		position = example( "#position" ),
@@ -197,10 +213,10 @@
 		    data.append("userphone", userphone.val());
 		    data.append("usermobile",usermobile.val());
 		    data.append("userwork", example('#userwork option:selected').val());
-		    alert(example('#userwork option:selected').val());
 		    data.append("finishdate", example("#datepicker4" ).datepicker({}).val());
 		    data.append("isfinished", isfinished);
-
+		    data.append("gamename",example('#gameselect option:selected').val());
+		    data.append("channelname",example('#channelselect option:selected').val())
 
 		    $.ajax({
 		        data: data,
@@ -239,6 +255,15 @@
 
 
 		example( "#reg_user" ).button().on( "click", function() {
+			example('#userid').prop("readonly", false);
+			example( "#userid" ).val("");
+			example( "#userpass" ).val("");
+			example( '#username').val("");
+			example( "#position" ).val("");
+			example( "#usercompany" ).val("");
+			example( "#useremail").val("");''
+			example( "#userphone").val("");
+			example( "#usermobile").val("");
 			dialog.dialog( "open" );
 		});
 	});
@@ -467,7 +492,7 @@ $ = jQuery;
 						$('#useremail').val(useremail);
 						$('#userphone').val(userphone);
 						$('#usermobile').val(usermobile);
-						$('#userwork option:selected').val(userwork).attr("selected","selected");
+						//$('#userwork option:selected').val(userwork).attr("selected","selected");
 						$('#lastconnect').val(lastconnect);
 						var dialog = example( "#user-form" ).dialog({
 							autoOpen: false,
@@ -791,13 +816,38 @@ $ = jQuery;
 				<input type="text" name="usermobile" id="usermobile"  class="form-control input">
 			</div>
 			<div class="col-md-3">
-				<label for="name">담당업무</label>
+				<label for="name">권한</label>
 			</div>
 			<div class="form-group col-md-9">
 				<select class="form-control" name="userwork" id="userwork">
 				<option value="cha">채널</option>
 				<option value="adv">광고주</option>
 				</select>
+			</div>
+			<div id="channelnames" name="channelnames">
+				<div class="col-md-3" >
+					<label for="channelnames">채널명</label>
+				</div>
+				<div class="form-group col-md-9">
+					<select class="form-control" name="channelselect" id="channelselect">
+					{{#channellist}}
+					<option value="{{id}}">{{channel}}</option>
+					{{/channellist}}
+					</select>
+				</div>
+			</div>
+			<div name="gamenames" id ="gamenames">
+				<div class="col-md-3" >
+					<label for="gamenames">게임명</label>
+				</div>
+				<div class="form-group col-md-9">
+					<select class="form-control" name="gameselect" id="gameselect">
+					<option value="0">게임없음</option>
+					{{#gamelist}}
+					<option value="{{id}}">{{game}}</option>
+					{{/gamelist}}
+					</select>
+				</div>
 			</div>
 			<div class="col-md-3">
 				<label for="name">접속중단일</label>

@@ -37,17 +37,17 @@ class Pcstatus extends DefaultLayout {
     val db = forURL()
     if(session("role") == "cha"){
       db withSession { implicit session =>
-        var q1 = channel.filter(_.user === rid).list
-        val querysize = q1.size - 1
-        for(   index <-0 to querysize ){
-          var test = q1(index).productIterator.toList.zip(List("rid", "name", "user"))
+          var queryString = "select rid,name from channel where rid = (select work from users where rid = ?)"
+          var result = Q.query[String,(String,String)](queryString)
+          val period = result(rid).list
           var channelsublist = Map[Any,Any]()
-          channelsublist = Map(
-            test(0)._2 -> test(0)._1,
-            test(1)._2 -> test(1)._1
-            )
-          channelList += channelsublist
-        }    
+          if(period.size > 0 )
+          {
+            for (t <- period) {
+              channelsublist = Map("rid" -> t._1, "name" -> t._2)
+              channelList += channelsublist
+            }
+          }   
       }
     }
     else

@@ -153,7 +153,8 @@ class Newuser extends DefaultLayout {
     var userwork  = param("userwork").toString
     var finishdate = param("finishdate").toString
     var isfinished  = param("isfinished").toString
-
+    var gamename = param("gamename").toString
+    var channelname = param("channelname").toString
     val user: TableQuery[Users] = TableQuery[Users]
     val db = forURL()
       db withSession { implicit session =>
@@ -164,19 +165,29 @@ class Newuser extends DefaultLayout {
           //업데이트
           if(userpass == "[object HTMLInputElement]"){
               user.filter(p => p.userid === userid)
-           .map(p => (p.name,p.position,p.company,p.email,p.phone,p.mobile,p.work))
-           .update((username,position,usercompany,useremail,userphone,usermobile,userwork))           
+           .map(p => (p.name,p.position,p.company,p.email,p.phone,p.mobile,p.work,p.role))
+           .update((username,position,usercompany,useremail,userphone,usermobile,userwork,userwork))           
           }
           else{
               user.filter(p => p.userid === userid)
-           .map(p => (p.name,p.position,p.pass,p.company,p.email,p.phone,p.mobile,p.work))
-           .update((username,position,userpass,usercompany,useremail,userphone,usermobile,userwork))           
+           .map(p => (p.name,p.position,p.pass,p.company,p.email,p.phone,p.mobile,p.work,p.role))
+           .update((username,position,userpass,usercompany,useremail,userphone,usermobile,userwork,userwork))           
           } 
         }
         else
         {
+          if(userwork == "adv")
+          {
+            user += User(None,userid,userpass,username,position,usercompany,useremail,userphone,usermobile,gamename,userwork,finishdate)
+          }
+          if(userwork == "cha")
+          {
+            user += User(None,userid,userpass,username,position,usercompany,useremail,userphone,usermobile,channelname,userwork,finishdate)
+          }
           //없으면 insert
-          user += User(None,userid,userpass,username,position,usercompany,useremail,userphone,usermobile,userwork,"",finishdate)
+          
+
+
         }        
       }
     respondJson("okay") 

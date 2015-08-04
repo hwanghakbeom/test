@@ -376,6 +376,27 @@ class Getuserlist extends DefaultLayout {
         if(peroid.size == 0 ){respondJson("okay")}
         else{
             for (t <- peroid) {
+                var roles = ""
+                var works = ""
+                if(t._11 == "cha"){ 
+                  roles = "채널"
+                  queryString = "SELECT NAME FROM channel where rid = ?"
+                  var q2 = Q.query[String,(String)](queryString)
+                  var peroid = q2(t._10).list
+                  if(peroid.size > 0 ) { works = peroid(0)}
+                }
+                else if(t._11 == "adv"){
+                  roles = "광고주"
+                  queryString = "SELECT NAME FROM game where rid = ?"
+                  var q2 = Q.query[String,(String)](queryString)
+                  var peroid = q2(t._10).list
+                  if(peroid.size > 0 ) { works = peroid(0)}                  
+                }
+                else if(t._11 == "admin"){
+                  roles = "관리자"
+                  works = "관리자"
+                }
+
                  sublist = Map("rid" -> t._2,
                    "name" -> t._4,
                    "position" -> t._5,
@@ -383,10 +404,11 @@ class Getuserlist extends DefaultLayout {
                    "email" -> t._7,
                    "phone" -> t._8,
                    "mobile" -> t._9,
-                   "work" -> t._10,
-                   "role" -> t._11,
+                   "work" -> works,
+                   "role" -> roles,
                    "last_connect" -> t._12
                     )
+                
                 returnList += sublist  
             }
             respondJson(Map("data" -> returnList))  

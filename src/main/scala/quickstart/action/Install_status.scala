@@ -198,7 +198,7 @@ class Installbyc extends DefaultLayout {
         }
         else
         {
-          var queryString = "select name from channel where user= ?"
+          var queryString = "select name from channel where rid = (select work from users where rid = ?)"
           var result = Q.query[String,(String)](queryString)
           val period = result(rid).list
           var channellist = scala.collection.mutable.MutableList[Map[Any,Any]]()
