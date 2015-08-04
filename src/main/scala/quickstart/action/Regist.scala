@@ -185,9 +185,6 @@ class Newuser extends DefaultLayout {
             user += User(None,userid,userpass,username,position,usercompany,useremail,userphone,usermobile,channelname,userwork,finishdate)
           }
           //없으면 insert
-          
-
-
         }        
       }
     respondJson("okay") 

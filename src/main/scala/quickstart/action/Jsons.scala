@@ -84,7 +84,6 @@ class Getpcstatus2 extends DefaultLayout {
               "name" -> gt._3)
             gamelist += gamesublist
           }      
-          println(queryString)
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1("1").list
         for (t <- peroid) {
@@ -132,8 +131,7 @@ class Getpcstatus2 extends DefaultLayout {
                   if(gamelist(index)("pc")== t._1){
                     for(index2 <- 0 to  llist.size - 1) {
                       if(llist(index2) == gamelist(index)("gid")){
-                        isexist = true
-                        println(gamelist(index)("pc") + " : " + t._1)                            
+                        isexist = true                           
                       }
                 
                     }
@@ -427,7 +425,6 @@ class Checkgame extends DefaultLayout {
     var regresult = patternt findAllIn host.toString
     var llist = regresult.toList
     var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
-        println(ip)
     val db = forURL()
     db withSession { implicit session =>
       var ipcount = scala.collection.mutable.MutableList[String]()
@@ -440,7 +437,6 @@ class Checkgame extends DefaultLayout {
         }
 
       }
-      println(ipcount)
       respondJson(ipcount)
     }
   }
@@ -457,7 +453,6 @@ class Checkgamewithname extends DefaultLayout {
     var regresult = patternt findAllIn host.toString
     var llist = regresult.toList
     var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
-        println(ip)
         //test
     val db = forURL()
     db withSession { implicit session =>
@@ -491,7 +486,6 @@ class Installwithname extends DefaultLayout {
     var regresult = patternt findAllIn host.toString
     var llist = regresult.toList
     var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
-        println(ip)
         //test
     val db = forURL()
     val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
