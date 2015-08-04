@@ -480,6 +480,9 @@ $ = jQuery;
 						var usermobile = data.usermobile;
 						var userwork = data.userwork;
 						var lastconnect = data.lastconnect;
+						var userrole = data.userrole;
+						//320 cha
+						//씨아테크,채
 
 						//get ips
 
@@ -492,7 +495,13 @@ $ = jQuery;
 						$('#useremail').val(useremail);
 						$('#userphone').val(userphone);
 						$('#usermobile').val(usermobile);
-						//$('#userwork option:selected').val(userwork).attr("selected","selected");
+						//$('#userwork').
+						//$('#userwork').val(userrole);
+						$('#userwork').val(userrole);
+						$('#channelselect').val(userwork);
+						$('#gameselect').val(userwork);
+						
+						
 						$('#lastconnect').val(lastconnect);
 						var dialog = example( "#user-form" ).dialog({
 							autoOpen: false,

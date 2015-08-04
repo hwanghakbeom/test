@@ -95,6 +95,7 @@ class Userdetails extends DefaultLayout {
         var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1(code).list
         for (t <- peroid) {
+
             //find userwork
             var qs = "SELECT * FROM users where userid = ?"
              sublist = Map("userid" -> t._2,
@@ -105,7 +106,8 @@ class Userdetails extends DefaultLayout {
                "userphone" -> t._8,
                "usermobile" -> t._9,
                "userwork" -> t._10,
-               "lastconnect" -> t._11
+               "userrole" -> t._11,
+               "lastconnect" -> t._12
                 )
         }
 	respondJson(sublist)

@@ -163,15 +163,18 @@ class Newuser extends DefaultLayout {
         if(q1.size > 0)
         {
           //업데이트
+          if(userwork == "cha"){
+            gamename = channelname
+          }
           if(userpass == "[object HTMLInputElement]"){
               user.filter(p => p.userid === userid)
            .map(p => (p.name,p.position,p.company,p.email,p.phone,p.mobile,p.work,p.role))
-           .update((username,position,usercompany,useremail,userphone,usermobile,userwork,userwork))           
+           .update((username,position,usercompany,useremail,userphone,usermobile,gamename,userwork))           
           }
           else{
               user.filter(p => p.userid === userid)
            .map(p => (p.name,p.position,p.pass,p.company,p.email,p.phone,p.mobile,p.work,p.role))
-           .update((username,position,userpass,usercompany,useremail,userphone,usermobile,userwork,userwork))           
+           .update((username,position,userpass,usercompany,useremail,userphone,usermobile,gamename,userwork))           
           } 
         }
         else
