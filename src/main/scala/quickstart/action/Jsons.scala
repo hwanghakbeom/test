@@ -62,11 +62,28 @@ class Getpcstatus2 extends DefaultLayout {
     queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
     queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
     if(channel != "채널전체"){ queryString += " AND CHANNEL = '" + channel +"'"}
-    if(region != "전체지역") {queryString += " AND substring(ADD2,1,3) = '" + region +"'"}
+    if(region != "전체지역") {
+        if(region == "서울"){
+          queryString += " AND add2 like '" + region +"%'"
+        }
+        else if(region == "부산"){
+          queryString += " AND add2 like '" + region +"%'"
+        }
+        else if(region == "경남"){
+          queryString += " AND substring(ADD2,1,3) in ('경남','경상남')"
+        }
+        else if(region == "울산"){
+          queryString += " AND add2 like '" + region +"%'"
+        }    
+        else{
+          queryString += " AND substring(ADD2,1,3) = '" + region +"'"
+        }      
+        
+      }
     if(condition == "PA" && detail != "") { queryString += " AND NAME = '" + detail +"'" }
     if(condition == "CT" && detail != "") { queryString += " AND OWNER = '" + detail +"'" }
     if(condition == "NY" && detail != "") { queryString += " AND RID = ( SELECT PCSID FROM ips WHERE IP =     '" + detail + "')" }
-    
+    println(queryString)
     val db = forURL()
       db withSession { implicit session =>
 
@@ -105,14 +122,10 @@ class Getpcstatus2 extends DefaultLayout {
             val idcount = q2(t._1).list
             if( idcount.size != 0) { ipnumber = idcount(0)}
               if(!check.startsWith("all") && llist.size == 0) {  //전체게임
-                var r = "" 
-                if(t._4.length > 4)
-                {
-                   r = t._4.substring(0,2)
-                }
+
                 sublist = Map("code" -> t._1,
                    "name" -> t._2,
-                   "region" -> r,
+                   "region" -> t._4.split(" ")(0),
                    "address" -> addr,
                    "phone" -> t._7,
                    "mobile" -> t._8,
@@ -140,7 +153,7 @@ class Getpcstatus2 extends DefaultLayout {
                 if(isexist == true) {
                      sublist = Map("code" -> t._1,
                        "name" -> t._2,
-                       "region" -> t._4.substring(0,2),
+                       "region" -> t._4.split(" ")(0),
                        "address" -> addr,
                        "phone" -> t._7,
                        "mobile" -> t._8,
@@ -159,7 +172,7 @@ class Getpcstatus2 extends DefaultLayout {
                 if(games == ""){
                     sublist = Map("code" -> t._1,
                        "name" -> t._2,
-                       "region" -> t._4.substring(0,2),
+                       "region" -> t._4.split(" ")(0),
                        "address" -> addr,
                        "phone" -> t._7,
                        "mobile" -> t._8,
