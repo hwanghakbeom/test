@@ -53,7 +53,7 @@ class Gamemanager extends DefaultLayout {
 	}
 	else
 	{
-		queryString = "select * from mapping where channel = (select name from channel where user = ?)"
+		queryString = "select * from mapping where channel = (select name from channel where rid = (select work from users where rid = ?))"
 		var q1 = Q.query[String,(String,String,String,String,String,String)](queryString)
 		val peroid = q1(rid).list
 		if(peroid.size > 0) {
