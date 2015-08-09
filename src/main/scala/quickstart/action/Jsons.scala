@@ -17,6 +17,12 @@ import io.netty.channel
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import xitrum.action.Net
+import io.netty.handler.codec.http.multipart.FileUpload
+import java.nio.file.Files.copy
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption._
+import java.nio.file.FileSystems
 
 @GET("getpcstatus")
 class Getpcstatus extends DefaultLayout {	
@@ -515,5 +521,38 @@ class Installwithname extends DefaultLayout {
 
     }
     respondJson("okay")
+  }
+}
+
+@POST("ajax/saveimage")
+class AjaxTest extends DefaultLayout {
+  def execute() {
+    val myFile = param[FileUpload]("file")
+    var fileName = ""
+    if(myFile.isInMemory() == true){
+      fileName = myFile.getFilename()
+      try{
+        var newFile = new File("public/uploadImages/"+fileName)
+        myFile.renameTo(newFile)
+        // var targetPath:Path  = FileSystems.getDefault().getPath("public/uploadImages", fileName);
+            // copy (myFile.getFile(), targetPath,REPLACE_EXISTING)
+      } catch {
+        case e: Exception => println("exception caught: " + e);
+      }
+    }
+    else{
+      fileName = myFile.getFile().getName().substring(4,myFile.getFile().getName().length)
+      try{
+        var targetPath:Path  = FileSystems.getDefault().getPath("public/uploadImages", fileName);
+            copy (myFile.getFile().toPath(), targetPath,REPLACE_EXISTING)
+      } catch {
+        case e: Exception => println("exception caught: " + e);
+      }
+    }
+
+
+    //println(myFile.getFile().getPath())
+
+    respondJson("/uploadImages/"+fileName)
   }
 }

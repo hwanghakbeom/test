@@ -18,6 +18,7 @@ import Q.interpolation
 import java.nio.file.Files.copy
 import java.io.File
 import java.nio.file.Path
+import java.io.FileInputStream
 import java.nio.file.StandardCopyOption._
 import java.nio.file.FileSystems
 import org.apache.poi.hssf.usermodel.HSSFSheet
@@ -32,16 +33,26 @@ import scala.collection.JavaConversions._
 @GET("excelimport")
 class Excelimport extends DefaultLayout {	
 	def execute() {
+	    var userid = session("userId")
+	    var patternt = "\\d+".r
+	    var regresult = patternt findAllIn userid.toString
+	    var llist = regresult.toList
+	    var rid = llist(0)
 		var regdate = TransDate.getCurrentDate()
 		val pcs: TableQuery[Pcs] = TableQuery[Pcs]
 		val ips: TableQuery[Ips] = TableQuery[Ips]
 		val db = forURL()
 		db withSession { implicit session =>
-			var excelquery = Q.query[String,(String,String,String,String,String)]("SELECT * FROM dummyexcel where 1 = ?")
+          var channelquery = "select name from channel where rid = (select work from users where rid = ?)"
+          var result = Q.query[String,(String)](channelquery)
+          val channelname = result(rid).list
+          val channel = channelname(0)
+
+			var excelquery = Q.query[String,(String,String,String,String,String)]("SELECT * FROM dummyexcel where 1 = ? and name <> ''")
 			val peroid = excelquery("1").list
 			for (t <- peroid) {
 		  	//pc방 입력
-		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", "http", "", "",regdate)
+		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", channel, "", "",regdate)
 
 		  	//ip입력
 		  	var patternt = "\\d+".r
@@ -52,16 +63,16 @@ class Excelimport extends DefaultLayout {
 		  		var queryString = "SELECT ip FROM ips WHERE ip = ?"
 		  		var q1 = Q.query[String, (String)](queryString)
 		  		val peroid = q1(ip).list
-		  		if(peroid.size > 0 )
-		  		{
-		  			println("중복아이피" + ip) 
-		  		}
-		  		else
+		  		if(peroid.size == 0 )
 		  		{
 		  			ips += Ip(None,rid.toString, ip , regdate)
 		  		}
 		  	}
 		  }
+		  //delete dummyexcel
+            def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
+              val rows= deletedummy("1") 
+              println(s"Deleted $rows rows")
 		}
 		respondJson("okay")
 	}
@@ -69,4 +80,66 @@ class Excelimport extends DefaultLayout {
 }
 
 
+@POST("excelimport")
+class PostExcelimport extends DefaultLayout {	
+	def execute() {
+		var userid = session("userId")
+		println(userid)
+		var filename = param("filename")
+		var fis:FileInputStream =new FileInputStream("/Users/Andy/Downloads/GameInspection/public" + filename);
+		var workbook:HSSFWorkbook =new HSSFWorkbook(fis);
+		var rowindex=0;
+		var columnindex=0;
+		var sheet:HSSFSheet = workbook.getSheetAt(0);
+		var rows = sheet.getPhysicalNumberOfRows();
+		for(rowindex <- 1  to rows + 1){
+			var row =sheet.getRow(rowindex);
+			if(row !=null){
+				var cells=row.getPhysicalNumberOfCells();
+				var value=""
+				var name = ""
+				var address = ""
+				var startip = ""
+				var endip = ""
+				for(columnindex <- 0 to cells){
+					var cell=row.getCell(columnindex);
+					if(cell != null){
+						if(cell.getCellType() == 0){
+							value=cell.getNumericCellValue()+"";
+						}
+						else if(cell.getCellType() == 1){
+							value = cell.getStringCellValue()+"";
+						}
+						else if(cell.getCellType() == 3){
+							value=cell.getBooleanCellValue()+"";
+						}
+						else if(cell.getCellType() == 5){
+							value=cell.getErrorCellValue()+"";
+						}
+					}
+					if(rowindex > 7){
+						if(columnindex == 1){
+							name = value						
+						}
+						else if(columnindex == 2){
+							address = value					
+						}
+						else if(columnindex == 6){
+							startip = value					
+						}
+						else if(columnindex == 7){
+							endip = value.substring(0,value.length - 2)				
+						}
+					}	
+				}
+				val dummy: TableQuery[Dummyexcels] = TableQuery[Dummyexcels]
+				val db = forURL()
+				db withSession { implicit session =>
+					dummy += Dummyexcel(None,name,address,startip,endip)
+				}
+			}
+		}
+		respondJson("okay")
+	}
+}
 

@@ -322,6 +322,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 
 <!-- <input id="create-channel" value = "채널등록" class = "btn btn-success"> -->
 <input id="create-user" value = "신규등록" class = "btn btn-success"> 
+<input id="create-excel" value = "엑셀대량등록" class = "btn btn-success"> 
 </div>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -403,7 +404,73 @@ $('#inlineCheckbox{{rid}}').click(function() {
 	});
 </script>
 
+<script>
+//엑셀 대량등록
+	var example=jQuery.noConflict();
+	example(function() {
 
+		var dialog, form,
+		name = example( "#uploadedfile" )
+
+		function addUser() {
+		    data = new FormData();
+		    data.append("filename", name.val());
+
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/excelimport",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        async: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) {
+		        		$.ajax({
+					        type: "GET",
+					        url: "/excelimport",
+					        async: false,
+					        success: function(url) {
+					        		alert("등록되었습니다.")
+					                dialog.dialog( "close" );
+					        },
+					        error: function(url) {
+					        	alert("오류가 발생하였습니다.");
+					        } 
+					    });
+		                dialog.dialog( "close" );
+		        },
+		        error: function(url) {
+		        	alert("오류가 발생하였습니다.");
+		        } 
+		    });
+		};
+		dialog = example( "#dialog-excel" ).dialog({
+			autoOpen: false,
+			height: 200,
+			width: 800,
+			modal: true,
+			buttons: {
+				"업로드": addUser,
+				Cancel: function() {
+					dialog.dialog( "close" );
+				}
+			},
+			close: function() {
+				form[ 0 ].reset();
+			}
+		});
+		form = dialog.find( "form" ).on( "submit", function( event ) {
+			event.preventDefault();
+			addUser();
+		});
+
+
+		example( "#create-excel" ).button().on( "click", function() {
+			dialog.dialog( "open" );
+		});
+	});
+</script>
 
 <script>
 	var example=jQuery.noConflict();
@@ -769,6 +836,31 @@ $(document).ready(function()
         });
 }
 </script>
+<script>
+$(document).ready(function()
+{
+	$("#fileupload").on('change', function(){
+    	var fileSelect = document.getElementById('fileupload');
+    	var files = fileSelect.files[0];
+        var data = new FormData();
+        data.append("file", files);
+		    $.ajax({
+		        data: data,
+		        type: "POST",
+		        url: "/ajax/saveimage",
+		        enctype: "multipart/form-data",
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+		        success: function(url) { 
+		                $('#uploadedfile').val(url);
+		        }
+		    });
+ 	});
+});
+
+
+</script>
 
 
 <div id="dialog-form" title="신규 등록 및 수정" >
@@ -830,6 +922,26 @@ $(document).ready(function()
 				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
 			</form>
 		</div>
+
+<div id="dialog-excel" title="엑셀 대량등록" >
+	<form data-toggle="validator" role="form">
+		<div class="row">
+			<div class = "col-md-12">
+				*등록수량에 따라 1분에서 5분정도 걸릴 수 있습니다.
+			</div>
+
+			<div class="col-md-3">
+				<label for="name" required>파일경로</label>
+			</div>
+			<form id="addpic" name="addpic" method="post" enctype="multipart/form-data">
+			<div class="form-group col-md-9">
+				<input type="file" id="fileupload" value="파일찾기"><br>
+				<input type="hidden" id="uploadedfile" value="파일찾기"><br>
+			</div>
+			</form>
+		</div>			
+	</form>
+</div>
 
 <!-- 
 <div id="dialog-detail" title="PC방 현황 - 상세보기">
