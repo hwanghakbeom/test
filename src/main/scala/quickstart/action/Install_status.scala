@@ -79,13 +79,47 @@ class Installbyg extends DefaultLayout {
     }
     at("gamelist") = gameselectlist
 
-    //조회값
-    println("========================================================")
-    println(gamename)
-    println(region)
-    println(date1)
-    println(date2)
-    println("========================================================")
+    //for chart
+    //전체 PC방수
+    val db = forURL()
+      db withSession { implicit session =>
+    var totalPCcount = "select count(*) as count from pcs where 1 = ?"
+    var pccountresult = Q.query[(String),(String)](totalPCcount)
+    val pccount = pccountresult("1").list
+
+    var totalGameCount = "select count(*) as cnt, installdate from ( select * from ipgame where 1 = ? group by pcid, installdate order by installdate ) A group by installdate "
+    var gamecountresult = Q.query[String, (String,String)](totalGameCount)
+    val gcount = gamecountresult("1").list
+    var resultlist = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var resultlistsub = Map[Any,Any]()
+    for(t <- gcount)
+    {
+      resultlistsub = Map("count" -> t._1,"pccount"-> pccount,"date" -> t._2)
+      resultlist += resultlistsub
+    }
+    at("gamecount") = resultlist
+
+    var totalIPcount = "select count(*) as count from ips where 1 = ?"
+    var ipcountresult = Q.query[(String),(String)](totalIPcount)
+    val ipcount = ipcountresult("1").list
+
+    var totalGameipCount = "select installdate,count(*) as count from ipgame where 1 = ? group by installdate, game "
+    var ipcountrgameesult = Q.query[String, (String,String)](totalGameipCount)
+    val icount = ipcountrgameesult("1").list
+    var resultlist2 = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var resultlistsub2 = Map[Any,Any]()
+    for(t <- icount)
+    {
+      resultlistsub2 = Map("count" -> t._2,"ipcount"-> ipcount,"date" -> t._1)
+      resultlist2 += resultlistsub2
+    }
+    at("ipcountlist") = resultlist2
+
+    //IP수
+
+    }
+    
+
     if(gamename == ""  || region == "" || date1 == "" || date2 == ""){
       println("login")
     }
@@ -155,9 +189,6 @@ class Installbyg extends DefaultLayout {
         }
         at("counttotal") = counttotal
         at("iptotal") = iptotal
-
-
-
 
     }
   }
