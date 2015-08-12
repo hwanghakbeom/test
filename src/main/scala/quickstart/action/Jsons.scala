@@ -510,15 +510,14 @@ class Installwithname extends DefaultLayout {
     val ipgame: TableQuery[Ipgames] = TableQuery[Ipgames]
     val ips: TableQuery[Ips] = TableQuery[Ips]
     db withSession { implicit session =>
-          var q1 = ipgame.filter(p => p.ip === ip && p.game === gamename).list
-          if(q1.size == 0) { 
-            var q2 = ips.filter{q => q.ip === ip}.list
-            if(q2.size > 0) { 
-              var test = q2(0).productIterator.toList.zip(List("rid", "pcid"))
-              ipgame += Ipgame(None,test(1)._1.toString,ip,gamename,TransDate.getCurrentDate(),"false")
-            }
-          }
-
+      var q2 = ips.filter{q => q.ip === ip}.list
+      if(q2.size > 0){
+        var test = q2(0).productIterator.toList.zip(List("rid", "pcid"))
+        var q1 = ipgame.filter(p => p.ip === ip && p.game === gamename && p.installdate === TransDate.getCurrentDate()).list
+        if(q1.size == 0) { 
+          ipgame += Ipgame(None,test(1)._1.toString,ip,gamename,TransDate.getCurrentDate(),"false")
+        }
+      }
     }
     respondJson("okay")
   }
