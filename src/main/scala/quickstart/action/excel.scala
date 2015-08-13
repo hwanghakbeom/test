@@ -148,7 +148,6 @@ class PostExcelimport extends DefaultLayout {
 							startip = value					
 						}
 						else if(columnindex == 7){
-							if(value.contain)
 							endip = value.replace(".0","")			
 						}
 					}	
