@@ -58,12 +58,12 @@ class Excelimport extends DefaultLayout {
 			for (t <- peroid) {
 		  	//pc방 입력
 		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", channel, "", "",regdate)
-
+		  	if(t._4 != ""){
 		  	//ip입력
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
-		  	if(arr(3) != "" && t._5 != ""){
+		  	
 			  	for(index <- arr(3).toInt to t._5.toInt){
 			  		var ip = iptext + "." + index.toString
 			  		var queryString = "SELECT ip FROM ips WHERE ip = ?"
