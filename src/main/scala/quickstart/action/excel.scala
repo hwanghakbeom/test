@@ -58,10 +58,10 @@ class Excelimport extends DefaultLayout {
 			for (t <- peroid) {
 		  	//pc방 입력
 		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", channel, "", "",regdate)
-		  	if(t._4 != ""){
 		  	//ip입력
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
+		  	if(arr.size == 4){
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
 		  	//endip 가 없음
 		  	    if(t._5 != ""){
@@ -79,8 +79,8 @@ class Excelimport extends DefaultLayout {
 		  	    else{
 		  	    	ips += Ip(None,rid.toString, t._4 , regdate)
 		  	    }
-
 		  	}
+
 
 		  }
 		  //delete dummyexcel
