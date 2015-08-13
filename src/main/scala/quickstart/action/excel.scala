@@ -63,7 +63,7 @@ class Excelimport extends DefaultLayout {
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
-		  	
+		  	println(t._1)
 			  	for(index <- arr(3).toInt to t._5.toInt){
 			  		var ip = iptext + "." + index.toString
 			  		var queryString = "SELECT ip FROM ips WHERE ip = ?"
