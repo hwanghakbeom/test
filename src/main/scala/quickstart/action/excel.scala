@@ -61,6 +61,9 @@ class Excelimport extends DefaultLayout {
 		  	//ip입력
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
+		  	println(t._4)
+		  	println(arr)
+		  	println(t._5)
 		  	if(arr.size == 4){
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
 		  	//endip 가 없음
