@@ -414,7 +414,7 @@ $('#inlineCheckbox{{rid}}').click(function() {
 
 		function addUser() {
 		    data = new FormData();
-		    data.append("filename", name.val());
+		    data.append("filename", name.val().replace(" ",""));
 
 		    $.ajax({
 		        data: data,
