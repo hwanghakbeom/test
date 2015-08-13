@@ -100,7 +100,7 @@ class PostExcelimport extends DefaultLayout {
 		var userid = session("userId")
 		println(userid)
 		var filename = param("filename")
-		var fis:FileInputStream =new FileInputStream("/home/stone/test/public" + filename);
+		var fis:FileInputStream =new FileInputStream("/home/ubuntu/test/public" + filename);
 		var workbook:HSSFWorkbook =new HSSFWorkbook(fis);
 		var rowindex=0;
 		var columnindex=0;
