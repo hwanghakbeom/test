@@ -63,17 +63,23 @@ class Excelimport extends DefaultLayout {
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
-		  	println(t._1)
-			  	for(index <- arr(3).toInt to t._5.toInt){
-			  		var ip = iptext + "." + index.toString
-			  		var queryString = "SELECT ip FROM ips WHERE ip = ?"
-			  		var q1 = Q.query[String, (String)](queryString)
-			  		val peroid = q1(ip).list
-			  		if(peroid.size == 0 )
-			  		{
-			  			ips += Ip(None,rid.toString, ip , regdate)
-			  		}
-			  	}
+		  	//endip 가 없음
+		  	    if(t._5 != ""){
+				  	for(index <- arr(3).toInt to t._5.toInt){
+				  		var ip = iptext + "." + index.toString
+				  		var queryString = "SELECT ip FROM ips WHERE ip = ?"
+				  		var q1 = Q.query[String, (String)](queryString)
+				  		val peroid = q1(ip).list
+				  		if(peroid.size == 0 )
+				  		{
+				  			ips += Ip(None,rid.toString, ip , regdate)
+				  		}
+				  	}		  	    	
+		  	    }
+		  	    else{
+		  	    	ips += Ip(None,rid.toString, t._4 , regdate)
+		  	    }
+
 		  	}
 
 		  }
