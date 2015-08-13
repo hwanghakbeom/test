@@ -45,7 +45,7 @@ class Excelimport extends DefaultLayout {
 		db withSession { implicit session =>
 
             def cleandummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid and name = ''".first
-              rows= cleandummy("1") 
+              var rows= cleandummy("1") 
               println(s"Deleted $rows rows")
 
           var channelquery = "select name from channel where rid = (select work from users where rid = ?)"
@@ -76,7 +76,7 @@ class Excelimport extends DefaultLayout {
 		  }
 		  //delete dummyexcel
             def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
-              val rows= deletedummy("1") 
+              rows= deletedummy("1") 
               println(s"Deleted $rows rows")
 		}
 		respondJson("okay")
@@ -99,7 +99,7 @@ class PostExcelimport extends DefaultLayout {
 		var rows = sheet.getPhysicalNumberOfRows();
 		val db = forURL()
 		db withSession { implicit session =>
-            def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
+            def deletedummy(rid: String) = sqlu"delete from dummyexcel where rid > $rid".first
               val rows= deletedummy("1") 
               println(s"Deleted $rows rows")			
 		}
