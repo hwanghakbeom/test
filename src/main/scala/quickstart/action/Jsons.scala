@@ -529,7 +529,7 @@ class AjaxTest extends DefaultLayout {
     val myFile = param[FileUpload]("file")
     var fileName = ""
     if(myFile.isInMemory() == true){
-      fileName = myFile.getFilename()
+      fileName = myFile.getFilename().replace(" ","")
       try{
         var newFile = new File("public/uploadImages/"+fileName)
         myFile.renameTo(newFile)
