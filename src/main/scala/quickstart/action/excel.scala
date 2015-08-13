@@ -43,6 +43,11 @@ class Excelimport extends DefaultLayout {
 		val ips: TableQuery[Ips] = TableQuery[Ips]
 		val db = forURL()
 		db withSession { implicit session =>
+
+            def cleandummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid and name = ''".first
+              rows= cleandummy("1") 
+              println(s"Deleted $rows rows")
+
           var channelquery = "select name from channel where rid = (select work from users where rid = ?)"
           var result = Q.query[String,(String)](channelquery)
           val channelname = result(rid).list
@@ -92,6 +97,12 @@ class PostExcelimport extends DefaultLayout {
 		var columnindex=0;
 		var sheet:HSSFSheet = workbook.getSheetAt(0);
 		var rows = sheet.getPhysicalNumberOfRows();
+		val db = forURL()
+		db withSession { implicit session =>
+            def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
+              val rows= deletedummy("1") 
+              println(s"Deleted $rows rows")			
+		}
 		for(rowindex <- 1  to rows + 1){
 			var row =sheet.getRow(rowindex);
 			if(row !=null){
@@ -133,7 +144,7 @@ class PostExcelimport extends DefaultLayout {
 					}	
 				}
 				val dummy: TableQuery[Dummyexcels] = TableQuery[Dummyexcels]
-				val db = forURL()
+				
 				db withSession { implicit session =>
 					dummy += Dummyexcel(None,name,address,startip,endip)
 				}
