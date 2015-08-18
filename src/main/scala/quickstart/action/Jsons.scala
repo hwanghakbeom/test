@@ -480,6 +480,11 @@ class Checkgamewithname extends DefaultLayout {
         //test
     val db = forURL()
     db withSession { implicit session =>
+      val ipnumber: TableQuery[Ipnumbers] = TableQuery[Ipnumbers]
+      var q2 = ipnumber.filter{q => q.ip === ip && q.installdate === TransDate.getCurrentDate() }.list
+      if(q2.size == 0){
+        ipnumber += Ipnumber(None,ip,TransDate.getCurrentDate())
+      }
       var queryString = "select directory,type from mapping where channel = (SELECT name FROM channel where name = (select CHANNEL from pcs where rid = (select PCSID from ips where ip = ? ))) and game = '" + gamename + "'"
       var ipcount = scala.collection.mutable.MutableList[Map[Any,Any]]()
       var sublist = Map[Any,Any]()
