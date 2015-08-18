@@ -445,7 +445,12 @@ class Checkgame extends DefaultLayout {
     var llist = regresult.toList
     var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
     val db = forURL()
+     val ipnumber: TableQuery[Ipnumbers] = TableQuery[Ipnumbers]
     db withSession { implicit session =>
+      var q2 = ipnumber.filter{q => q.ip === ip && q.installdate === TransDate.getCurrentDate() }.list
+      if(q2.size == 0){
+        ipnumber += Ipnumber(None,ip,TransDate.getCurrentDate())
+      }
       var ipcount = scala.collection.mutable.MutableList[String]()
       var q3 = Q.query[String,(String)]("select game from mapping where channel = ( select channel from pcs where rid = ( select  pcsid from ips where ip = ? ) )")
       val per3 = q3(ip).list
