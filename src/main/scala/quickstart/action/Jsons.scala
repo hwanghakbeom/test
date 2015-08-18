@@ -450,7 +450,7 @@ class Checkgame extends DefaultLayout {
       var q2 = ipnumber.filter{q => q.ip === ip && q.installdate === TransDate.getCurrentDate() }.list
       if(q2.size == 0){
         ipnumber += Ipnumber(None,ip,TransDate.getCurrentDate())
-        println("insert ip")
+       // println("insert ip")
       }
       var ipcount = scala.collection.mutable.MutableList[String]()
       var q3 = Q.query[String,(String)]("select game from mapping where channel = ( select channel from pcs where rid = ( select  pcsid from ips where ip = ? ) )")
