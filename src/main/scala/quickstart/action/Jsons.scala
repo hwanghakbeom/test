@@ -561,3 +561,17 @@ class AjaxTest extends DefaultLayout {
     respondJson("/uploadImages/"+fileName)
   }
 }
+
+@GET("totalipnumberwogame")
+class Totalipnumberwogame extends DefaultLayout {
+  def execute() {
+    val db = forURL()
+    db withSession { implicit session =>
+      var queryString = "select count(*) from ipnumber where installdate = ?"
+      var q3 = Q.query[String,(String)](queryString)
+      val per3 = q3(TransDate.getCurrentDate()).list
+      respondJson(per3(0))
+    }
+    
+    }
+  }
