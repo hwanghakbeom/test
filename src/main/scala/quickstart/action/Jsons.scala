@@ -588,6 +588,7 @@ class Totalipperpc extends DefaultLayout {
       var q1 = Q.query[String,(String)](queryString)
       val per1 = q1("1").list
         for (t <- per1) {
+          println(t)
           var q2 = Q.query[String,(String,String)](secondString)
           val per2 = q2(t).list
           for (t1 <- per2){
