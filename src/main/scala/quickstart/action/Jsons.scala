@@ -583,14 +583,17 @@ class Totalipperpc extends DefaultLayout {
     var sublist = Map[Any,Any]()
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     db withSession { implicit session =>
-      var queryString = "select * from ipperpc where 1 = ?"
-      var q3 = Q.query[String,(String,String,String)](queryString)
-      val per3 = q3("1").list
-        for (t <- per3) {
-          sublist =Map("pc" -> t._1,
-            "channel" -> t._2,
-            "count" -> t._3)
-         returnList += sublist
+      var queryString = "select distinct(installdate) from ipnumber where 1 = "
+      var secondString = "select C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.channel;"
+      var q1 = Q.query[String,(String)](queryString)
+      val per1 = q1("1").list
+        for (t <- per1) {
+          var q2 = Q.query[String,(String,String)](secondString)
+          val per2 = q2(t).list
+          for (t1 <- per2){
+            println(t1._1)
+            println(t1._2)
+          }
         }
       at("value") = returnList
       respondView(Map("type" ->"mustache"))
