@@ -575,3 +575,47 @@ class Totalipnumberwogame extends DefaultLayout {
     
     }
   }
+
+@GET("ipperpc")
+class Totalipperpc extends DefaultLayout {
+  def execute() {
+    val db = forURL()
+    var sublist = Map[Any,Any]()
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    db withSession { implicit session =>
+      var queryString = "select * from ipperpc where 1 = ?"
+      var q3 = Q.query[String,(String,String,String)](queryString)
+      val per3 = q3("1").list
+        for (t <- per3) {
+          sublist =Map("pc" -> t._1,
+            "channel" -> t._2,
+            "count" -> t._3)
+         returnList += sublist
+        }
+      at("value") = returnList
+      respondView(Map("type" ->"mustache"))
+    }
+    
+    }
+  }
+
+@POST("ipsite/")
+class Iptitle extends DefaultLayout {    
+  def execute() {
+   // /118.37.214.252:53023
+   var sitename = param("site")
+   val host = channel.remoteAddress
+
+    var patternt = "\\d+".r
+    var regresult = patternt findAllIn host.toString
+    var llist = regresult.toList
+    var ip = llist(0) + "." + llist(1) + "." + llist(2) + "." + llist(3)
+        //test
+    val db = forURL()
+    val ipsite: TableQuery[Ipandsites] = TableQuery[Ipandsites]
+    db withSession { implicit session =>
+      ipsite += Ipandsite(None,ip,sitename)
+    }
+    respondJson("okay")
+  }
+}
