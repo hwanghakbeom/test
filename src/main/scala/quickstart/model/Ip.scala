@@ -6,7 +6,7 @@ import scala.slick.driver.H2Driver.simple._
 case class Ip(rid: Option[Int],pcsid: String, ip: String, installdate:String)
 
 class Ips(tag: Tag) extends Table[Ip](tag,"ips") {
-  def rid = column[Int]("RID") // This is the primary key column
+  def rid = column[Int]("RID",O.AutoInc) // This is the primary key column
   def pcsid = column[String]("PCSID")
   def ip = column[String]("IP",O.PrimaryKey)
   def installdate = column[String]("INSTALLDATE")
