@@ -119,6 +119,7 @@ class PostExcelimport extends DefaultLayout {
 			var row =sheet.getRow(rowindex);
 			if(row !=null){
 				var cells=row.getPhysicalNumberOfCells();
+				println(cells)
 				var value=""
 				var name = ""
 				var address = ""
@@ -151,7 +152,7 @@ class PostExcelimport extends DefaultLayout {
 							startip = value					
 						}
 						else if(columnindex == 7){
-							println(value)
+						//	println(value)
 							endip = value.replace(".0","")			
 						}
 					}	
