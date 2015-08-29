@@ -159,7 +159,10 @@ class PostExcelimport extends DefaultLayout {
 				val dummy: TableQuery[Dummyexcels] = TableQuery[Dummyexcels]
 				
 				db withSession { implicit session =>
-					dummy += Dummyexcel(None,name,address,startip,endip)
+					if(name != "false"){
+						dummy += Dummyexcel(None,name,address,startip,endip)
+					}
+					
 				}
 			}
 		}
