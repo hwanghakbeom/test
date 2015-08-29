@@ -119,13 +119,13 @@ class PostExcelimport extends DefaultLayout {
 			var row =sheet.getRow(rowindex);
 			if(row !=null){
 				var cells=row.getPhysicalNumberOfCells();
-				println(cells)
+			//	println(cells)
 				var value=""
 				var name = ""
 				var address = ""
 				var startip = ""
 				var endip = ""
-				for(columnindex <- 0 to cells){
+				for(columnindex <- 0 to 7){
 					var cell=row.getCell(columnindex);
 					if(cell != null){
 						if(cell.getCellType() == 0){
@@ -149,12 +149,12 @@ class PostExcelimport extends DefaultLayout {
 							address = value					
 						}
 						else if(columnindex == 6){
-							println(cell.getCellType())
+						//	println(cell.getCellType())
 							startip = value					
 						}
 						else if(columnindex == 7){
 						//	println(value)
-						println(cell.getCellType())
+					//	println(cell.getCellType())
 							endip = value.replace(".0","")			
 						}
 					}	
