@@ -45,7 +45,7 @@ class Excelimport extends DefaultLayout {
 		db withSession { implicit session =>
 
             def cleandummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid and name = ''".first
-              var rows= cleandummy("1") 
+              var rows= cleandummy("0") 
               println(s"Deleted $rows rows")
 
           var channelquery = "select name from channel where rid = (select work from users where rid = ?)"
