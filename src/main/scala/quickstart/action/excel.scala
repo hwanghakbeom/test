@@ -149,10 +149,12 @@ class PostExcelimport extends DefaultLayout {
 							address = value					
 						}
 						else if(columnindex == 6){
+							println(cell.getCellType())
 							startip = value					
 						}
 						else if(columnindex == 7){
 						//	println(value)
+						println(cell.getCellType())
 							endip = value.replace(".0","")			
 						}
 					}	
