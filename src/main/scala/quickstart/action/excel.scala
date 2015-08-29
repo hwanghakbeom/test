@@ -115,7 +115,7 @@ class PostExcelimport extends DefaultLayout {
               val rows= deletedummy("1") 
               println(s"Deleted $rows rows")			
 		}
-		for(rowindex <- 1  to rows + 1){
+		for(rowindex <- 1  to sheet.getLastRowNum){
 			var row =sheet.getRow(rowindex);
 			if(row !=null){
 				var cells=row.getPhysicalNumberOfCells();
