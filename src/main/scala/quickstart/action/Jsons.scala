@@ -616,7 +616,7 @@ class Totalipperpc extends DefaultLayout {
       val per1 = q1("1").list
         for (t <- per1) {
           println(t)
-          var q2 = Q.query[String,(String,String)](secondString)
+          var q2 = Q.query[String,(String,String,String)](secondString)
           val per2 = q2(t).list
           for (t1 <- per2){
             sublist = Map("pc" -> t1._1, "channel" -> t1._2, "count" -> t1._3, "date" -> t)
