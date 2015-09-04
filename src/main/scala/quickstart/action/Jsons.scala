@@ -611,19 +611,38 @@ class Totalipperpc extends DefaultLayout {
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     db withSession { implicit session =>
       var queryString = "select distinct(installdate) from ipnumber where 1 = ?"
+
+      var channelcountString = "select count(*) from ( select C.channel as cnt from (select ip, installdate from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid group by C.channel) AA;"
+      var channelQueryq1 = Q.query[String,(String)](channelcountString)
+      var channelQueryResult = channelQueryq1(TransDate.getCurrentDate()).list
+      at("channelCount") = channelQueryResult(0)
+
+      var channelTotalCountString = "select count(*) from channel where 1 = ?"
+      var channelTotalQueryQ1 = Q.query[String,(String)](channelTotalCountString)
+      var channelTotalQueryResult = channelTotalQueryQ1("1").list
+      at("channelTotalCount") = channelTotalQueryResult(0)
+
+      var pcCountString = "select count(*) from ( select C.name from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.name ) AA "
+      var pcCountQueryQ1 = Q.query[String,(String)](pcCountString)
+      var pcCountResult = pcCountQueryQ1(TransDate.getCurrentDate()).list
+      at("pcusingcount") = pcCountResult(0)
+
+      var pcTotalcountString = "select count(*) from pcs where 1 = ?"
+      var pcTotalQuery1 = Q.query[String,(String)](pcTotalcountString)
+      var pcTotalQueryResult = pcTotalQuery1("1").list
+      at("pcTotalcount") = pcTotalQueryResult(0)
+
+      var ipCountString = "select count(ip) from ipnumber where installdate = ?"
+      var ipCountQuery1 = Q.query[String,(String)](ipCountString)
+      var ipCountResult = ipCountQuery1(TransDate.getCurrentDate()).list
+      at("ipcount") = ipCountResult(0)
+
+      var ipTotalCountString = "select count(*) from ips where 1 = ?"
+      var ipTotalCountQuery1 = Q.query[String,(String)](ipTotalCountString)
+      var ipTotalResult = ipTotalCountQuery1("1").list
+      at("ipTotalCount") = ipTotalResult(0)
       var secondString = "select C.name,C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.name;"
-      var q1 = Q.query[String,(String)](queryString)
-      val per1 = q1("1").list
-        for (t <- per1) {
-          println(t)
-          var q2 = Q.query[String,(String,String,String)](secondString)
-          val per2 = q2(t).list
-          for (t1 <- per2){
-            sublist = Map("pc" -> t1._1, "channel" -> t1._2, "count" -> t1._3, "date" -> t)
-            returnList += sublist
-          }
-        }
-      at("value") = returnList
+      
       respondView(Map("type" ->"mustache"))
     }
     
