@@ -652,7 +652,7 @@ class Totalipperpc extends DefaultLayout {
         var indexes = 0
         val a = Map("date" -> t.substring(5,10))
         for (t1 <- channelListResult){
-            a + (indexes.toString -> t1._2)
+            a += indexes.toString -> t1._2
             indexes = indexes + 1
         }
         println(a)
