@@ -608,6 +608,7 @@ class Totalipperpc extends DefaultLayout {
   def execute() {
     val db = forURL()
     var sublist = Map[Any,Any]()
+    var returnsubList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     db withSession { implicit session =>
       var queryString = "select distinct(installdate) from ipnumber where 1 = ?"
@@ -650,9 +651,10 @@ class Totalipperpc extends DefaultLayout {
         var channelListQuery = Q.query[String,(String,String)](channelListString)
         var channelListResult = channelListQuery(t).list
         for (t1 <- channelListResult){
-            sublist = Map("channel" -> t1._1, "count" -> t1._2, "date" -> t)
-            returnList += sublist
+            sublist = Map("ccount" -> t1._2)
+            returnsubList += sublist
         }
+        returnList += Map("date" -> t, "clist" -> returnsubList)
       }
       at("value") = returnList
 
