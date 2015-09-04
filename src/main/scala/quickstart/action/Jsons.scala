@@ -654,7 +654,8 @@ class Totalipperpc extends DefaultLayout {
             sublist = Map("ccount" -> t1._2)
             returnsubList += sublist
         }
-        returnList += Map("date" -> t, "clist" -> returnsubList)
+
+        returnList += Map("date" -> t.substring(5,10), "clist" -> returnsubList)
       }
       at("value") = returnList
 
