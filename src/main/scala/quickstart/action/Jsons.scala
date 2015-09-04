@@ -641,8 +641,21 @@ class Totalipperpc extends DefaultLayout {
       var ipTotalCountQuery1 = Q.query[String,(String)](ipTotalCountString)
       var ipTotalResult = ipTotalCountQuery1("1").list
       at("ipTotalCount") = ipTotalResult(0)
-      var secondString = "select C.name,C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.name;"
-      
+
+      var dateString = "select distinct(installdate) from ipnumber where 1 = ?"
+      var dateQuery = Q.query[String,(String)](dateString)
+      var dateResult = dateQuery("1").list
+      for (t <- dateResult) {
+        var channelListString = "select name, IFNULL(c2.cnt, 0) as cnt from channel c1 left join ( select C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.channel) c2 on c1.name = c2.channel order by name;"
+        var channelListQuery = Q.query[String,(String,String)](channelListString)
+        var channelListResult = channelListQuery(t).list
+        for (t1 <- channelListResult){
+            sublist = Map("channel" -> t1._1, "count" -> t1._2, "date" -> t)
+            returnList += sublist
+        }
+      }
+      at("value") = returnList
+
       respondView(Map("type" ->"mustache"))
     }
     
