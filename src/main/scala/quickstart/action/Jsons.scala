@@ -656,7 +656,6 @@ class Totalipperpc extends DefaultLayout {
             map(indexes.toString) = t1._2
             indexes = indexes + 1
         }
-        println(map)
         //sublist + Map("date" -> t.substring(5,10))
         returnList += map
       }
