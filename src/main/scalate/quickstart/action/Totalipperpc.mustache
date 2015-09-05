@@ -65,7 +65,7 @@ $('td').click(function(){
 	  var MyRows = $('.table').find('tbody').find('tr');
 	  var datevalue = $(MyRows[row]).find('td:eq(0)').html();
 	  var channelvalue = $(MyRows[0]).find('td:eq(' + col + ')').html();	
-	  window.open("http://localhost:8000/ipperpcdetail" + "/" + datevalue + "/" + channelvalue , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+	  window.open(window.location.href +"/ipperpcdetail" + "/" + datevalue + "/" + channelvalue , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
   }
 
 
