@@ -651,7 +651,7 @@ class Totalipperpc extends DefaultLayout {
         var channelListResult = channelListQuery(t).list
         var indexes = 0
         val map = scala.collection.mutable.Map[String,String]()
-        map("date") =  t.substring(5,10)
+        map("date") =  t
         for (t1 <- channelListResult){
             map(indexes.toString) = t1._2
             indexes = indexes + 1
@@ -666,6 +666,28 @@ class Totalipperpc extends DefaultLayout {
     
     }
   }
+@GET("ipperpcdetail/:datevalue/:channelvalue")
+class IpperpcDetail extends DefaultLayout {
+  def execute() {
+    var datevalue = param("datevalue")
+    var channelvalue = param("channelvalue")
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>
+      var queryString = "select C.name,count(*) as cnt from (select ip from ipnumber where installdate = '" + datevalue+"' ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  and C.channel = ? group by C.name;"
+      var countQuery = Q.query[String,(String,String)](queryString)
+      var dateResult = countQuery(channelvalue).list
+      for (t <- dateResult) {
+        sublist = Map("name" -> t._1, "count" -> t._2)
+        returnList += sublist
+      }     
+    }
+    at("value") = returnList
+    respondView(Map("type" ->"mustache"))
+  }
+}
+
 
 @POST("ipsite/")
 class Iptitle extends DefaultLayout {    
