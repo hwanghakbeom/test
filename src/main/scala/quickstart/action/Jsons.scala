@@ -66,7 +66,7 @@ class Getpcstatus2 extends DefaultLayout {
     var sublist = Map[Any,Any]()
     var queryString = ""
     queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
-    queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
+    //queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
     if(channel != "채널전체"){ queryString += " AND CHANNEL = '" + channel +"'"}
     if(region != "전체지역") {
         if(region == "서울"){
