@@ -610,7 +610,6 @@ class Totalipperpc extends DefaultLayout {
     var sublist = Map[Any,Any]()
     var returnList = scala.collection.mutable.MutableList[scala.collection.mutable.Map[String,String]]()
     db withSession { implicit session =>
-      var queryString = "select distinct(installdate) from ipnumber where 1 = ?"
 
       var channelcountString = "select count(*) from ( select C.channel as cnt from (select ip, installdate from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid group by C.channel) AA;"
       var channelQueryq1 = Q.query[String,(String)](channelcountString)
@@ -636,6 +635,7 @@ class Totalipperpc extends DefaultLayout {
       var ipCountQuery1 = Q.query[String,(String)](ipCountString)
       var ipCountResult = ipCountQuery1(TransDate.getCurrentDate()).list
       at("ipcount") = ipCountResult(0)
+      println("IP CouNT = " + ipCountResult(0))
 
       var ipTotalCountString = "select count(*) from ips where 1 = ?"
       var ipTotalCountQuery1 = Q.query[String,(String)](ipTotalCountString)
