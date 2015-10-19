@@ -99,7 +99,7 @@ class Getpcstatus2 extends DefaultLayout {
           var regresult = patternt findAllIn check
           var llist = regresult.toList
 
-          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.ip AND A.game = C.name group by B.pcsid AND 1 = ?")
+          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.ip AND A.game = C.name group by B.pcsid,C.rid AND 1 = ?")
           var gamepcperiod = gamepc("1").list
           var gamesublist = Map[Any,Any]()
           for (gt <- gamepcperiod) {
