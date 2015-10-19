@@ -64,7 +64,7 @@ class Getpcstatus2 extends DefaultLayout {
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var gamelist = scala.collection.mutable.MutableList[Map[Any,Any]]()
     var sublist = Map[Any,Any]()
-    var queryString = ""
+    var queryString = "SELECT A.*, B.cnt FROM ("
     queryString += "SELECT RID,NAME,ADD1,ADD2,ADD3,OWNER,PHONE,MOBILE,CHANNEL,LASTDATE,ISFINISHED, REGDATE FROM pcs WHERE 1 = ?"
     //queryString += " AND regdate between '" + startdate + "' and '" + enddate + "'"
     if(channel != "채널전체"){ queryString += " AND CHANNEL = '" + channel +"'"}
@@ -89,6 +89,7 @@ class Getpcstatus2 extends DefaultLayout {
     if(condition == "PA" && detail != "") { queryString += " AND NAME = '" + detail +"'" }
     if(condition == "CT" && detail != "") { queryString += " AND OWNER = '" + detail +"'" }
     if(condition == "NY" && detail != "") { queryString += " AND RID = ( SELECT PCSID FROM ips WHERE IP =     '" + detail + "')" }
+    queryString += ") A, ( SELECT count(*) cnt, pcsid from ips group by pcsid) B WHERE A.RID = B.pcsid"
     println(queryString)
     val db = forURL()
       db withSession { implicit session =>
@@ -98,7 +99,7 @@ class Getpcstatus2 extends DefaultLayout {
           var regresult = patternt findAllIn check
           var llist = regresult.toList
 
-          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.ip AND A.game = C.name AND 1 = ?")
+          var gamepc = Q.query[String,(String,String,String)]("SELECT B.pcsid,C.rid, C.name FROM ipgame A, ips B, game C WHERE A.ip = B.ip AND A.game = C.name group by B.pcsid AND 1 = ?")
           var gamepcperiod = gamepc("1").list
           var gamesublist = Map[Any,Any]()
           for (gt <- gamepcperiod) {
@@ -107,26 +108,22 @@ class Getpcstatus2 extends DefaultLayout {
               "name" -> gt._3)
             gamelist += gamesublist
           }      
-        var q1 = Q.query[String, (String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
+        var q1 = Q.query[String, (String,String, String,String, String,String, String,String, String,String, String,String,String)](queryString)
         val peroid = q1("1").list
         for (t <- peroid) {
             var addr = t._4.toString + t._5.toString 
             var status = "사용중"
             if(t._11 == "true") { status = "해지"}
 
-            //IP수 구하기
-            var q2 = Q.query[String,(String)]("SELECT count(*) FROM ips where pcsid = ? group by pcsid")
-            var ipnumber = "0"
             var games = ""
             for(index <- 0 to  gamelist.size - 1) {
               if(t._1 == gamelist(index)("pc")) { 
                 if( gamelist(index)("name").toString.r.findAllIn(games).length == 0 )
                   games += gamelist(index)("name") + ","
                 
+              }
             }
-          }
-            val idcount = q2(t._1).list
-            if( idcount.size != 0) { ipnumber = idcount(0)}
+            
               if(!check.startsWith("all") && llist.size == 0) {  //전체게임
 
                 sublist = Map("code" -> t._1,
@@ -136,7 +133,7 @@ class Getpcstatus2 extends DefaultLayout {
                    "phone" -> t._7,
                    "mobile" -> t._8,
                    "user" -> t._6,
-                   "ip" -> ipnumber,
+                   "ip" -> t._13,
                    "status" -> status,
                    "channel" -> t._9,
                    "regdate" -> t._12,
@@ -152,7 +149,6 @@ class Getpcstatus2 extends DefaultLayout {
                       if(llist(index2) == gamelist(index)("gid")){
                         isexist = true                           
                       }
-                
                     }
                   }
                 }
@@ -164,7 +160,7 @@ class Getpcstatus2 extends DefaultLayout {
                        "phone" -> t._7,
                        "mobile" -> t._8,
                        "user" -> t._6,
-                       "ip" -> ipnumber,
+                       "ip" -> t._13,
                        "status" -> status,
                        "channel" -> t._9,
                        "regdate" -> t._12,
@@ -172,7 +168,6 @@ class Getpcstatus2 extends DefaultLayout {
                         )  
                     returnList += sublist                    
                 }
-
               }
               else{
                 if(games == ""){
@@ -183,7 +178,7 @@ class Getpcstatus2 extends DefaultLayout {
                        "phone" -> t._7,
                        "mobile" -> t._8,
                        "user" -> t._6,
-                       "ip" -> ipnumber,
+                       "ip" -> t._13,
                        "status" -> status,
                        "channel" -> t._9,
                        "regdate" -> t._12,
