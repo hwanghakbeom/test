@@ -574,6 +574,7 @@ class Totalipnumberwogame extends DefaultLayout {
 @GET("ipperchannel")
 class Totalipperchannel extends DefaultLayout {
   def execute() {
+    if(session("role") != "admin") { redirectTo("/installbyg")}
     val db = forURL()
     var sublist = Map[Any,Any]()
     var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
@@ -601,6 +602,7 @@ class Totalipperchannel extends DefaultLayout {
 @GET("ipperpc")
 class Totalipperpc extends DefaultLayout {
   def execute() {
+    if(session("role") != "admin") { redirectTo("/installbyg")}
     val db = forURL()
     var sublist = Map[Any,Any]()
     var returnList = scala.collection.mutable.MutableList[scala.collection.mutable.Map[String,String]]()
