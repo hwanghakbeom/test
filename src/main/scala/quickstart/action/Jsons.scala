@@ -605,7 +605,7 @@ class Totalipperpc extends DefaultLayout {
     if(session("role") != "admin") { redirectTo("/installbyg")}
     val db = forURL()
     var sublist = Map[Any,Any]()
-    var returnList = scala.collection.mutable.MutableList[scala.collection.mutable.Map[String,String]]()
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
     db withSession { implicit session =>
 
       var channelcountString = "select count(*) from ( select C.channel as cnt from (select ip, installdate from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid group by C.channel) AA;"
@@ -639,23 +639,26 @@ class Totalipperpc extends DefaultLayout {
       var ipTotalResult = ipTotalCountQuery1("1").list
       at("ipTotalCount") = ipTotalResult(0)
 
-      for(index <- 7 to 0 by -1) {
-        var channelListString = "select name, IFNULL(c2.cnt, 0) as cnt from channel c1 left join ( select C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.channel) c2 on c1.name = c2.channel order by name;"
-        var channelListQuery = Q.query[String,(String,String)](channelListString)
-        var channelListResult = channelListQuery(TransDate.getBeforeDay(index)).list
-        var indexes = 0
-        val map = scala.collection.mutable.Map[String,String]()
-        map("date") =  t
-        for (t1 <- channelListResult){
-            map(indexes.toString) = t1._2
-            indexes = indexes + 1
-        }
-        //sublist + Map("date" -> t.substring(5,10))
-        returnList += map
+      var channelListString = "SELECT AA.name, IFNULL(BB.cnt, 0) from"
+      channelListString += " (SELECT * from channel) AA left join"
+      channelListString += " (SELECT A.channel, count(*) as cnt from"
+      channelListString += " (select * from pcs where rid) A ,"
+      channelListString += " (select pcsid from ips where ip in (select ip from ipnumber where installdate = ?) group by pcsid) B"
+      channelListString += " where A.rid = B.pcsid"
+      channelListString += " group by channel) BB"
+      channelListString += " on AA.name = BB.channel"
+      var channelListQuery = Q.query[String,(String,String)](channelListString)
+      var channelListResult = channelListQuery(TransDate.getBeforeDay(1)).list
+
+      for (t1 <- channelListResult){
+            sublist = Map("channel" -> t1._1, "count" -> t1._2)
+            returnList += sublist
       }
+      at("date") = TransDate.getBeforeDay(1)
       at("value") = returnList
 
       respondView(Map("type" ->"mustache"))
+      
     }
     
     }
