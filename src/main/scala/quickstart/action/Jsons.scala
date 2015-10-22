@@ -639,13 +639,10 @@ class Totalipperpc extends DefaultLayout {
       var ipTotalResult = ipTotalCountQuery1("1").list
       at("ipTotalCount") = ipTotalResult(0)
 
-      var dateString = "select distinct(installdate) from ipnumber where 1 = ?"
-      var dateQuery = Q.query[String,(String)](dateString)
-      var dateResult = dateQuery("1").list
-      for (t <- dateResult) {
+      for(index <- 7 to 0 by -1) {
         var channelListString = "select name, IFNULL(c2.cnt, 0) as cnt from channel c1 left join ( select C.channel,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  group by C.channel) c2 on c1.name = c2.channel order by name;"
         var channelListQuery = Q.query[String,(String,String)](channelListString)
-        var channelListResult = channelListQuery(t).list
+        var channelListResult = channelListQuery(TransDate.getBeforeDay(index)).list
         var indexes = 0
         val map = scala.collection.mutable.Map[String,String]()
         map("date") =  t
