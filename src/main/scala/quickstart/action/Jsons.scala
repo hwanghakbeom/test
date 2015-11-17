@@ -703,9 +703,9 @@ class IpperpcDetailwithip extends DefaultLayout {
     var sublist = Map[Any,Any]()
     val db = forURL()
     db withSession { implicit session =>
-      var queryString = "select A.ip from ips A, pcs B, ipnumber C where A.pcsid = B.rid and A.ip = C.ip and B.name = ? and C.installdate = '" + datevalue + "'"
+      var queryString = "select A.ip from ips A, pcs B, ipnumber C where A.pcsid = B.rid and A.ip = C.ip and B.name like '%"+ pcvalue + "%' and C.installdate = ? "
       var countQuery = Q.query[String,(String)](queryString)
-      var dateResult = countQuery(pcvalue).list
+      var dateResult = countQuery(datevalue).list
       for (t <- dateResult) {
         sublist = Map("ips" -> t)
         returnList += sublist
