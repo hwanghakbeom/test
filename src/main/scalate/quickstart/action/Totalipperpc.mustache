@@ -6,18 +6,29 @@
 <div class="table-responsive">
 <table class="table" id="tableID">
 <tr>
-<td>날짜</td>
-{{#value}}
-<td>{{channel}}</td>
-{{/value}}
+<td>채널명</td>
+<!--<td>{{date7}}</td>
+<td>{{date6}}</td>
+<td>{{date5}}</td>
+<td>{{date4}}</td>
+<td>{{date3}}</td>
+<td>{{date2}}</td>-->
+<td>{{date1}}</td>
 </tr>
 
-<tr>
-<td>{{date}}</td>
 {{#value}}
+<tr>
+<td>{{channel}}</td>
+<!-- <td><a>{{count7}}</a></td>
+<td><a>{{count6}}</a></td>
+<td><a>{{count5}}</a></td>
+<td><a>{{count4}}</a></td>
+<td><a>{{count3}}</a></td>
+<td><a>{{count2}}</a></td> -->
 <td><a>{{count}}</a></td>
-{{/value}}
 </tr>
+{{/value}}
+
 </table>
 <div>
 <script>
@@ -26,13 +37,9 @@ $('td').click(function(){
   var row = $(this).parent().parent().children().index($(this).parent());
   if(col > 0 && row > 0){
 	  var MyRows = $('.table').find('tbody').find('tr');
-	  var datevalue = $(MyRows[row]).find('td:eq(0)').html();
-	  var channelvalue = $(MyRows[0]).find('td:eq(' + col + ')').html();	
+	  var channelvalue = $(MyRows[row]).find('td:eq(0)').html();
+	  var datevalue = $(MyRows[0]).find('td:eq(' + col + ')').html();	
 	  window.open(location.origin +"/ipperpcdetail" + "/" + datevalue + "/" + channelvalue , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
   }
-
-
-
-
 });
 </script>

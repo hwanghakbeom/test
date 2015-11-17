@@ -654,7 +654,13 @@ class Totalipperpc extends DefaultLayout {
             sublist = Map("channel" -> t1._1, "count" -> t1._2)
             returnList += sublist
       }
-      at("date") = TransDate.getBeforeDay(1)
+      // at("date7") = TransDate.getBeforeDay(7)
+      // at("date6") = TransDate.getBeforeDay(6)
+      // at("date5") = TransDate.getBeforeDay(5)
+      // at("date4") = TransDate.getBeforeDay(4)
+      // at("date3") = TransDate.getBeforeDay(3)
+      // at("date2") = TransDate.getBeforeDay(2)
+      at("date1") = TransDate.getBeforeDay(1)
       at("value") = returnList
 
       respondView(Map("type" ->"mustache"))
@@ -680,6 +686,28 @@ class IpperpcDetail extends DefaultLayout {
       var dateResult = countQuery(datevalue).list
       for (t <- dateResult) {
         sublist = Map("name" -> t._1, "count" -> t._2)
+        returnList += sublist
+      }     
+    }
+    at("value") = returnList
+    respondView(Map("type" ->"mustache"))
+  }
+}
+
+@GET("ipperpcdetailwithip/:datevalue/:pcvalue")
+class IpperpcDetailwithip extends DefaultLayout {
+  def execute() {
+    var datevalue = param("datevalue")
+    var pcvalue = param("pcvalue")
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>
+      var queryString = "select A.ip from ips A, pcs B, ipnumber C where A.pcsid = B.rid and A.ip = C.ip and B.name = ? and C.installdate = '" + datevalue + "'"
+      var countQuery = Q.query[String,(String)](queryString)
+      var dateResult = countQuery(pcvalue).list
+      for (t <- dateResult) {
+        sublist = Map("ips" -> t)
         returnList += sublist
       }     
     }

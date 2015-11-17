@@ -3,8 +3,20 @@
 {{#value}}
 <tr>
 <td>{{name}}</td>
-<td>{{count}}</td>
+<td><a>{{count}}</a></td>
 </tr>
 {{/value}}
 </table>
 </div>
+<script>
+$('td').click(function(){
+  var col = $(this).parent().children().index($(this));
+  var row = $(this).parent().parent().children().index($(this).parent());
+  if(col > 0 && row > 0){
+	  var MyRows = $('.table').find('tbody').find('tr');
+	  var channelvalue = $(MyRows[row]).find('td:eq(0)').html();
+	  var datevalue = window.location.href 
+	  window.open(location.origin +"/ipperpcdetailwithip" + "/" + datevalue.match(/\d+-\d+-\d+/) + "/" + channelvalue , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+  }
+});
+</script>
