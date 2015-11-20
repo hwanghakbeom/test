@@ -85,3 +85,35 @@ class Pcstatus extends DefaultLayout {
   }
 }
 }
+
+@GET("calcrange")
+class Calcrange extends DefaultLayout {  
+  def execute() {
+    val db = forURL()
+db withSession { implicit session =>
+      var queryString = "select rid from pcs where 1= ? "
+      var countQuery = Q.query[String,(String)](queryString)
+      var dateResult = countQuery("1").list
+      for (t <- dateResult) {
+        var ipqu = "select ip from ips where pcsid = ?"
+        var cq = Q.query[String,(String)](ipqu)
+        var dateResul = cq(t).list
+        var min = 999
+        var max = 0
+        var updatedip = ""
+        for (t1 <- dateResul) {
+              var arr = t1.split(".".toArray)
+              var intvalue = arr(3).toInt
+              if(min > intvalue) { min = intvalue}
+              if(max < intvalue) { max = intvalue}
+              updatedip = arr(0) + "." + arr(1) + "." + arr(2) + "." + min.toString + "~" + max.toString
+              // var iptext = 
+        }
+        println(updatedip + " " + t)
+
+      }     
+    }
+        respondJson("ok")
+    }
+
+  }

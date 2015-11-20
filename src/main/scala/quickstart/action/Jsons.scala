@@ -678,14 +678,16 @@ class IpperpcDetail extends DefaultLayout {
     var sublist = Map[Any,Any]()
     val db = forURL()
     db withSession { implicit session =>
-      var queryString = "select p.name, AA.cnt from pcs p left join ( "
+      var queryString = "select p.name,AA.cnt,p.iprange  from pcs p left join ( "
           queryString += "select C.rid ,C.name,count(*) as cnt from (select ip from ipnumber where installdate = ? ) A, ips B ,pcs C where A.ip = B.ip and B.pcsid = C.rid  and C.channel = '" + channelvalue + "' group by C.name "
           queryString += " ) AA on p.rid = AA.rid "
           queryString += " where p.channel = '" +channelvalue + "'"
-      var countQuery = Q.query[String,(String,String)](queryString)
+      var countQuery = Q.query[String,(String,String,String)](queryString)
       var dateResult = countQuery(datevalue).list
+      println("test")
       for (t <- dateResult) {
-        sublist = Map("name" -> t._1, "count" -> t._2)
+        sublist = Map("name" -> t._1, "count" -> t._2, "iprange" -> t._3)
+        println(t._3)
         returnList += sublist
       }     
     }
