@@ -26,8 +26,9 @@ object TransDate {
 			var temp = dtfOut.print(jodatime)
 			return temp
 		}
-		def getBeforeDay(days:Int): String = {
-			val ctime = new DateTime().minusDays(days)
+		def getBeforeDay(days:Int, day:String): String = {
+			var ctime = new DateTime().minusDays(days)
+			if(day != "current"){ ctime = DateTime.parse(day, DateTimeFormat.forPattern("yyyy-MM-dd")).minusDays(days) }
 			var time  = ctime.getYear().toString +"-"+ ctime.getMonthOfYear() +"-"+ ctime.getDayOfMonth().toString
 			var dtf:DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 			var jodatime:DateTime = dtf.parseDateTime(time);

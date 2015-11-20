@@ -2,6 +2,9 @@
 <b>채널</b> {{channelCount}} / {{channelTotalCount}}
 <b>PC</b> {{pcusingcount}} / {{pcTotalcount}}
 <b>IP</b> {{ipcount}} / {{ipTotalCount}}
+&nbsp; &nbsp;<b>기간</b> {{date7}} / {{date1}} 
+<button><a href="/ipperpc/{{date7}}"><span class="glyphicon glyphicon-arrow-left"></span></a></button>
+<button><a href="/ipperpc/{{date0}}"><span class="glyphicon glyphicon-arrow-right"></span></a></button>
 <br>
 <div class="table-responsive">
 <table class="table" id="tableID">
@@ -42,4 +45,6 @@ $('td').click(function(){
 	  window.open(location.origin +"/ipperpcdetail" + "/" + datevalue + "/" + channelvalue , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
   }
 });
+
+$()
 </script>

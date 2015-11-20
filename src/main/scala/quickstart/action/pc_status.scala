@@ -135,9 +135,9 @@ class Calcagent extends DefaultLayout {
       channelListString += " on AA.name = BB.channel"
       var channelListQuery = Q.query[String,(String,String)](channelListString)
       for(index <-1 to 30 ){
-      var channelListResult = channelListQuery(TransDate.getBeforeDay(index)).list
+      var channelListResult = channelListQuery(TransDate.getBeforeDay(index,"current")).list
         for (t <- channelListResult){
-          agents += Agent(None,t._1, t._2 , TransDate.getBeforeDay(index))
+          agents += Agent(None,t._1, t._2 , TransDate.getBeforeDay(index,"current"))
         }
       }     
               respondJson("ok")
