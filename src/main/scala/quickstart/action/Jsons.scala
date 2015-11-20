@@ -639,27 +639,33 @@ class Totalipperpc extends DefaultLayout {
       var ipTotalResult = ipTotalCountQuery1("1").list
       at("ipTotalCount") = ipTotalResult(0)
 
-      var channelListString = "SELECT AA.name, IFNULL(BB.cnt, 0) from"
-      channelListString += " (SELECT * from channel) AA left join"
-      channelListString += " (SELECT A.channel, count(*) as cnt from"
-      channelListString += " (select * from pcs where rid) A ,"
-      channelListString += " (select pcsid from ips where ip in (select ip from ipnumber where installdate = ?) group by pcsid) B"
-      channelListString += " where A.rid = B.pcsid"
-      channelListString += " group by channel) BB"
-      channelListString += " on AA.name = BB.channel"
-      var channelListQuery = Q.query[String,(String,String)](channelListString)
+      var channelListString = " select A.name,cnt,cnt2,cnt3,cnt4,cnt5,cnt6,cnt7 from "
+      channelListString += " (select name,cnt from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(7) +"') as A,"
+      channelListString += " (select name,cnt as cnt2 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(6) +"') as B,"
+      channelListString += " (select name,cnt as cnt3 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(5) +"') as C,"
+      channelListString += " (select name,cnt as cnt4 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(4) +"') as D,"
+      channelListString += " (select name,cnt as cnt5 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(3) +"') as E,"
+      channelListString += " (select name,cnt as cnt6 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(2) +"') as F,"
+      channelListString += " (select name,cnt as cnt7 from AGENTCOUNT where installdate = ?) as G"
+      channelListString += " where A.name = B.name"
+      channelListString += " and B.name = C.name"
+      channelListString += " and C.name = D.name"
+      channelListString += " and D.name = E.name"
+      channelListString += " and E.name = F.name"
+      channelListString += " and F.name = G.name"
+      var channelListQuery = Q.query[String,(String,String,String,String,String,String,String,String)](channelListString)
       var channelListResult = channelListQuery(TransDate.getBeforeDay(1)).list
 
       for (t1 <- channelListResult){
-            sublist = Map("channel" -> t1._1, "count" -> t1._2)
+            sublist = Map("channel" -> t1._1, "count1" -> t1._2, "count2" -> t1._3, "count3" -> t1._4, "count4" -> t1._5, "count5" -> t1._6, "count6" -> t1._7, "count7" -> t1._8)
             returnList += sublist
       }
-      // at("date7") = TransDate.getBeforeDay(7)
-      // at("date6") = TransDate.getBeforeDay(6)
-      // at("date5") = TransDate.getBeforeDay(5)
-      // at("date4") = TransDate.getBeforeDay(4)
-      // at("date3") = TransDate.getBeforeDay(3)
-      // at("date2") = TransDate.getBeforeDay(2)
+      at("date7") = TransDate.getBeforeDay(7)
+      at("date6") = TransDate.getBeforeDay(6)
+      at("date5") = TransDate.getBeforeDay(5)
+      at("date4") = TransDate.getBeforeDay(4)
+      at("date3") = TransDate.getBeforeDay(3)
+      at("date2") = TransDate.getBeforeDay(2)
       at("date1") = TransDate.getBeforeDay(1)
       at("value") = returnList
 
@@ -669,6 +675,8 @@ class Totalipperpc extends DefaultLayout {
     
     }
   }
+
+
 @GET("ipperpcdetail/:datevalue/:channelvalue")
 class IpperpcDetail extends DefaultLayout {
   def execute() {

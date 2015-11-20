@@ -117,3 +117,31 @@ db withSession { implicit session =>
     }
 
   }
+
+
+@GET("calcagent")
+class Calcagent extends DefaultLayout {  
+  def execute() {
+    val db = forURL()
+    val agents: TableQuery[Agents] = TableQuery[Agents]
+      db withSession { implicit session =>
+      var channelListString = "SELECT AA.name, IFNULL(BB.cnt, 0) as cnt from"
+      channelListString += " (SELECT * from channel) AA left join"
+      channelListString += " (SELECT A.channel, count(*) as cnt from"
+      channelListString += " (select * from pcs where rid) A ,"
+      channelListString += " (select pcsid from ips where ip in (select ip from ipnumber where installdate = ?) group by pcsid) B"
+      channelListString += " where A.rid = B.pcsid"
+      channelListString += " group by channel) BB"
+      channelListString += " on AA.name = BB.channel"
+      var channelListQuery = Q.query[String,(String,String)](channelListString)
+      for(index <-1 to 30 ){
+      var channelListResult = channelListQuery(TransDate.getBeforeDay(index)).list
+        for (t <- channelListResult){
+          agents += Agent(None,t._1, t._2 , TransDate.getBeforeDay(index))
+        }
+      }     
+              respondJson("ok")
+    }
+
+    }
+  }
