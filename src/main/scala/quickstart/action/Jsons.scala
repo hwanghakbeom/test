@@ -90,7 +90,7 @@ class Getpcstatus2 extends DefaultLayout {
     if(condition == "CT" && detail != "") { queryString += " AND OWNER = '" + detail +"'" }
     if(condition == "NY" && detail != "") { queryString += " AND RID = ( SELECT PCSID FROM ips WHERE IP =     '" + detail + "')" }
     queryString += ") A, ( SELECT count(*) cnt, pcsid from ips group by pcsid) B WHERE A.RID = B.pcsid"
-    println(queryString)
+   // println(queryString)
     val db = forURL()
       db withSession { implicit session =>
 
@@ -584,7 +584,7 @@ class Totalipperchannel extends DefaultLayout {
       var q1 = Q.query[String,(String)](queryString)
       val per1 = q1("1").list
         for (t <- per1) {
-          println(t)
+        //  println(t)
           var q2 = Q.query[String,(String,String)](secondString)
           val per2 = q2(t).list
           for (t1 <- per2){
@@ -640,14 +640,14 @@ class Totalipperpc extends DefaultLayout {
       var ipTotalResult = ipTotalCountQuery1("1").list
       at("ipTotalCount") = ipTotalResult(0)
 
-      var channelListString = " select A.name,cnt,cnt2,cnt3,cnt4,cnt5,cnt6,cnt7 from "
-      channelListString += " (select name,cnt from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(7,customdate) +"') as A,"
-      channelListString += " (select name,cnt as cnt2 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(6,customdate) +"') as B,"
-      channelListString += " (select name,cnt as cnt3 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(5,customdate) +"') as C,"
+      var channelListString = " select A.name,cnt7,cnt6,cnt5,cnt4,cnt3,cnt2,cnt1 from "
+      channelListString += " (select name,cnt as cnt7 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(7,customdate) +"') as A,"
+      channelListString += " (select name,cnt as cnt6 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(6,customdate) +"') as B,"
+      channelListString += " (select name,cnt as cnt5 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(5,customdate) +"') as C,"
       channelListString += " (select name,cnt as cnt4 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(4,customdate) +"') as D,"
-      channelListString += " (select name,cnt as cnt5 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(3,customdate) +"') as E,"
-      channelListString += " (select name,cnt as cnt6 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(2,customdate) +"') as F,"
-      channelListString += " (select name,cnt as cnt7 from AGENTCOUNT where installdate = ?) as G"
+      channelListString += " (select name,cnt as cnt3 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(3,customdate) +"') as E,"
+      channelListString += " (select name,cnt as cnt2 from AGENTCOUNT where installdate = '" + TransDate.getBeforeDay(2,customdate) +"') as F,"
+      channelListString += " (select name,cnt as cnt1 from AGENTCOUNT where installdate = ?) as G"
       channelListString += " where A.name = B.name"
       channelListString += " and B.name = C.name"
       channelListString += " and C.name = D.name"
@@ -658,7 +658,7 @@ class Totalipperpc extends DefaultLayout {
       var channelListResult = channelListQuery(TransDate.getBeforeDay(1,customdate)).list
 
       for (t1 <- channelListResult){
-            sublist = Map("channel" -> t1._1, "count1" -> t1._2, "count2" -> t1._3, "count3" -> t1._4, "count4" -> t1._5, "count5" -> t1._6, "count6" -> t1._7, "count7" -> t1._8)
+            sublist = Map("channel" -> t1._1, "count7" -> t1._2, "count6" -> t1._3, "count5" -> t1._4, "count4" -> t1._5, "count3" -> t1._6, "count2" -> t1._7, "count1" -> t1._8)
             returnList += sublist
       }
       at("date8") = TransDate.getBeforeDay(14,customdate)
@@ -695,10 +695,10 @@ class IpperpcDetail extends DefaultLayout {
           queryString += " where p.channel = '" +channelvalue + "'"
       var countQuery = Q.query[String,(String,String,String)](queryString)
       var dateResult = countQuery(datevalue).list
-      println("test")
+      //println("test")
       for (t <- dateResult) {
         sublist = Map("name" -> t._1, "count" -> t._2, "iprange" -> t._3)
-        println(t._3)
+        //println(t._3)
         returnList += sublist
       }     
     }
