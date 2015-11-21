@@ -135,10 +135,17 @@ class Calcagent extends DefaultLayout {
       channelListString += " on AA.name = BB.channel"
       var channelListQuery = Q.query[String,(String,String)](channelListString)
       for(index <-1 to 30 ){
-      var channelListResult = channelListQuery(TransDate.getBeforeDay(index,"current")).list
-        for (t <- channelListResult){
-          agents += Agent(None,t._1, t._2 , TransDate.getBeforeDay(index,"current"))
+        var agentString = "select installdate from AGENTCOUNT where installdate = ? group by installdate"
+        var agentListQuery = Q.query[String,(String)](agentString)
+        var agentListResult = agentListQuery(TransDate.getBeforeDay(index,"current")).list
+        if(agentListResult.size == 0)
+        {
+          var channelListResult = channelListQuery(TransDate.getBeforeDay(index,"current")).list
+          for (t <- channelListResult){
+            agents += Agent(None,t._1, t._2 , TransDate.getBeforeDay(index,"current"))
+          }          
         }
+
       }     
               respondJson("ok")
     }
