@@ -661,7 +661,7 @@ class Totalipperpc extends DefaultLayout {
             sublist = Map("channel" -> t1._1, "count7" -> t1._2, "count6" -> t1._3, "count5" -> t1._4, "count4" -> t1._5, "count3" -> t1._6, "count2" -> t1._7, "count1" -> t1._8)
             returnList += sublist
       }
-      at("date8") = TransDate.getBeforeDay(13,customdate)
+      at("date8") = TransDate.getBeforeDay(7,customdate)
       at("date7") = TransDate.getBeforeDay(6,customdate)
       at("date6") = TransDate.getBeforeDay(5,customdate)
       at("date5") = TransDate.getBeforeDay(4,customdate)
@@ -669,7 +669,7 @@ class Totalipperpc extends DefaultLayout {
       at("date3") = TransDate.getBeforeDay(2,customdate)
       at("date2") = TransDate.getBeforeDay(1,customdate)
       at("date1") = TransDate.getBeforeDay(0,customdate)
-      at("date0") = TransDate.getBeforeDay(-6,customdate)
+      at("date0") = TransDate.getBeforeDay(-7,customdate)
       at("value") = returnList
 
       respondView(Map("type" ->"mustache"))
