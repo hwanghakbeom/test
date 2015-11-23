@@ -169,7 +169,7 @@ class Calcagenttoday extends DefaultLayout {
       channelListString += " on AA.name = BB.channel"
       var channelListQuery = Q.query[String,(String,String)](channelListString)
       var channelListResult = channelListQuery(TransDate.getBeforeDay(0,"current")).list
-            def cleandummy(ip: String) = sqlu"delete from AGENTCOUNT where installdate = $rid".first
+            def cleandummy(date: String) = sqlu"delete from AGENTCOUNT where installdate = $date".first
               var rows= cleandummy(TransDate.getBeforeDay(0,"current")) 
               println(s"Deleted $rows rows")
 
