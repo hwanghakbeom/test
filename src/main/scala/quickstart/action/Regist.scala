@@ -36,7 +36,7 @@ class NewPC extends DefaultLayout {
 		val pcs: TableQuery[Pcs] = TableQuery[Pcs]
 		val db = forURL()
 		  db withSession { implicit session =>
-		  	pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
+		  	pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate,"")
 		  }
 		jsRespond("alert(" + jsEscape("아이디가 중복됩니다.") + ")") 		
 	}
@@ -65,7 +65,7 @@ class UpdatePC extends DefaultLayout {
     val db = forURL()
       db withSession { implicit session =>
         if(rid == ""){
-          pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate)
+          pcs += Pc(None,name, add1, add2, add3, owner, phone, mobile, channel, lastdate, ischecked,regdate,"")
         }
         else {
           pcs.filter(_.rid === rid.toInt)

@@ -53,11 +53,11 @@ class Excelimport extends DefaultLayout {
           val channelname = result(rid).list
           val channel = channelname(0)
 
-			var excelquery = Q.query[String,(String,String,String,String,String)]("SELECT * FROM dummyexcel where 1 = ? and name <> ''")
+			var excelquery = Q.query[String,(String,String,String,String,String,String)]("SELECT * FROM dummyexcel where 1 = ? and name <> ''")
 			val peroid = excelquery("1").list
 			for (t <- peroid) {
 		  	//pc방 입력
-		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", channel, "", "",regdate)
+		  	var rid = (pcs returning pcs.map(_.rid)) += Pc(None,t._2, "", t._3, "", "", "", "", channel, "", "",regdate,t._6)
 		  	//ip입력
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
@@ -101,10 +101,11 @@ class Excelimport extends DefaultLayout {
 class PostExcelimport extends DefaultLayout {	
 	def execute() {
 		var userid = session("userId")
-		println(userid)
 		var filename = param("filename")
-		var fis:FileInputStream =new FileInputStream("/home/ubuntu/test/public" + filename);
+		val whereami = System.getProperty("user.dir")
+		var fis:FileInputStream =new FileInputStream(whereami + "/public" + filename);
 		var workbook:HSSFWorkbook =new HSSFWorkbook(fis);
+		val dummy: TableQuery[Dummyexcels] = TableQuery[Dummyexcels]
 		var rowindex=0;
 		var columnindex=0;
 		var sheet:HSSFSheet = workbook.getSheetAt(0);
@@ -125,7 +126,8 @@ class PostExcelimport extends DefaultLayout {
 				var address = ""
 				var startip = ""
 				var endip = ""
-				for(columnindex <- 0 to 7){
+				var ip = ""
+				for(columnindex <- 0 to 2){
 					var cell=row.getCell(columnindex);
 					if(cell != null){
 						if(cell.getCellType() == 0){
@@ -141,32 +143,44 @@ class PostExcelimport extends DefaultLayout {
 							value=cell.getErrorCellValue()+"";
 						}
 					}
-					if(rowindex > 7){
-						if(columnindex == 1){
-							name = value						
+					if(rowindex > 1){
+						if(columnindex == 0){
+							//이름
+							name = value.trim						
+						}
+						else if(columnindex == 1){
+							//아이피
+							ip = value.replace(" ","")					
 						}
 						else if(columnindex == 2){
+							//주소
 							address = value					
 						}
-						else if(columnindex == 6){
-						//	println(cell.getCellType())
-							startip = value					
-						}
-						else if(columnindex == 7){
-						//	println(value)
-					//	println(cell.getCellType())
-							endip = value.replace(".0","")			
-						}
+						// else if(columnindex == 7){
+						// 	endip = value.replace(".0","")			
+						// }
 					}	
 				}
-				val dummy: TableQuery[Dummyexcels] = TableQuery[Dummyexcels]
-				
-				db withSession { implicit session =>
-					if(name != "false"){
-						dummy += Dummyexcel(None,name,address,startip,endip)
+
+				if(name != "" && address != "" && ip.split("~").size > 0) { 
+					startip = ip.split("~")(0)
+					var lastip = ip.split("~")(1)
+					endip = ip.split("~")(1).split('.').last	
+					if(startip.split('.')(0) != lastip.split('.')(0) || startip.split('.')(1) != lastip.split('.')(1) || startip.split('.')(2) != lastip.split('.')(2))
+					{ 
+						println(name)
+						println(address)
+						println(ip)
+				 println( "   ")
 					}
-					
-				}
+					db withSession { implicit session =>
+
+						if(name != "false"){
+							dummy += Dummyexcel(None,name,address,startip,endip,ip)
+						}
+					}
+				 }
+
 			}
 		}
 		respondJson("okay")
