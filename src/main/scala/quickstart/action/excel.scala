@@ -151,7 +151,7 @@ class PostExcelimport extends DefaultLayout {
 						}
 						else if(columnindex == 1){
 							//아이피
-							ip = value.replace(" ","")					
+							ip = value.replace(" ","").replace("-","~")					
 						}
 						else if(columnindex == 2){
 							//주소
@@ -162,7 +162,6 @@ class PostExcelimport extends DefaultLayout {
 						// }
 					}	
 				}
-
 				if(name != "" && address != "" && ip.split("~").size > 0) { 
 					startip = ip.split("~")(0)
 					endip = ip.split("~")(1)
