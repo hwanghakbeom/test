@@ -165,15 +165,8 @@ class PostExcelimport extends DefaultLayout {
 
 				if(name != "" && address != "" && ip.split("~").size > 0) { 
 					startip = ip.split("~")(0)
-					var lastip = ip.split("~")(1)
-					endip = ip.split("~")(1).split('.').last	
-					if(startip.split('.')(0) != lastip.split('.')(0) || startip.split('.')(1) != lastip.split('.')(1) || startip.split('.')(2) != lastip.split('.')(2))
-					{ 
-						println(name)
-						println(address)
-						println(ip)
-				 println( "   ")
-					}
+					endip = ip.split("~")(1)
+
 					db withSession { implicit session =>
 
 						if(name != "false"){
