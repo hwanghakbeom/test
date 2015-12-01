@@ -44,9 +44,9 @@ class Excelimport extends DefaultLayout {
 		val db = forURL()
 		db withSession { implicit session =>
 
-            def cleandummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid and name = ''".first
-              var rows= cleandummy("0") 
-              println(s"Deleted $rows rows")
+           // def cleandummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid and name = ''".first
+           //   var rows= cleandummy("0") 
+           //   println(s"Deleted $rows rows")
 
           var channelquery = "select name from channel where rid = (select work from users where rid = ?)"
           var result = Q.query[String,(String)](channelquery)
@@ -61,9 +61,6 @@ class Excelimport extends DefaultLayout {
 		  	//ip입력
 		  	var patternt = "\\d+".r
 		  	var arr = t._4.split(".".toArray)
-		  	println(t._4)
-		  	println(arr)
-		  	println(t._5)
 		  	if(arr.size == 4){
 		  	var iptext = arr(0) + "." + arr(1) + "." + arr(2)
 		  	//endip 가 없음
@@ -77,6 +74,10 @@ class Excelimport extends DefaultLayout {
 				  		{
 				  			ips += Ip(None,rid.toString, ip , regdate)
 				  		}
+				  		else
+				  		{
+				  			ips.filter(_.ip === ip).map(p => (p.pcsid,p.installdate)).update((rid.toString,regdate))
+				  		}
 				  	}		  	    	
 		  	    }
 		  	    else{
@@ -87,9 +88,9 @@ class Excelimport extends DefaultLayout {
 
 		  }
 		  //delete dummyexcel
-            def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
-              rows= deletedummy("1") 
-              println(s"Deleted $rows rows")
+            // def deletedummy(ip: String) = sqlu"delete from dummyexcel where rid > $rid".first
+            //   rows= deletedummy("1") 
+            //   println(s"Deleted $rows rows")
 		}
 		respondJson("okay")
 	}
