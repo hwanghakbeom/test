@@ -750,3 +750,24 @@ class Iptitle extends DefaultLayout {
     respondJson("okay")
   }
 }
+
+@GET("unregip/")
+class Unregip extends DefaultLayout {    
+  def execute() {
+    var returnList = scala.collection.mutable.MutableList[Map[Any,Any]]()  
+    var sublist = Map[Any,Any]()
+    val db = forURL()
+    db withSession { implicit session =>
+      var queryString = "select A.ip from ipnumber A left outer join ips B on A.ip = B.ip where A.installdate = ? and B.ip is null"
+      var countQuery = Q.query[String,(String)](queryString)
+      var dateResult = countQuery("2015-11-22").list
+      // var dateResult = countQuery(TransDate.getCurrentDate()).list
+      for (t <- dateResult) {
+        sublist = Map("ips" -> t)
+        returnList += sublist
+      }     
+    }  
+    at("value") = returnList
+    respondView(Map("type" ->"mustache"))  
+  }
+}

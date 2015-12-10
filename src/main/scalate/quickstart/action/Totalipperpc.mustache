@@ -5,6 +5,7 @@
 &nbsp; &nbsp;<b>기간</b> {{date7}} / {{date1}} 
 <button><a href="/ipperpc/{{date8}}"><span class="glyphicon glyphicon-arrow-left"></span></a></button>
 <button><a href="/ipperpc/{{date0}}"><span class="glyphicon glyphicon-arrow-right"></span></a></button>
+<button id="unregip">미등록 아이피 조회</button>
 <br>
 <div class="table-responsive">
 <table class="table" id="tableID">
@@ -46,5 +47,7 @@ $('td').click(function(){
   }
 });
 
-$()
+$('#unregip').click(function(){
+	window.open(location.origin +"/unregip" , '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+});
 </script>
