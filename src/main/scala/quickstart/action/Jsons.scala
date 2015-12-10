@@ -760,8 +760,7 @@ class Unregip extends DefaultLayout {
     db withSession { implicit session =>
       var queryString = "select A.ip from ipnumber A left outer join ips B on A.ip = B.ip where A.installdate = ? and B.ip is null"
       var countQuery = Q.query[String,(String)](queryString)
-      var dateResult = countQuery("2015-11-22").list
-      // var dateResult = countQuery(TransDate.getCurrentDate()).list
+      var dateResult = countQuery(TransDate.getCurrentDate()).list
       for (t <- dateResult) {
         sublist = Map("ips" -> t)
         returnList += sublist
